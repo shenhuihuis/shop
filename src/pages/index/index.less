@@ -1,0 +1,158 @@
+.index{
+    padding:0 20rpx 138rpx;
+    background:linear-gradient(180deg,rgba(255,255,255,1) 0%,rgba(247,249,252,1) 100%);
+    .banner{
+        width:100%;
+        height:236rpx;
+        box-sizing: border-box;
+        margin-bottom: 30rpx;
+        image{
+           width:100%;
+           height:236rpx;
+           box-shadow: 0 0 4rpx #333;
+           border-radius:20rpx;
+        }
+    }
+    .find{
+        margin-bottom: 30rpx;
+        display: flex;
+        i{
+            width:64rpx;
+            height:64rpx;
+            background: url("../../assets/img/logo@2x.png") no-repeat;
+            display: block;
+            background-size:100% 100%;
+           
+        }
+        input{
+            border:0 none;
+            background:url("../../assets/img/search@2x.png") #F5F5F5 no-repeat 14rpx center;
+            background-size:36rpx 36rpx;
+            height:64rpx;
+            box-sizing:border-box;
+            padding:10rpx 66rpx;
+            color:rgba(153,153,153,1);
+            line-height:44px;
+            flex:2;
+            margin-left:10rpx;
+        }   
+    }
+    .navbar{
+        display: flex;
+        justify-content: space-between;
+        .li{
+            flex:1;
+            height:120rpx;
+            background:linear-gradient(90deg,rgba(255,246,230,1) 0%,rgba(254,242,220,1) 100%);
+            border-radius:10px;
+            position: relative;
+            box-sizing: border-box;
+            padding:20rpx 24rpx 0 30rpx;
+            
+            &:nth-child(1){
+                margin-right:30rpx;
+                color:rgba(121,91,58,1);
+            }
+            .tit{
+                font-size:30rpx;
+                font-weight:500;
+                line-height:30rpx;
+                margin:10rpx 0;
+            }
+            .say{
+                font-size:20rpx;
+                font-weight:400;
+                line-height:28rpx;
+            }
+        }
+        .i{
+            display: block;
+            position: absolute;
+            right:24rpx;
+            top:20rpx;  
+            background:url("../../assets/img/goods@2x.png") no-repeat;
+            background-size:80rpx 80rpx;
+            width:80rpx;
+            height:80rpx;
+        }
+        .li:nth-child(2){
+            background:linear-gradient(90deg,rgba(234,255,231,1) 0%,rgba(214,239,211,1) 100%);
+            color:#034809;
+            .i{
+                background:url("../../assets/img/car@2x.png") no-repeat;
+                background-size:80rpx 80rpx;
+            }
+        }
+        
+    }
+}
+.list{
+    margin-bottom: 80rpx;
+    .h2{
+        padding:40rpx 0 30rpx 40rpx;
+        background: url("../../assets/img/hot@2x.png") no-repeat left center;
+        background-size:32rpx 32rpx;
+        image{
+            height:32rpx;
+            width:132rpx;
+        }
+    }
+    .ul{
+        .li{
+            height:530rpx;
+            background: #fff;
+            box-shadow:0px 4rpx 20rpx 0px rgba(0,0,0,0.06);
+            border-radius:20rpx;
+            margin-bottom: 20rpx;
+            image{
+                width:100%;
+                height:344rpx;
+            }
+            .tit{
+                padding:20rpx 20rpx 8rpx;
+                height:80rpx;
+                font-size:28rpx;
+                font-weight:400;
+                color:rgba(51,51,51,1);
+                line-height:40rpx;
+                overflow: hidden;
+            }
+            .bot{
+                display: flex;
+                justify-content: space-between;
+                line-height: 60rpx;
+                padding:0 20rpx;
+                align-items: center;
+                .lf{
+                    display: flex;
+                }
+                .money{
+                    font-size:36rpx;
+                    font-family:PingFangSC-Medium,PingFang SC;
+                    font-weight:500;
+                    color:rgba(255,88,108,1);
+                    small{
+                        font-size: 20rpx;
+                    }
+                }
+                .how{
+                    font-size:20rpx;
+                    font-family:PingFangSC-Regular,PingFang SC;
+                    font-weight:400;
+                    color:rgba(153,153,153,1);
+                    margin-left:8rpx;
+                }
+                .buy{
+                    width:60rpx;
+                    height:60rpx;
+                    background: url("../../assets/img/cart@2x.png") no-repeat;
+                    background-size:60rpx;
+                    margin-top:-14rpx;
+                }
+            }
+        }
+    }
+}
+.iphonex{
+    padding-bottom: 34rpx;
+}

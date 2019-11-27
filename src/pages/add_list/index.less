@@ -1,0 +1,102 @@
+.nobg{
+    background: url(../../assets/img/order@2x.png) no-repeat 200rpx center;
+    background-size:328rpx 328rpx;
+    padding-top:558rpx;
+    text-align: center;
+    box-sizing: border-box;
+    .tit{
+        margin:30rpx 0 60rpx;
+        font-size:24rpx;
+        font-family:PingFangSC-Regular,PingFang SC;
+        font-weight:400;
+        color:#999999;
+        line-height:24rpx;
+    }
+    .add{
+        width:250rpx;
+        line-height:88rpx;
+        background:rgba(49,159,95,1);
+        border-radius:10rpx;
+        font-size:32rpx;
+        color:#fff;
+        display: inline-block;
+    }
+}
+page{
+    background: #F5F5F8;
+}
+.addlist{
+    .ul{
+        margin:20rpx;
+        padding:0 20rpx; 
+        box-sizing: border-box;
+        background: #fff;
+        border-radius:20rpx;
+    }
+    .li{
+        padding:32rpx 0;
+        border-bottom: 1px solid #EFEFEF;
+        display: flex;
+        justify-content: space-between;
+        .btn{
+            background:url("../../assets/img/bianji@2x.png") no-repeat right center;
+            width:84rpx;
+            background-size: 48rpx 48rpx;
+        }
+        &:nth-last-child(1){
+            border:0 none;
+        }
+        .tp{
+            display: flex;
+            align-items: center;
+            margin-bottom: 20rpx;
+            text{
+                width:62rpx;
+                line-height:30rpx;
+                background:rgba(225,248,235,1);
+                border-radius:4rpx;
+                font-size:20rpx;
+                font-family:PingFangSC-Regular,PingFang SC;
+                font-weight:400;
+                color:rgba(49,159,95,1);
+                text-align: center;
+                margin-right:6rpx;
+            }
+            .tit{
+                line-height: 40rpx;
+                font-size:32rpx;
+                font-family:PingFangSC-Regular,PingFang SC;
+                font-weight:400;
+                color:rgba(51,51,51,1);
+            }
+        }
+        .bot{
+            line-height:28rpx;
+            color:#666;
+            font-size: 28rpx;
+            text{
+                margin-right:40rpx;
+            }
+        }
+    }
+    .bton{
+        height:128rpx;
+        position: fixed;
+        bottom:0;
+        left:0;
+        width:100%;
+        background:rgba(255,255,255,1);
+        box-shadow:0px -12rpx 20rpx 0px rgba(153,153,153,0.06);
+        box-sizing: border-box;
+        padding:20rpx 40rpx;
+        z-index: 11111;
+        .sub{
+            line-height:88rpx;
+            background:linear-gradient(161deg,rgba(95,205,152,1) 0%,rgba(49,159,95,1) 100%);
+            border-radius:44rpx;
+            font-size:36rpx;
+            color:#fff;
+            text-align: center;
+        }
+    }
+}

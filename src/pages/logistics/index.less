@@ -1,0 +1,95 @@
+.logistics{
+    
+    .tp{
+        height:290rpx;
+        background: url("../../assets/img/grebg.png") no-repeat center top;
+        background-size: cover;
+        padding:20rpx 30rpx 0;
+        box-sizing: border-box;
+        .tit{
+            display: flex;
+            font-size:50rpx;
+            font-family:PingFangSC-Medium,PingFang SC;
+            font-weight:500;
+            color:rgba(255,255,255,1);
+            line-height:50rpx;
+            text{
+                align-self: flex-end;
+                font-size:24rpx;
+                font-family:PingFangSC-Regular,PingFang SC;
+                font-weight:400;
+                color:rgba(255,255,255,1);
+                line-height:24rpx;
+                padding-left:10rpx;
+            }
+        }
+        .cbox{
+            width:690rpx;
+            height:300rpx;
+            background:url("../../assets/img/logistics.png") no-repeat;
+            background-size:100% 100%;
+            margin-top:40rpx;
+            overflow: hidden;
+            border-radius:20rpx;
+            .btn{
+                width:220rpx;
+                height:60rpx;
+                background:rgba(175,143,92,1);
+                box-shadow:0px 10rpx 20rpx 0px rgba(153,106,31,0.6);
+                border-radius:34rpx;
+                text-align: center;
+                font-size:28rpx;
+                color:#fff;
+                line-height: 60rpx;
+                margin:142rpx 0 0 54rpx;
+            }
+        }
+    }
+    .htit{
+        font-size:34rpx;
+        font-weight:500;
+        color:rgba(51,51,51,1);
+        line-height:34rpx;
+        margin:200rpx 0 38rpx 20rpx;
+    }
+    .list{
+        margin:0 20rpx;
+        background: #fff;
+        box-shadow:0px 2rpx 40rpx 0px rgba(0,0,0,0.04);
+        border-radius:20rpx;
+        .li{
+            image{
+                width:92rpx;
+                height:92rpx;
+                margin-right:20rpx;
+            }
+            margin:0 20rpx;
+            padding:30rpx 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #EFEFEF;
+            &:nth-last-child(1){
+                border: 0 none;
+            }
+            .lf{
+                display: flex;
+                align-items: center;
+                font-size:30rpx;
+                color:#333;
+            }
+            .see{
+                width:138rpx;
+                color:#fff;
+                text-align: center;
+                background:linear-gradient(140deg,rgba(95,205,152,1) 0%,rgba(49,159,95,1) 100%);
+                border-radius:10rpx;
+                font-size:24rpx;
+                line-height: 50rpx;
+            }
+        }
+    }
+}
+page{
+    background:linear-gradient(180deg,rgba(255,255,255,1) 0%,rgba(247,249,252,1) 100%);
+}

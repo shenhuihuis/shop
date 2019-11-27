@@ -1,0 +1,63 @@
+.classType{
+    padding-top:20rpx;
+    .at-tabs--scroll{
+       
+    }
+    .at-tabs__header{
+        border:0 none;
+        background: #F9F9F9;
+        .at-tabs__item{
+            width:160rpx;
+            height:112px;
+            line-height: 112rpx;
+            color:#666;
+            padding:0;
+            border-bottom: 2rpx #EFEFEF solid;
+            font-size: 26rpx;
+        }
+        .at-tabs__item-underline{
+            left:0;
+            width:8rpx;
+            height:40rpx;
+            background: #319F5F;
+            top:50%;
+            margin-top:-20rpx;
+           
+        }
+        .at-tabs__item--active{
+            background: #fff;
+            color:#333;
+        }
+    }
+    .at-tabs__underline{
+        opacity: 0;
+    }
+    .ul{
+        display: flex;
+        flex-wrap: wrap;
+        width: calc(100%);
+        justify-content: space-between;
+        .li{
+            padding-top:48rpx;
+            flex: 0 0 calc(33.33%);
+            text-align: center;
+            margin-bottom: 60rpx;
+            .tit{
+                padding:0 6rpx;
+                font-size:24rpx;
+                font-family:PingFangSC-Regular,PingFang SC;
+                font-weight:400;
+                color:rgba(102,102,102,1);
+                line-height:24rpx;
+                height: 24rpx;
+                overflow: hidden;
+                text-overflow:ellipsis;
+                white-space: nowrap;
+            }
+            image{
+                width:106rpx;
+                height:106rpx;
+            }
+        }
+    }
+}

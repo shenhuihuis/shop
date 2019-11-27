@@ -1,0 +1,51 @@
+.settle{
+    display: flex;
+    justify-content:space-between;
+    flex-wrap: wrap;
+    padding:20rpx;
+    .li{
+        width:346rpx;
+        height:360rpx;
+        background-color: #fff;
+        background-size:200rpx 200rpx;
+        background-position: right bottom;
+        background-repeat: no-repeat;
+        border-radius:20rpx;
+        margin-bottom: 30rpx;
+        padding-left:30rpx;
+        box-sizing: border-box;
+        &:nth-child(odd){
+            background-image:url("../../assets/img/pic2.png");
+        }
+        &:nth-child(even){
+            background-image:url("../../assets/img/pic1.png");
+        }
+        .name{
+            font-size:40rpx;
+            font-family:PingFangSC-Regular,PingFang SC;
+            font-weight:400;
+            color:rgba(51,51,51,1);
+            line-height:50rpx;
+            padding-top:60rpx;
+        }
+        .i{
+            margin-top:20rpx;
+            text-align: center;
+            width:78rpx;
+            line-height:40rpx;
+            border-radius:21px;
+            font-size: 22rpx;
+            &:nth-child(odd){
+                border:2px solid rgba(49,159,95,1);
+                color:#319F5F;
+            }
+            &:nth-child(even){
+                border:2px solid #AF8F5C;
+                color:#AF8F5C;
+            }
+        }
+    }
+}
+page{
+    background: #F5F5F8;
+}

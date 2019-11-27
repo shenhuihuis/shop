@@ -1,0 +1,120 @@
+.center{
+    .tp{
+        padding:40rpx 30rpx;
+        display: flex;
+        align-items: center;
+        box-sizing: border-box;
+        .lf{
+            flex:2;
+            .hello{
+                font-size:44rpx;
+                font-family:PingFangSC-Medium,PingFang SC;
+                font-weight:500;
+                color:rgba(51,51,51,1);
+                line-height:60rpx;
+            }
+            .tosee{
+                font-size:22rpx;
+                font-family:PingFangSC-Medium,PingFang SC;
+                font-weight:500;
+                color:rgba(49,159,95,1);
+                line-height:22rpx;
+                background: url("../../assets/img/icongogreen@2x.png") no-repeat right center;
+                background-size: 10rpx auto;
+                width:90rpx;
+                margin-top:20rpx;
+            }
+            .issee{
+                background: url("../../assets/img/renzheng@2x.png") no-repeat;
+                width:148rpx;
+                height:52rpx;
+                line-height: 52rpx;
+                font-size: 22rpx;
+                text-indent:56rpx;
+                color:#fff;
+                background-size: 148rpx 52rpx;
+                margin-top:10rpx;
+            }
+        }
+        image{
+            width:152rpx;
+            height:152rpx;
+            border-radius:50%;
+        }
+    }
+    .bnav{
+        margin:0 20rpx 40rpx;
+        height:160rpx;
+        background:rgba(255,255,255,1);
+        box-shadow:0px 0px 30rpx 0px rgba(233,233,233,0.7);
+        border-radius:20rpx;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        &::after{
+            content: '';
+            display: block;
+            width:2rpx;
+            height:80rpx;
+            background: #DDD;
+            position: absolute;
+            left:50%;
+            margin-left:-1rpx;
+            top:46rpx;
+        }
+        .va{
+            flex:1;
+            padding-left:180rpx;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+            background: url("../../assets/img/picgoodsorder@2x.png") no-repeat 50rpx center;
+            background-size:96rpx 96rpx;
+            font-size:30rpx;
+            color:#333;
+            &:nth-child(2){
+                background: url("../../assets/img/goodsorder@2x.png") no-repeat 50rpx center;
+                background-size:96rpx 96rpx;
+            }
+        }
+    }
+    .ul{
+        padding:0 40rpx;
+        .li{
+            overflow: hidden;
+            border-bottom: 1px solid #EFEFEF;
+            line-height:98rpx;
+            box-sizing: border-box;
+            padding-left:50rpx;
+            background-size: 40rpx 40rpx;
+            background-position: left center;
+            background-repeat: no-repeat;
+            font-size: 28rpx;
+            color:#333;
+            .tit{
+                background: url("../../assets/img/go_03.png") no-repeat right center;
+                background-size: auto 28rpx;
+            }
+            &:nth-child(1){
+                background-image: url("../../assets/img/collect5.png");
+            }   
+            &:nth-child(2){
+                background-image: url("../../assets/img/collect1.png");
+            }   
+            &:nth-child(3){
+                background-image: url("../../assets/img/collect2.png");
+            }   
+            &:nth-child(4){
+                background-image: url("../../assets/img/collect3.png");
+            }   
+            &:nth-child(5){
+                background-image: url("../../assets/img/collect4.png");
+            }   
+        }
+    }
+}
+page{
+    background:linear-gradient(180deg,rgba(255,255,255,1) 0%,rgba(247,249,252,1) 100%);
+}

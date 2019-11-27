@@ -1,0 +1,169 @@
+page{
+    background: #F5F5F8;
+}   
+.dd_index{
+    .tp{
+        padding:30rpx 40rpx 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-sizing: border-box;
+        height:150rpx;
+        background: #fff;
+        image{
+            width:120rpx;
+            height:120rpx;
+            margin-right:40rpx;
+            border-radius:10rpx;
+        }
+        .lf{
+            display: flex;
+            align-items: center;
+            .cter{
+                .name{
+                    font-size:32rpx;
+                    font-family:PingFangSC-Medium,PingFang SC;
+                    font-weight:500;
+                    color:rgba(51,51,51,1);
+                    line-height:32rpx;
+                    margin-bottom: 24rpx;
+                }
+                .i{
+                    width:102rpx;
+                    line-height:30rpx;
+                    background:rgba(226,255,238,1);
+                    border-radius:20rpx;
+                    font-size:20rpx;
+                    color:#319F5F;
+                    text-align: center;
+                }
+            }
+
+        }
+        .btn{
+            width:170rpx;
+            height:60rpx;
+            border-radius:10rpx;
+            border:1px solid rgba(49,159,95,1);
+            background: url("../../assets/img/collect@2x.png") no-repeat 40rpx center;
+            background-size: 26rpx 26rpx;
+            text-align: center;
+            line-height: 64rpx;
+            text-indent: 30rpx;
+            color:#319F5F;
+            font-size: 24rpx;
+        }
+        .btned{
+            background: url("../../assets/img/kefu2@2x.png") no-repeat 40rpx center;
+            background-size: 26rpx 26rpx;
+            border-color:#ff548c;
+            color:#ff548c;
+        }
+    }
+}
+.navs{
+    height: 108rpx;
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding:0 40rpx;
+    .a{
+        text-align: center;
+        font-size:28rpx;
+        font-family:PingFangSC-Medium,PingFang SC;
+        font-weight:500;
+        color:#666;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .active{
+        color:#319F5F;
+    }
+    .tab{
+        margin-left:4rpx;
+    }
+    .up,.down{
+        width:0;
+        height:0;
+        border-width:6rpx;
+        border-color:transparent transparent #ddd;
+        border-style: solid;
+    }
+    .down{
+        border-color:#ddd transparent transparent ;
+        margin-top:6rpx;
+    }
+    .active .uact.up{
+        border-color:transparent transparent #319F5F;
+    }
+    .active .uact.down{
+        border-color:#319F5F transparent transparent;
+    }
+}
+.list{
+    background:rgba(245,246,248,1);
+    border-radius:40rpx 40rpx 0px 0px;
+    box-sizing: border-box;
+    padding:20rpx;
+    .li{
+        width:344rpx;
+        padding-bottom: 20rpx;
+        display: inline-block;
+        background: #fff;
+        margin-bottom: 20rpx;
+        border-radius:20rpx;
+        height:522rpx;
+        image{
+            width:100%;
+            height:344rpx;
+            margin-bottom: 20rpx;;
+        }
+        &:nth-child(odd){
+            margin-right:22rpx;
+        }
+        .tit{
+            height:72rpx;
+            font-size:28rpx;
+            font-family:PingFangSC-Regular,PingFang SC;
+            font-weight:400;
+            color:rgba(0,0,0,1);
+            line-height:36rpx;
+            margin:20rpx 20rpx 10rpx;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+        }
+        .bot{
+            line-height: 50rpx;
+            margin:0 30rpx;
+            background: url("../../assets/img/cart@2x.png") no-repeat right center;
+            background-size:50rpx 100%;
+            height:50rpx;
+            display: flex;
+            align-items: center;
+            .money{
+                font-size:36rpx;
+                font-family:PingFangSC-Medium,PingFang SC;
+                font-weight:500;
+                color:rgba(244,118,117,1);
+                line-height:36rpx;
+                margin-right:8rpx;
+                small{
+                    font-size: 20rpx;
+                }
+                
+            }
+            .span{
+                font-size:20rpx;
+                font-family:PingFangSC-Regular,PingFang SC;
+                font-weight:400;
+                color:rgba(153,153,153,1);
+                line-height:20rpx;
+            }
+        }
+    }
+}
