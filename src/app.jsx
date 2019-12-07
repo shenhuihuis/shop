@@ -7,12 +7,43 @@ import 'taro-ui/dist/style/index.scss'
 // if (process.env.NODE_ENV !== 'production' && process.env.TARO_ENV === 'h5')  {
 //   require('nerv-devtools')
 // }
+                                    /*
+                                                          .::::.
+                                                        .::::::::.
+                                                        :::::::::::  FUCK YOU
+                                                    ..:::::::::::'
+                                                  '::::::::::::'
+                                                    .::::::::::
+                                              '::::::::::::::.. 
+                                                    ..::::::::::::.
+                                                  ``::::::::::::::::
+                                                  ::::``:::::::::'        .:::.
+                                                  ::::'   ':::::'       .::::::::.
+                                                .::::'      ::::     .:::::::'::::.
+                                              .:::'       :::::  .:::::::::' ':::::.
+                                              .::'        :::::.:::::::::'      ':::::.
+                                            .::'         ::::::::::::::'         ``::::.
+                                        ...:::           ::::::::::::'              ``::.
+                                        ````':.          ':::::::::'                  ::::..
+                                                          '.:::::'                    ':'````..
+                                    */
 class App extends Component {
-
   config = {
     pages: [
       'pages/hotline/index',
       'pages/about/index',
+      'pages/page/index',
+      'pages/center/index',
+      'pages/demand_details/index',
+      'pages/dd_index/index',
+      'pages/index/index',
+      'pages/attes_ing/index',
+      'pages/toattes/index',
+      'pages/class/index',
+      'pages/add_list/index',    
+      'pages/add_details/index',   
+      'pages/details/index',
+      'pages/list/index',
       'pages/settledform/index',
       'pages/settledyz/index',
       'pages/settledIn/index',
@@ -29,22 +60,11 @@ class App extends Component {
       'pages/demand/index', 
       'pages/order_detalis/index',
       'pages/orderlist/index',
-      'pages/attes_ing/index',
-      'pages/toattes/index',
       'pages/attes/index',
-      'pages/center/index',
       'pages/order/index',
       'pages/carlist/index',
-      'pages/class/index',
-      'pages/demand_details/index',
-      'pages/dd_index/index',
       'pages/evaluate/index',
-      'pages/details/index',
-      'pages/add_details/index',
-      'pages/add_list/index',       
-      'pages/logistics/index',  
-      'pages/list/index',
-      'pages/index/index'
+      'pages/logistics/index'    
     ],
     window: {
       backgroundTextStyle: 'light',

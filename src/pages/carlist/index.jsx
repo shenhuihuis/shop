@@ -7,21 +7,23 @@ class Order extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            touchS: [0, 0],
+            touchE: [0, 0],
             value: '',
             all: false,
             list: [
                 {
                     checked: false,
-                    id:0,
+                    id: 0,
                     children: [
-                        { checked: false, num: 1 },
+                        { checked: false, num: 1 ,move:false},
                         { checked: false, num: 1 },
                         { checked: false, num: 1 }
                     ]
                 },
                 {
                     checked: false,
-                    id:1,
+                    id: 1,
                     children: [
                         { checked: false, num: 1 },
                         { checked: false, num: 1 },
@@ -33,46 +35,78 @@ class Order extends Component {
     config = {
         navigationBarTitleText: '购物车'
     }
-    ckAll=()=>{         //全选
-        let list=this.state.list,all=this.state.all;
-        all=!all;
-        list.map(e=>{
-            e.checked=all;
-            e.children.map(ele=>{
-                ele.checked=all
+    ckAll = () => {         //全选
+        let list = this.state.list, all = this.state.all;
+        all = !all;
+        list.map(e => {
+            e.checked = all;
+            e.children.map(ele => {
+                ele.checked = all
             })
         })
         this.setState({
-            all:all,
-            list:list
+            all: all,
+            list: list
         })
     }
-    ckbind=(ind,index)=>{
-        let list=this.state.list,all=this.state.all;
-        if(index<0){            //上面
-            list[ind].checked=!list[ind].checked;
-            list[ind].children.map(e=>{
-                e.checked=list[ind].checked?true:false
+    ckbind = (ind, index) => {
+        let list = this.state.list, all = this.state.all;
+        if (index < 0) {            //上面
+            list[ind].checked = !list[ind].checked;
+            list[ind].children.map(e => {
+                e.checked = list[ind].checked ? true : false
             })
-          
-        }else{
-            list[ind].children[index].checked=!list[ind].children[index].checked
-            let len=list[ind].children.filter(e=>{
+
+        } else {
+            list[ind].children[index].checked = !list[ind].children[index].checked
+            let len = list[ind].children.filter(e => {
                 return e.checked
             }).length
-            list[ind].checked=len==list[ind].children.length?true:false;
+            list[ind].checked = len == list[ind].children.length ? true : false;
         }
-        let len=list.filter(e=>{
+        let len = list.filter(e => {
             return e.checked
         }).length
-        all=len==list.length?true:false
+        all = len == list.length ? true : false
         this.setState({
-            list:list,
-            all:all
+            list: list,
+            all: all
         })
     }
+    touchStart = (e) => {
+        let sx = e.touches[0].pageX
+        let sy = e.touches[0].pageY
+        this.setState({
+            touchS: [sx, sy]
+        })
+    }
+    touchMove = (e) => {
+        let sx = e.touches[0].pageX;
+        let sy = e.touches[0].pageY;
+        this.setState({
+            touchE: [sx, sy]
+        })
+    }
+    touchEnd = (ind,index) => {
+        let start = this.state.touchS;
+        let end = this.state.touchE;
+        let dd=this.state.list[ind].children[index];
+        if (start[0] < end[0] - 50) {
+            dd.move=false;
+            this.setState({
+                [dd]:dd
+            })
+        } else if (start[0] > end[0] + 50) {
+            dd.move=true;
+            this.setState({
+                [dd]:dd
+            })
+        } else {
+            console.log('静止')
+        }
+    }
     render() {
-        const list=this.state.list
+        const list = this.state.list
         return (
             <View className='carlist'>
                 {
@@ -80,21 +114,22 @@ class Order extends Component {
                         <View className='main'>
                             <View className='list'>
                                 {
-                                    list.map((e,ind) => {
+                                    list.map((e, ind) => {
                                         return (
                                             <View className='li' key={e.id}>
-                                                <View className='tp' onTap={this.ckbind.bind(this,ind,-1)}>
-                                                    <View className={`radio ${e.checked ? "cked":""}`}></View>
+                                                <View className='tp' onTap={this.ckbind.bind(this, ind, -1)}>
+                                                    <View className={`radio ${e.checked ? "cked" : ""}`}></View>
                                                     <View className='tit'>供货商名称</View>
                                                 </View>
                                                 <View className='cter'>
                                                     {
-                                                        e.children.map((element,index) => {
+                                                        e.children.map((element, index) => {
+                                                            {element}
                                                             return (
-                                                                <View className='dd' key={element.id}>
+                                                                <View className={`dd ${element.move?"focus":""}}`} key={element.id} onTouchstart={this.touchStart.bind(this)} onTouchmove={this.touchMove.bind(this)} onTouchend={this.touchEnd.bind(this, ind, index)}>
                                                                     <View className='conlf'>
-                                                                        <View className='lf' onTap={this.ckbind.bind(this,ind,index)}>
-                                                                            <View className={`radio ${element.checked ? "cked":""}`}></View>
+                                                                        <View className='lf' onTap={this.ckbind.bind(this, ind, index)}>
+                                                                            <View className={`radio ${element.checked ? "cked" : ""}`}></View>
                                                                             <Image></Image>
                                                                         </View>
                                                                         <View className='cbname'>
@@ -123,7 +158,7 @@ class Order extends Component {
                             </View>
                             <View className='sbtn'>
                                 <View className='lf' onTap={this.ckAll.bind(this)}>
-                                    <View className={`radio ${this.state.all ? "cked":""}`}></View>
+                                    <View className={`radio ${this.state.all ? "cked" : ""}`}></View>
                                     <Text>全选</Text>
                                 </View>
                                 <View className='rt'>

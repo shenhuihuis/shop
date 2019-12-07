@@ -2,12 +2,14 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text} from '@tarojs/components'
 import { AtTabs, AtTabsPane } from 'taro-ui'
 import Navs from "./../../components/nav"
+import $http from "@public/server"
 import './index.less'
 class Order extends Component {
     constructor(props) {
         super(props);
         this.state = {  
-            current:0
+            current:0,
+            category:[]
         }
     }
     config = {
@@ -16,6 +18,16 @@ class Order extends Component {
     handleClick (value) {
         this.setState({
           current: value
+        })
+    }
+    componentWillMount(){
+        $http.get("product/category").then(e=>{
+            e.map(ele=>{
+                ele.title=ele.Title;
+            })
+            this.setState({                
+                category:e
+            })
         })
     }
     render() { 
@@ -34,34 +46,28 @@ class Order extends Component {
                     scroll
                     height={hei}
                     tabDirection='vertical'
-                    tabList={[
-                        { title: '标签页1' },
-                        { title: '标签页2' },
-                    ]}
+                    tabList={this.state.category}
                     onClick={this.handleClick.bind(this)}>
-                    <AtTabsPane tabDirection='vertical' current={this.state.current} index={0}>
-                        <View className='ul'>
-                            <View className='li'>
-                                <Image></Image>
-                                <View className='tit'>水果蔬菜</View>
-                            </View>
-                            <View className='li'>
-                                    <Image></Image>
-                                    <View className='tit'>水果蔬菜</View>
-                            </View>
-                            <View className='li'>
-                                <Image></Image>
-                                <View className='tit'>水果蔬菜</View>
-                            </View>
-                            <View className='li'>
-                                <Image></Image>
-                                <View className='tit'>水果蔬菜</View>
-                            </View>
-                        </View>
-                    </AtTabsPane>
-                    <AtTabsPane tabDirection='vertical' current={this.state.current} index={1}>
-                        <View style='font-size:18px;text-align:center;height:100%;'>标签页二的内容</View>
-                    </AtTabsPane>
+                    {
+                        this.state.category.map((element,index)=>{
+                            return(
+                                <AtTabsPane tabDirection='vertical' current={this.state.current} index={index}>
+                                    <View className='ul'>
+                                        {
+                                            element.list.map(ele=>{
+                                                return (
+                                                    <View className='li' key={ele.ID}> 
+                                                        <Image src={ele.img}></Image>
+                                                        <View className='tit'>{ele.Title}</View>
+                                                    </View>
+                                                )
+                                            })
+                                        }
+                                    </View>
+                                </AtTabsPane>
+                            )
+                        })
+                    }
                 </AtTabs>
                 </View>
                 <Navs index='1'></Navs>

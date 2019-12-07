@@ -1,80 +1,147 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text,Swiper, SwiperItem} from '@tarojs/components'
+import { View, Text, Swiper, SwiperItem } from '@tarojs/components'
 import './index.less'
+import $http from "@public/server"
+import { formatTime } from "@public/utils"
+import WxParse from './../../components/wxParse/wxParse'
+import BUY from '../../components/buy'
+import { getGlobalData } from '@public/global_data'
 class Demand_Details extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = {
+            type: 0, //1加入购物车  2立即购买
+            isOpened: false,
+            details: {},
+        }
     }
     config = {
         navigationBarTitleText: '商品详情'
     }
-    render() { 
+    componentWillMount() {
+       // let arr = [{ id: 14, img: [], key1: "红色", key2: "64g", price: 22, stock: 22 }, { id: 14, img: [], key1: "红色", key2: "128g", price: 22, stock: 22 }, { id: 14, img: [], key1: "绿色", key2: "64g", price: 22, stock: 22 }, { id: 14, img: [], key1: "绿色", key2: "128g", price: 22, stock: 22 }]
+        $http.get("product/info", { id: this.$router.params.id}).then(e => {
+         //   e.specs = arr
+            this.setState({
+                details: e,
+            })
+            WxParse.wxParse('article', 'html', e.content, this.$scope, 5)
+        })
+    }
+    put = (e, type) => {      //弹出购买
+        this.setState({
+            isOpened: e,
+            type: type
+        })
+    }
+    want =(supplier_id)=>{
+        Taro.navigateTo({'url':'/pages/dd_index/index?supplier_id='+supplier_id})
+    }
+    collected = (id) => {
+        let is_favorite = this.state.details.is_favorite,
+            url = is_favorite ? "account/favorite/product/del" : "account/favorite/product";
+        $http.post(url, { product_id: id ,spec_id:this.state.details.specs[0].id}).then(e => {
+            this.setState((preState) => {
+                preState.details.is_favorite = !is_favorite;
+            })
+            Taro.showToast({
+                title: is_favorite ? "已取消收藏" : "加入收藏",
+                icon: 'none'
+            })
+        })
+    }
+    call = () => {  //联系客服
+        wx.makePhoneCall({
+            phoneNumber: getGlobalData("tel"),
+            success: function () {
+                console.log("拨打电话成功！")
+            },
+            fail: function () {
+                console.log("拨打电话失败！")
+            }
+        })
+    }
+    render() {
+        let details = this.state.details, isOpened = this.state.isOpened;
+    
         return (
             <View className='details'>
                 <View className='banner'>
                     <Swiper indicatorColor='#999' indicatorActiveColor='#333' circular autoplay>
-                    <SwiperItem>
-                        <Image mode="widthFix"></Image>
-                    </SwiperItem>
+                        {
+                            details.imgs.map(e => {
+                                return (
+                                    <SwiperItem>
+                                        <Image mode="widthFix" src={e}></Image>
+                                    </SwiperItem>
+                                )
+                            })
+                        }
                     </Swiper>
                 </View>
                 <View className='combox'>
-                    <View className='tit'>越南进口高乐蜜芒果5斤装 单果200克起 香甜爽口细腻多汁</View>
+                    <View className='tit'>{details.title}</View>
                     <View className='price'>
-                        <View className='money'>¥ <Text>49.9</Text></View>
-                        <View className='xl'>销量：3645</View>
+                        <View className='money'>¥ <Text>{details.price}</Text></View>
+                        <View className='xl'>销量：{details.sell_count}</View>
                     </View>
                     <View className='cter'>
-                        <View className='htit'>商品评价(3)</View>
+                        <View className='htit'>商品评价({details.comment_count})</View>
                         <View className='rt'>查看全部评价</View>
                     </View>
-                    <View className='answer'>
-                        <View className='top'>
-                            <View className='lf'>
-                                <Image></Image>
-                                <View className='bname'>
-                                    <View className='name'>Takahashi</View>
-                                    <View className='time'>2019.11.06</View>
+                    {
+                        details.comment.map(e => {
+                            return (
+                                <View className='answer'>
+                                    <View className='top'>
+                                        <View className='lf'>
+                                            <Image mode='aspectFill' src={e.account.img}></Image>
+                                            <View className='bname'>
+                                                <View className='name'>{e.account.name}</View>
+                                                <View className='time'>{e.created_at}</View>
+                                            </View>
+                                        </View>
+                                        <View className='sex'>
+                                            <View className='i'></View>
+                                            <View className='i'></View>
+                                            <View className='i'></View>
+                                            <View className='i'></View>
+                                            <View className='i curi'></View>
+                                        </View>
+                                    </View>
+                                    <View className='say'>{e.content}</View>
                                 </View>
-                            </View>
-                            <View className='sex'>
-                                <View className='i'></View>
-                                <View className='i'></View>
-                                <View className='i'></View>
-                                <View className='i'></View>
-                                <View className='i curi'></View>
-                            </View>
-                        </View>
-                        <View className='say'>芒果非常新鲜，一箱5斤。大多都是7成熟，和苹果在一起放了两天几乎就熟透了，汁水多很甜。比超市的新鲜而且便宜。下次还会…</View>
-                    </View>
+                            )
+                        })
+                    }
                     <View class='gys'>
-                        <Image></Image>
-                        <View className='gystit'>供应商名称</View>
+                        <Image mode='aspectFill' src={details.supplier.img}></Image>
+                        <View className='gystit'>{details.supplier.uname}</View>
                     </View>
                     <View className='h2'>宝贝详情</View>
                     <View className='brown'>
-                        <View className='dd'>原产地：越南</View>
-                        <View className='dd'>储存条件：25度</View>
-                        <View className='dd'>生产日期：2019.11.07</View>
-                        <View className='dd'>保质期：2019.12.10</View>
+                        <View className='dd'>原产地：{details.origin}</View>
+                        <View className='dd'>储存条件：{details.stockpile}度</View>
+                        <View className='dd'>生产日期：{formatTime(details.produce_at)}</View>
+                        <View className='dd'>保质期：{details.best_before}</View>
                     </View>
-                    <View className='de_say'></View>
+                    {<View className='de_say'> <import src='../../components/wxParse/wxParse.wxml' /><template is='wxParse' data='{{wxParseData:article.nodes}}' /></View>}
                 </View>
                 <View className='sbtn'>
                     <View className='btn'>
-                        <View className='a'>供应商</View>
-                        <View className='a'>客服</View>
-                        <View className='a'>收藏</View>
+                        <View className='a' onTap={this.want.bind(this,details.supplier.id)}>供应商</View>
+                        <View className='a' onTap={this.call.bind(this)}>客服</View>
+                        <View onTap={this.collected.bind(this, details.id)}  className={`a ${this.state.details.is_favorite ? "liked":""}`}>{details.is_favorite?"已收藏":"收藏"}</View>
                     </View>
                     <View className='subbtn'>
-                        <View className='a'>加入购物车</View>
-                        <View className='a'>立即购买</View>
+                        <View className='a' onTap={this.put.bind(this, true, 1)}>加入购物车</View>
+                        <View className='a' onTap={this.put.bind(this, true)}>立即购买</View>
                     </View>
                 </View>
+                {isOpened && <BUY handClose={this.put.bind(this)} info={{ specs: details.specs, price: details.price, type: this.state.type, id: details.id, num_start: details.num_start }} />}
             </View>
         );
     }
 }
- 
+
 export default Demand_Details;

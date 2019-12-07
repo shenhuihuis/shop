@@ -1,3 +1,4 @@
+const path = require('path') 
 const config = {
   projectName: 'yj',
   date: '2019-11-22',
@@ -66,6 +67,9 @@ const config = {
         }
       }
     }
+  },
+  alias: {
+     '@public': path.resolve(__dirname, '..', 'src/assets/js'),
   },
   h5: {
     publicPath: '/',

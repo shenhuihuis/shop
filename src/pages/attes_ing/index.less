@@ -1,6 +1,8 @@
 .attes{
     padding-bottom:128rpx;
     padding-top:20rpx;
+    box-sizing: border-box;
+    min-height: 100vh;
     .htit{
         font-size:34rpx;
         font-family:PingFangSC-Medium,PingFang SC;
@@ -39,7 +41,7 @@
             input{
                 text-align: right;
                 font-size: 28rpx;
-                color:#999;
+                color:#333;
             }
         }
         .smli{
@@ -54,6 +56,7 @@
             }
             .imgbox{
                 display: flex;
+                padding-bottom: 40rpx;
                 .imgs{
                     width:240rpx;
                     height:150rpx;
@@ -71,18 +74,15 @@
                     width:240rpx;
                     height:150rpx;
                     margin-right:40rpx;
-                    margin-bottom: 40rpx;
+                   
                     position: relative;
                     background: #ccc;
                     border-radius:10rpx;
                     overflow: hidden;
                     .close{
-                        width:20rpx;
-                        height:20rpx;
                         position: absolute;
                         right:2rpx;
                         top:2rpx;
-                        background: #f00;
                     }
                 }
                 image{

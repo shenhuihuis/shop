@@ -13,13 +13,21 @@ export default class Nav extends Taro.Component {
   constructor (props) {
     super(props)
     this.state = {
-      current: props.index *1
+      current: props.index *1,
+      link:[
+        { title: '首页', image:ico1 ,selectedImage:ico1H,to:"/pages/index/index"},
+        { title: '分类', image:ico2, selectedImage: ico2H,to:"/pages/class/index"},
+        { title: '购物车',image:ico3,selectedImage:ico3H,to:"/pages/carlist/index"},
+        { title: '我的', image:ico4,selectedImage:ico4H,to:"/pages/center/index"}
+      ]
     }
   }
   handleClick (value) {
     this.setState({
       current: value
     })
+    
+   Taro.reLaunch({url:this.state.link[value].to})
   }
   render () {
     return (
@@ -29,12 +37,7 @@ export default class Nav extends Taro.Component {
         color='#666'
         selectedColor='#319F5F'
         iconSize='25'
-        tabList={[
-            { title: '首页', image:ico1 ,selectedImage:ico1H,},
-            { title: '分类', image:ico2, selectedImage: ico2H,},
-            { title: '购物车',image:ico3,selectedImage:ico3H},
-            { title: '我的', image:ico4,selectedImage:ico4H}
-          ]}
+        tabList={this.state.link}
         onClick={this.handleClick.bind(this)}
         current={this.state.current}
       />
