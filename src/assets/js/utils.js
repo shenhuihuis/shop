@@ -91,3 +91,35 @@ export const promisify = (func, ctx) => {
       info = JSON.stringify(info)
     }
   }
+
+  export const orderStatus= (code)=>{
+      const statusList=[
+        { type:1, tit:"待处理" },
+        { type:2, tit:"待支付" },
+        { type:3, tit:"待审核" },
+        { type:4, tit:"待发货" },
+        { type:5,tit:'部分发货'},
+        { type:6, tit:"待收货" },
+        { type:7, tit:"完成" },
+        { type:8, tit:"取消" }
+      ]
+      return statusList.filter(ele=>{
+        return ele.type==code
+      })[0].tit
+  }
+
+  export const trackStatus= (code)=>{
+    const statusList=[
+      { type:1, tit:"待处理" },
+      { type:2, tit:"待支付" },
+      { type:3, tit:"待审核" },
+      { type:4, tit:"待分配" },
+      { type:5,tit:'待运输'},
+      { type:6, tit:"待收货" },
+      { type:7, tit:"完成" },
+      { type:8, tit:"取消" }
+    ]
+    return statusList.filter(ele=>{
+      return ele.type==code
+    })[0].tit
+}

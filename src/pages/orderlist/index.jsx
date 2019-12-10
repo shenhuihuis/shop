@@ -2,27 +2,126 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text ,ScrollView} from '@tarojs/components'
 import { AtTabs, AtTabsPane } from 'taro-ui'
 import './index.less'
+import $http from "@public/server"
+// 1 OrderProductStatusTodo 待处理
+// 2 OrderProductStatusToPay 待支付
+// 3 OrderProductStatusToAudit 待审核
+// 4 OrderProductStatusToTrack 待发货
+// 5 OrderProductStatusToGet 待收货
+// 6 OrderProductStatusOK 完成
+// 7 OrderProductStatusCancel 取消
+import { orderStatus } from "@public/utils"
 class Order extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tabList: [{ title: '全部' }, { title: '待处理' }, { title: '待付款' },{ title: '待发货' }, { title: '待收货' }, { title: '已完成' }],
-            current: 0
+            tabList: [{ title: '全部' },{ title: '待处理' }, { title: '待付款' },{title:'待审核'},{ title: '待发货' },{ title: '部分发货' }, { title: '待收货' }, { title: '已完成'}],
+            current: 0,
+            form:{
+                page:1,
+                limit:10,
+                status:''
+            },
+            load:false,
+            list:[],
+            scrollTop:0,
+            count:null
         }
     }
     config = {
-        navigationBarTitleText: '商品订单'
+        navigationBarTitleText: '商品订单',
+        enablePullDownRefresh: true, 
+        onReachBottomDistance:50
+    }
+    onPullDownRefresh(){
+        this.setState((preState) => {
+            preState.load=false;
+            preState.scrollTop=0;
+            preState.form.page=1;
+            preState.list=[]    
+        })
+       setTimeout(e=>{
+            this.getList()
+            Taro.stopPullDownRefresh()
+       },500)
     }
     onScroll=()=>{
-
+        if(this.state.list.length>=this.state.count) return false;
+        else{
+            let page=this.state.form.page;
+            page=page+1
+            this.setState((preState) => {
+                preState.form.page=page;
+            })
+            setTimeout(e=>{
+                this.getList()
+            },500)
+        }
     }
     handleClick = (value) => {
-        this.setState({
-            current: value
+        this.setState(preState=>{
+            preState.current=value;
+            preState.list=[];
+            preState.form.page=1;
+            preState.load=false;
+            preState.form.status=value==0?null:value;
+            preState.scrollTop=0;
+        })
+        setTimeout(e=>{
+            this.getList()
+        },500)        
+    }
+    componentWillMount=()=>{
+        this.getList();
+    }
+    notify=(id)=>{
+        $http.post("account/order/notify",{id:id}).then(e=>{
+            Taro.showToast({
+                title:"提醒发货成功",
+                icon:"success"
+            })
+        })
+    }
+    orderok=(id,index)=>{           //确认收货
+        $http.post("account/order/ok",{id:id}).then(e=>{
+            Taro.showToast({
+                title:"收货成功",
+                icon:"success"
+            })
+        })
+    }
+
+    del=(id,index)=>{   //删除订单
+        $http.post("account/order/del",{id:id}).then(e=>{
+            Taro.showToast({
+                title:"已删除订单",
+                icon:"success"
+            })
+        })
+    }
+    getList=()=>{
+        Taro.showLoading({
+            title:"正在加载中",
+            mask:true
+        })
+        $http.get("account/order",this.state.form).then(e=>{
+            this.setState({
+                count:e.count,
+                list:this.state.list.concat(e.list),
+                load:true
+            })
+            Taro.hideLoading()
+        })
+    }
+    went=(url,e)=>{
+        e.stopPropagation()
+        Taro.navigateTo({
+            url:url
         })
     }
     render() {
-        const tabList = this.state.tabList
+        const tabList = this.state.tabList;
+        let list=this.state.list;
         let hei;
         wx.getSystemInfo({
             success:function (res) {
@@ -35,33 +134,53 @@ class Order extends Component {
                 <AtTabs current={this.state.current}  scroll  tabList={tabList} onClick={this.handleClick.bind(this)}>
                    { tabList.map((e,index)=>{
                         return (
-                            <AtTabsPane current={this.state.current} index={index}>
-                                {/*<View className='nobg'>这里什么也没有，去逛逛～</View>*/}
-                                <ScrollView className='list' scrollY scrollWithAnimation style={hei} lowerThreshold={30}  onScroll={this.onScroll}>
-                                    <View className='li'>
-                                        <View className='tp'>
-                                            <View className='name'>供应商名称</View>
-                                            <View className='status'>待处理</View>
-                                        </View>
-                                        <View className='cter'>
-                                            <Image></Image>
-                                            <View className='rt'>
-                                                <View className='tit'>越南进口高乐蜜芒果5斤装 单果200克起 香甜爽口细腻多汁</View>
-                                                <View className='ico'>规格3；规格A</View>
-                                                <View className='num'>
-                                                    ¥49.9 <Text>X10</Text>
-                                                </View>
-                                            </View>
-                                        </View>
-                                        <View className='bot'>
-                                            <View className='lf'>付款信息待审核</View>
-                                            <View className='btn'>
-                                                <View className='a'>取消订单</View>
-                                                <View className='a'>支付</View>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </ScrollView>
+                            <AtTabsPane current={this.state.current} index={index} key={e.title}>
+                                {
+                                    
+                                    this.state.load && (this.state.count>0 && list.length>0?
+                                    <ScrollView className='list' scrollY scrollWithAnimation style={hei} lowerThreshold={30}  onScrolltolower={this.onScroll} scrollTop={this.state.scrollTop}>
+                                        {
+                                            list.map((ele,index)=>{
+                                                return (
+                                                    <View className='li' key={ele.id} onTap={this.went.bind(this,'/pages/order_detalis/index?id='+ele.id)}>
+                                                        <View className='tp'>
+                                                            <View className='name'>{ele.supplier_title}</View>
+                                                            <View className='status'>{orderStatus(ele.status)}</View>
+                                                        </View>
+                                                        {
+                                                            ele.product.map(element=>{
+                                                                return (
+                                                                    <View className='cter' key={element.product_id}>
+                                                                        <Image src={element.img[0]} mode='aspectFill'></Image>
+                                                                        <View className='rt'>
+                                                                            <View className='tit'>{element.title}</View>
+                                                                            <View className='ico'>{element.spec_title}</View>
+                                                                            <View className='num'>
+                                                                                ¥{element.price} <Text>X{element.num}</Text>
+                                                                            </View>
+                                                                        </View>
+                                                                    </View>
+                                                                )
+                                                            })
+                                                        }
+                                                        <View className='bot'>
+                                                            <View className='lf'>{ele.status==3 ? "付款信息待审核":''}</View>
+                                                            <View className='btn'>
+                                                                { ele.status<2 && <View className='a' onTap={this.went.bind(this,"/pages/qxorder/index?id="+ele.id)}>取消订单</View> }
+                                                                { ele.status==2 && <View className='a'>支付</View> }
+                                                                { ele.status==4 && <View className='a' onTap={this.notify.bind(this,ele.id,index)}>提醒发货</View> }
+                                                                { ele.status==5 && <View className='a' onTap={this.went.bind(this,"/pages/seelog/index?id="+ele.id)}>查看物流</View> }
+                                                                { (ele.status>=5 || ele.state<7) && <View className='a' onTap={this.orderok.bind(this,ele.id,index)}>确认收货</View> }
+                                                                { ele.status<=7 && <View className='a' onTap={this.went.bind(this,"/pages/evaluateing/index?id="+ele.id)}>待评价</View> }
+                                                                { ele.status>=8 && <View className='a' onTap={this.del.bind(this,ele.id,index)}>删除订单</View> }
+                                                            </View>
+                                                        </View>
+                                                    </View>
+                                                )
+                                            })
+                                        }
+                                    </ScrollView>:<View className='nobg'>这里什么也没有，去逛逛～</View>)
+                                }
                             </AtTabsPane>
                         )
                    })}

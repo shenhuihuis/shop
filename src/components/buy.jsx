@@ -3,10 +3,12 @@ import { View } from '@tarojs/components'
 import { AtInputNumber } from 'taro-ui'
 import "../assets/css/buy.less"
 import $http from "@public/server"
+import {setGlobalData} from "@public/global_data"
 export default class buyput extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            type:null,
             num:1,
             value: 1,
             specs:[],        //整理后规格
@@ -31,7 +33,8 @@ export default class buyput extends Component {
         this.setState({
             specs:arr,
             key: key,
-            num:this.props.info.num
+            num:this.props.info.num,
+            type:this.props.info.type
            // current:key[0]
         })
     }
@@ -39,24 +42,36 @@ export default class buyput extends Component {
         let active=this.state.active;
         if(active==null) return false;
         else{
-            let data={
+           if(this.state.type==1){
+                let data={
+                    product_id:this.props.info.id,
+                    spec_id:this.state.specs[this.state.current][active].id,
+                    num:this.state.value*1
+                }
+                $http.post("cart",data).then(e=>{
+                    Taro.showToast({
+                        title: "已加入购物车",
+                        icon: 'success',
+                        duration: 1000
+                    })
+                    this.setState({
+                        current:null,
+                        active:null,
+                        value:1
+                    })
+                    this.close(false)
+                })
+           }else{
+            let key=this.state.specs[this.state.current][this.state.active]
+            setGlobalData("product",{
                 product_id:this.props.info.id,
-                spec_id:this.state.specs[this.state.current][active].id,
-                num:this.state.value
-            }
-            $http.post("cart",data).then(e=>{
-                Taro.showToast({
-                    title: "已加入购物车",
-                    icon: 'success',
-                    duration: 1000
-                })
-                this.setState({
-                    current:null,
-                    active:null,
-                    value:1
-                })
-                this.close(false)
+                key:key,
+                price:parseFloat(this.props.info.price)+key.price,
+                num:this.state.value*1,
+                uname:this.props.info.uname,
             })
+            Taro.navigateTo({url:'/pages/order/index'})
+           }
         }
     }
     handleChange = (e) =>{

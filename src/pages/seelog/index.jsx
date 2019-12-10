@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View ,Text ,Textarea} from '@tarojs/components'
 import './index.less'
+import  $http from '@public/server'
 class Seelog extends Component {
     config = {
         navigationBarTitleText: '物流'
@@ -8,9 +9,15 @@ class Seelog extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-
-
+            track:{}
         }
+    }
+    componentWillMount(){
+        $http.get("account/order/track",{id:this.$router.params.id*1}).then(e=>{
+            this.setState({
+                track:e
+            })
+        })
     }
     render() { 
         return ( 

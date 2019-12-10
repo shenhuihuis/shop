@@ -114,6 +114,9 @@ export default class Index extends Component {
         }
       })
     }
+    if(status==3){
+      Taro.navigateTo({url:'/pages/logistics/index'})
+    }
   }
   render() {
     let isOpened = this.state.isOpened,  //是否开启购物车

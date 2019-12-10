@@ -1,0 +1,97 @@
+page{
+    background: #F5F5F8;
+}
+.index{
+    padding:20rpx;
+    overflow: hidden;
+    .form{
+        background:rgba(255,255,255,1);
+        border-radius:20rpx;
+        padding:0 20rpx;
+    }
+        .li{
+            display: flex;
+            height:86rpx;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #EFEFEF;
+            .label{
+                font-size:28rpx;
+                font-family:PingFangSC-Light,PingFang SC;
+                font-weight:300;
+                color:rgba(51,51,51,1);
+                line-height:28rpx;
+            }
+            .pickers{
+                padding-right:38rpx;
+                background:url("../../assets/img/go_03.png") no-repeat right center;
+                background-size: 11rpx auto;
+                font-size: 28rpx;
+            }
+            input{
+                background: none;
+                text-align: right;
+                font-size: 28rpx;
+                color:#333;
+            }
+            &:nth-last-child(1){
+                border: 0 none;
+            }
+        }
+        .bton{
+            height:128rpx;
+            position: fixed;
+            bottom:0;
+            left:0;
+            display: flex;
+            width:100%;
+            background:rgba(255,255,255,1);
+            box-shadow:0px -12rpx 20rpx 0px rgba(153,153,153,0.06);
+            box-sizing: border-box;
+            padding:20rpx;
+            z-index: 11111;
+            .int{
+                display: flex;
+                width:100%;
+            }
+            
+            .sub{
+                line-height:88rpx;
+                background:linear-gradient(161deg,rgba(95,205,152,1) 0%,rgba(49,159,95,1) 100%);
+                border-radius:44rpx;
+                font-size:36rpx;
+                color:#fff;
+                text-align: center;
+                margin:0 20rpx;
+                width:100%;
+            }
+            .del,.add{
+                width:346rpx;
+                line-height:88rpx;
+                border-radius:10px;
+                border:1px solid rgba(49,159,95,1);
+                display: inline-block;
+                text-align: center;
+                font-size: 32rpx;
+            }
+            .del{
+                margin-right:18rpx;
+                color:#319F5F;
+            }
+            .add{
+                background: #319F5F;
+                color:#fff;
+            }
+        }
+        .radbox{
+            height: 88rpx;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content:flex-end;
+            transform: scale(0.8);
+            .at-switch{
+                padding-right:0;
+            }
+        }
+}

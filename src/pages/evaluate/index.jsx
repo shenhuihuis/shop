@@ -1,66 +1,113 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import "./index.less"
+import $http from '@public/server'
 class Add_list extends Component {
     config = {
-        navigationBarTitleText: '评价列表'
+        navigationBarTitleText: '评价列表',
+        enablePullDownRefresh: true, 
+        onReachBottomDistance:50
     }
     constructor(props) {
         super(props);
         this.state = {
+            count:null,
+            load:false,
+            list:[],
+            form:{
+                product_id:this.$router.params.id*1,
+                page:1,
+                limit:8
+            }
         }
     }
+    componentWillMount(){
+        this.getList()
+    }
+    onReachBottom(){
+        if(this.state.list.length>=this.state.count) return false;
+        else{
+            let page=this.state.form.page;
+            page=page+1
+            this.setState((preState) => {
+                preState.form.page=page;
+            })
+            setTimeout(e=>{
+                this.getList()
+            },500)
+        }
+    }
+    onPullDownRefresh(){
+        this.setState((preState) => {
+            preState.load=false;
+            preState.form.page=1;
+            preState.list=[]    
+        })
+        Taro.pageScrollTo({
+            scrollTop: 0,
+        })
+        setTimeout(e=>{
+            this.getList()
+            Taro.stopPullDownRefresh()
+        },500)
+       
+    }
+    getList=()=>{
+        Taro.showLoading({
+            title:"正在加载中",
+            mask:true
+        })
+        $http.get("product/comment",this.state.form).then(e=>{
+            this.setState({
+                count:e.count,
+                list:this.state.list.concat(e.list),
+                load:true
+            })
+            Taro.hideLoading()
+        })
+    }
     render() {
+        let list=this.state.list;
         return (
             <View className='list'>
-                <View className='li'>
-                    <View className='had'>
-                        <Image></Image>
-                    </View>
-                    <View className='rt'>
-                        <View className='tp'>
-                            <View className='lf'>
-                                <View className='name'>马冬梅</View>
-                                <View className='time'>2019.10.12 12：30</View>
+                {
+                    this.state.load && (this.state.count>0 && list.length>0?
+                    list.map(ele=>{
+                       return(
+                            <View className='li' key={ele.id}>
+                                <View className='had'>
+                                    <Image mode='aspectFill' src={ele.account.img}></Image>
+                                </View>
+                                <View className='rt'>
+                                    <View className='tp'>
+                                        <View className='lf'>
+                                            <View className='name'>{ele.account.name}</View>
+                                            <View className='time'>{ele.created_at}</View>
+                                        </View>
+                                        <View className='sex'>
+                                            {
+                                                [1,2,3,4,5].map(element=>{
+                                                    return (
+                                                        <View key={element} className={`i ${element<=ele.star?"curi":""}`}></View>
+                                                    )
+                                                })
+                                            }
+                                        </View>
+                                    </View>
+                                    <View className='say'>{ele.content}</View>
+                                    <View className='pic'>
+                                       {ele.imgs.map(element=>{
+                                           return(
+                                                <Image mode='aspectFill' src={element} key={element}></Image>
+                                           )
+                                       })}
+                                    </View>
+                                </View>
                             </View>
-                            <View className='sex'>
-                                <View className='i'></View>
-                                <View className='i'></View>
-                                <View className='i'></View>
-                                <View className='i'></View>
-                                <View className='i curi'></View>
-                            </View>
-                        </View>
-                        <View className='say'>芒果非常新鲜，一箱5斤。大多都是7成熟，和苹果在一起放了两天几乎就熟透了，汁水多很甜。比超市的新鲜而且便宜。</View>
-                    </View>
-                </View>
-                <View className='li'>
-                    <View className='had'>
-                        <Image></Image>
-                    </View>
-                    <View className='rt'>
-                        <View className='tp'>
-                            <View className='lf'>
-                                <View className='name'>马冬梅</View>
-                                <View className='time'>2019.10.12 12：30</View>
-                            </View>
-                            <View className='sex'>
-                                <View className='i'></View>
-                                <View className='i'></View>
-                                <View className='i'></View>
-                                <View className='i'></View>
-                                <View className='i curi'></View>
-                            </View>
-                        </View>
-                        <View className='say'>芒果非常新鲜，一箱5斤。大多都是7成熟，和苹果在一起放了两天几乎就熟透了，汁水多很甜。比超市的新鲜而且便宜。</View>
-                        <View className='pic'>
-                            <Image></Image>
-                            <Image></Image>
-                            <Image></Image>
-                        </View>
-                    </View>
-                </View>
-
+                       )
+                    })    
+                    :<View className='nobg'>这里什么也没有，去逛逛～</View>)
+                }
             </View>
         );
     }

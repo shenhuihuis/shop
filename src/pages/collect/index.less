@@ -78,10 +78,13 @@
         .bot{
             line-height: 50rpx;
             margin:0 30rpx;
-          
-            height:50rpx;
             display: flex;
-            align-items: center;
+            justify-content: space-between;
+            .lf{
+                height:50rpx;
+                display: flex;
+                align-items: center;
+            }
             .money{
                 font-size:36rpx;
                 font-family:PingFangSC-Medium,PingFang SC;
@@ -103,8 +106,10 @@
             }
         }
         .like{
-            background: url("../../assets/img/kefu2@2x.png") no-repeat right center;
+            background: url("../../assets/img/kefu2@2x.png") no-repeat;
             background-size:50rpx 100%;
+            width:50rpx;
+            height:50rpx;
         }
     }
 }
@@ -153,4 +158,16 @@
             font-size: 24rpx; 
         }
     }
+}
+.nobg{
+    height:800rpx;
+    background: url("../../assets/img/cartempty@2x.png") no-repeat center 228rpx;
+    background-size: 328rpx 328rpx;
+    font-size:24rpx;
+    font-family:PingFangSC-Regular,PingFang SC;
+    font-weight:400;
+    color:rgba(153,153,153,1);
+    line-height:24rpx;
+    text-align: center;
+    width:100%;
 }

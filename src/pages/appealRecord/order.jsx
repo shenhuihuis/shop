@@ -4,53 +4,45 @@ import "./index.less"
 class Order extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            list:props.list
+        }
+    }
+    went=(id)=>{
+      Taro.navigateTo({
+          url:"/pages/appealDetails/index?id="+id +"&index=0"
+      })
     }
     render() {
         return (
             <View className='record'>
-                <View className='li'>
-                    <View className='tp'>
-                        <View className='name'>订单号：875768339913</View>
-                        <View className='status'>待处理</View>
-                    </View>
-                    <View className='cter'>
-                        <Image></Image>
-                        <View className='rt'>
-                            <View className='tit'>越南进口高乐蜜芒果5斤装 单果200克起 香甜爽口细腻多汁</View>
-                            <View className='ico'>规格3；规格A</View>
-                            <View className='num'>
-                                ¥49.9 <Text>X10</Text>
+                {
+                    this.state.list.map(ele=>{
+                        return (
+                            <View className='li' key={ele.id}  onTap={this.went.bind(this,ele.id)}>
+                                <View className='tp'>
+                                    <View className='name'>订单号：{ele.order_no}</View>
+                                    <View className='status'>{ele.status==1?"待处理":"已处理"}</View>
+                                </View>
+                                <View className='cter'>
+                                    <Image src={ele.img} mode='aspectFill'></Image>
+                                    <View className='rt'>
+                                        <View className='tit'>{ele.product_title}</View>
+                                        <View className='ico'>{ele.spec_title}</View>
+                                        <View className='num'>
+                                            ¥{ele.price} <Text>X{ele.num}</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                                <View className='bot'>
+                                    <View className='btn'>
+                                        <View className='a'>{ele.status==1?"撤销申诉":"申诉详情"}</View>
+                                    </View>
+                                </View>
                             </View>
-                        </View>
-                    </View>
-                    <View className='bot'>
-                        <View className='btn'>
-                            <View className='a'>撤销申请</View>
-                        </View>
-                    </View>
-                </View>
-                <View className='li'>
-                    <View className='tp'>
-                        <View className='name'>订单号：875768339913</View>
-                        <View className='status'>待处理</View>
-                    </View>
-                    <View className='cter'>
-                        <Image></Image>
-                        <View className='rt'>
-                            <View className='tit'>越南进口高乐蜜芒果5斤装 单果200克起 香甜爽口细腻多汁</View>
-                            <View className='ico'>规格3；规格A</View>
-                            <View className='num'>
-                                ¥49.9 <Text>X10</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View className='bot'>
-                        <View className='btn'>
-                            <View className='a'>撤销申请</View>
-                        </View>
-                    </View>
-                </View>
+                        )
+                    })
+                }
             </View>
         );
     }

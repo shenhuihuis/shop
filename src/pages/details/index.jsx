@@ -20,7 +20,7 @@ class Demand_Details extends Component {
     }
     componentWillMount() {
        // let arr = [{ id: 14, img: [], key1: "红色", key2: "64g", price: 22, stock: 22 }, { id: 14, img: [], key1: "红色", key2: "128g", price: 22, stock: 22 }, { id: 14, img: [], key1: "绿色", key2: "64g", price: 22, stock: 22 }, { id: 14, img: [], key1: "绿色", key2: "128g", price: 22, stock: 22 }]
-        $http.get("product/info", { id: this.$router.params.id}).then(e => {
+        $http.get("product/info", { id: this.$router.params.id || 1}).then(e => {
          //   e.specs = arr
             this.setState({
                 details: e,
@@ -36,6 +36,9 @@ class Demand_Details extends Component {
     }
     want =(supplier_id)=>{
         Taro.navigateTo({'url':'/pages/dd_index/index?supplier_id='+supplier_id})
+    }
+    see =(id) =>{
+        Taro.navigateTo({'url':'/pages/evaluate/index?id='+id})
     }
     collected = (id) => {
         let is_favorite = this.state.details.is_favorite,
@@ -71,7 +74,7 @@ class Demand_Details extends Component {
                         {
                             details.imgs.map(e => {
                                 return (
-                                    <SwiperItem>
+                                    <SwiperItem key={e}>
                                         <Image mode="widthFix" src={e}></Image>
                                     </SwiperItem>
                                 )
@@ -87,12 +90,12 @@ class Demand_Details extends Component {
                     </View>
                     <View className='cter'>
                         <View className='htit'>商品评价({details.comment_count})</View>
-                        <View className='rt'>查看全部评价</View>
+                        <View className='rt' onTap={this.see.bind(this,details.id)}>查看全部评价</View>
                     </View>
                     {
                         details.comment.map(e => {
                             return (
-                                <View className='answer'>
+                                <View className='answer' key={e.created_at}>
                                     <View className='top'>
                                         <View className='lf'>
                                             <Image mode='aspectFill' src={e.account.img}></Image>
@@ -102,11 +105,13 @@ class Demand_Details extends Component {
                                             </View>
                                         </View>
                                         <View className='sex'>
-                                            <View className='i'></View>
-                                            <View className='i'></View>
-                                            <View className='i'></View>
-                                            <View className='i'></View>
-                                            <View className='i curi'></View>
+                                            {
+                                                [1,2,3,4,5].map(element=>{
+                                                    return (
+                                                        <View key={element} className={`i ${element<=e.star?"curi":""}`}></View>
+                                                    )
+                                                })
+                                            }
                                         </View>
                                     </View>
                                     <View className='say'>{e.content}</View>
@@ -135,10 +140,10 @@ class Demand_Details extends Component {
                     </View>
                     <View className='subbtn'>
                         <View className='a' onTap={this.put.bind(this, true, 1)}>加入购物车</View>
-                        <View className='a' onTap={this.put.bind(this, true)}>立即购买</View>
+                        <View className='a' onTap={this.put.bind(this, true,2)}>立即购买</View>
                     </View>
                 </View>
-                {isOpened && <BUY handClose={this.put.bind(this)} info={{ specs: details.specs, price: details.price, type: this.state.type, id: details.id, num_start: details.num_start }} />}
+                {isOpened && <BUY handClose={this.put.bind(this)} info={{ specs: details.specs, price: details.price, type: this.state.type, id: details.id, num_start: details.num_start,uname:details.supplier.uname,title:details.title}} />}
             </View>
         );
     }

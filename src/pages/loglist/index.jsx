@@ -2,23 +2,88 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { AtTabs, AtTabsPane } from 'taro-ui'
 import './index.less'
+import $http from "@public/server"
 class Order extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tabList: [{ title: '全部' }, { title: '待处理' }, { title: '待付款' }, { title: '待运输' }, { title: '运输中' }, { title: '已完成' }],
-            current: 0
+            tabList: [{ title: '全部' },{ title: '待处理' }, { title: '待付款' },{title:'待审核'},{ title: '待分配' },{ title: '待运输' } ,{ title: '待收货' }, { title: '已完成'}],
+            current: 0,
+            form:{
+                page:1,
+                limit:10,
+                status:null
+            },
+            load:false,
+            list:[],
+            scrollTop:0,
+            count:null
         }
     }
     config = {
-        navigationBarTitleText: '物流订单'
+        navigationBarTitleText: '物流订单',
+        enablePullDownRefresh: true, 
+        onReachBottomDistance:50
     }
-    onScroll = () => {
-
+    onPullDownRefresh(){
+        this.setState((preState) => {
+            preState.load=false;
+            preState.scrollTop=0;
+            preState.form.page=1;
+            preState.list=[]    
+        })
+        setTimeout(e=>{
+            this.getList()
+            Taro.stopPullDownRefresh()
+        },500)
+    }
+    onScroll=()=>{
+        if(this.state.list.length>=this.state.count) return false;
+        else{
+            let page=this.state.form.page;
+            page=page+1
+            this.setState((preState) => {
+                preState.form.page=page;
+            })
+            setTimeout(e=>{
+                this.getList()
+            },500)
+        }
     }
     handleClick = (value) => {
-        this.setState({
-            current: value
+        this.setState(preState=>{
+            preState.current=value;
+            preState.list=[];
+            preState.form.page=1;
+            preState.load=false;
+            preState.form.status=value==0?null:value;
+            preState.scrollTop=0;
+        })
+        setTimeout(e=>{
+            this.getList()
+        },500)        
+    }
+    componentWillMount=()=>{
+        this.getList();
+    }
+    getList=()=>{
+        Taro.showLoading({
+            title:"正在加载中",
+            mask:true
+        })
+        $http.get("account/track/order",this.state.form).then(e=>{
+            this.setState({
+                count:e.count,
+                list:e.list,
+                load:true
+            })
+            Taro.hideLoading()
+        })
+    }
+    went=(url,e)=>{
+        e.stopPropagation()
+        Taro.navigateTo({
+            url:url
         })
     }
     render() {

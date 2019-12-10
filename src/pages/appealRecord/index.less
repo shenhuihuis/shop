@@ -1,13 +1,15 @@
 page{
     background: #F5F5F8;
+    height:100%;
 }
 .recordList{
     background: #F5F5F8;
-    padding: 20rpx;
     box-sizing: border-box;
+    height:100%;
+    overflow: hidden;
 }
 .record {
-
+   padding:20rpx;
   .li {
     background: #fff;
     border-radius: 20rpx;
@@ -125,6 +127,7 @@ page{
     text-align: center;
   }
 .log{
+    padding:20rpx;
     .li{
         background: #fff;
         border-radius:20rpx;
@@ -237,4 +240,46 @@ page{
             }
         }
     }
+}
+
+.navs{
+  height: 88rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding:0 40rpx;
+  background: #fff;
+  .a{
+      text-align: center;
+      font-size:28rpx;
+      font-family:PingFangSC-Medium,PingFang SC;
+      font-weight:500;
+      color:#666;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex:1;
+      height:88rpx;
+      position: relative;
+      &::after{
+        position: absolute;
+        bottom:0;
+        left:50%;
+        width:40rpx;
+        height:4rpx;  
+        background: #319F5F;
+        content: '';
+        margin-left:-20rpx;
+        display: none;
+      }
+  }
+  .active{
+      color:#319F5F;
+      &::after{
+        display: block;
+      } 
+  }
+}
+.relist{
+  height: calc(100% - 88rpx);
 }

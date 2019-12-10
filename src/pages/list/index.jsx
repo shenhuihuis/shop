@@ -19,10 +19,11 @@ class List extends Component {
                 {tit:'新品',checked:false}
             ],
             list:[],
-            count:0,        //总数量
+            loading:false,
+            count:null,        //总数量
             form:{
                 page:1,
-                limit:10,
+                limit:6,
                 search:'',          //搜索名
                 price:1,            //价格 1降下 2生序
                 sell:false,         //销量排行
@@ -34,6 +35,7 @@ class List extends Component {
     componentWillMount(){
         this.setState((preState)=>{
             preState.form.search=this.$router.params.sname;
+            preState.form.category_id=this.$router.params.category_id
         })
         
        
@@ -42,7 +44,17 @@ class List extends Component {
         this.getList()
     }
     onScroll=()=>{
-
+        if(this.state.list.length>=this.state.count) return false;
+        else{
+            let page=this.state.form.page;
+            page=page+1
+            this.setState((preState) => {
+                preState.form.page=page;
+            })
+            setTimeout(e=>{
+                this.getList()
+            },500)
+        }
     }
     went = (e) =>{      //去商品详情
         Taro.navigateTo({url:"/pages/details/index?id="+e})
@@ -52,9 +64,12 @@ class List extends Component {
             preState.scrollTop=0;
             preState.form.page=1;
             preState.list=[]    
+            preState.loading=false;
         })
-        this.getList()
-        Taro.stopPullDownRefresh()
+        setTimeout(e=>{
+            this.getList()
+            Taro.stopPullDownRefresh()
+        },500)
     }
     ck=(index)=>{
         let nav=this.state.nav,form=this.state.form;
@@ -76,16 +91,33 @@ class List extends Component {
         }
         this.setState({
             nav:nav,
-            form:form
+            form:form,
+            list:[],
+            loading:false
         })
-        this.getList();
+        Taro.showLoading({
+            title:"正在加载中",
+            mask:true
+        })
+        setTimeout(e=>{
+            this.getList();
+        },500)
     }
     getList = () =>{
-        $http.get("product",this.state.form).then(e=>{
+        let list=this.state.list;
+        let form=this.state.form;
+        for(let val in form){
+            if(form[val]==undefined || form[val]==null){
+                delete form[val]
+            }
+        }
+        $http.get("product",form).then(e=>{
             this.setState({
+                loading:true,
                 count:e.count,
-                list:e.list
+                list:list.concat(e.list)
             })
+            Taro.hideLoading()
         })
     }
     seach = (e) =>{
@@ -93,6 +125,8 @@ class List extends Component {
         this.setState((preState) => {
            preState.scrollTop=0;
            preState.form.page=1;
+           preState.loading=false;
+           preState.list=[]
            preState.form.search=e.detail.value
         })
         Taro.showLoading({
@@ -137,7 +171,7 @@ class List extends Component {
                         })
                     }
                 </View>
-                {this.state.count>0 && list.length>0?<ScrollView className='list' scrollY scrollWithAnimation style={hei} lowerThreshold={30}  onScroll={this.onScroll} scrollTop={this.state.scrollTop}>
+                {this.state.loading && (this.state.count>0 && list.length>0?<ScrollView className='list' scrollY scrollWithAnimation style={hei} lowerThreshold={30}  onScrolltolower={this.onScroll} scrollTop={this.state.scrollTop}>
                         {
                             list.map(element=>{
                                 return(
@@ -154,7 +188,7 @@ class List extends Component {
                                 )
                             })
                         }
-                    </ScrollView>:<View className='nobg'>暂无商品</View>
+                    </ScrollView>:<View className='nobg'>暂无商品</View>)
                 }
             </View>
         );
