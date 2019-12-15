@@ -4,9 +4,9 @@ import './app.less'
 import 'taro-ui/dist/style/index.scss'
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
-// if (process.env.NODE_ENV !== 'production' && process.env.TARO_ENV === 'h5')  {
-//   require('nerv-devtools')
-// }
+if (process.env.NODE_ENV !== 'production' && process.env.TARO_ENV === 'h5')  {
+  require('nerv-devtools')
+}
                                     /*
                                                           .::::.
                                                         .::::::::.
@@ -31,18 +31,20 @@ class App extends Component {
   config = {
     pages: [
       'pages/index/index',
+      'pages/center/index',
+      'pages/attes/index',
+      'pages/loglist/index',
+      'pages/settledIn/index',
+      'pages/settledform/index',
+      'pages/list/index',
       'pages/collect/index',
       'pages/details/index',
       'pages/orderlist/index',
-      'pages/loglist/index',
       'pages/appealRecord/index',
-      'pages/center/index',
       'pages/carlist/index',
-     
       'pages/order_cart/index',
       'pages/demand/index', 
       'pages/demand_Address/index', 
-      
       'pages/hotline/index',
       'pages/about/index',
       'pages/page/index',
@@ -54,10 +56,7 @@ class App extends Component {
       'pages/class/index',
       'pages/add_list/index',    
       'pages/add_details/index',   
-      'pages/list/index',
-      'pages/settledform/index',
       'pages/settledyz/index',
-      'pages/settledIn/index',
       'pages/logupload/index',
       'pages/appealDetails/index',
       'pages/evaluateing/index',
@@ -65,10 +64,8 @@ class App extends Component {
       'pages/seelog/index',
       'pages/qxorder/index',
       'pages/logdetails/index',
-      
       'pages/order_detalis/index',
       
-      'pages/attes/index',
       'pages/order/index',
       'pages/evaluate/index',
       

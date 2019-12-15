@@ -18,9 +18,9 @@ class DeAdd extends Component {
                 province_id: '',
                 city_id: '',
                 district_id: '',
-                address: 'a',
-                contact: 'sss',
-                Tel: '13454752770',
+                address: '',
+                contact: '',
+                Tel: '',
             }
         }
     }

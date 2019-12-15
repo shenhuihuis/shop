@@ -11,20 +11,28 @@ class SettledForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            type:true
+            type:null,
+            tel:''
         }
     }
     componentWillMount () {
-
+        let params=this.$router.params;
+        this.setState({
+            type:params.type * 1 || 4,
+            tel:params.tel || "13454752770"
+        })
     }
     onSubmit = (e) => {
         console.log(e)
     }
     render() {
+        let type=this.state.type;
         return (
             <View className='sattform'>
-              { /* <Company></Company> */}
-              <Person></Person>
+              {  
+                 (type==3 || type==5) ?<Person tel={this.state.tel} type={this.state.type}></Person> :
+                 <Company tel={this.state.tel} type={this.state.type}></Company>
+             }
             </View>
         );
     }

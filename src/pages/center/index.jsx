@@ -15,6 +15,7 @@ class Order extends Component {
         navigationBarTitleText: '个人中心'
     }
     componentWillMount(){
+        Taro.hideHomeButton()
         $http.get("account").then(user=>{
             Taro.setStorageSync("user",JSON.stringify(user))
             setGlobalData("user",JSON.stringify(user))
@@ -34,24 +35,24 @@ class Order extends Component {
                     <View className='lf'>
                         <View className='hello'>Hi~，{user.uname || "先生"}</View> 
                         {    
-                            user.status==3 ? <View className='issee'>已认证</View> :<View className='tosee'>{["去认证","审核中","认证失败"][user.status]}</View>
+                            user.status==3 ? <View className='issee'>已认证</View> :<View className='tosee' onTap={this.went.bind(this,"/pages/attes/index")}>{["去认证","审核中","认证失败"][user.status]}</View>
                         }
                     </View>
                     <Image></Image>
                 </View>
                 <View className='bnav'>
                     <View className='va' onTap={this.went.bind(this,"/pages/orderlist/index")}>商品订单</View>
-                    <View className='va'>物流订单</View>
+                    <View className='va'  onTap={this.went.bind(this,"/pages/loglist/index")}>物流订单</View>
                 </View>
                 <View className='ul'>
                     <View className='li'>
-                        <View className='tit'>我的收藏</View>
+                        <View className='tit' onTap={this.went.bind(this,'/pages/collect/index')}>我的收藏</View>
                     </View>
                     <View className='li'>
-                        <View className='tit'>收货地址</View>
+                        <View className='tit'  onTap={this.went.bind(this,'/pages/add_list/index')}>收货地址</View>
                     </View>
                     <View className='li'>
-                        <View className='tit'>供应商入驻</View>
+                        <View className='tit' onTap={this.went.bind(this,'/pages/settledIn/index')}>供应商入驻</View>
                     </View>
                     <View className='li' onTap={this.went.bind(this,"/pages/appealRecord/index")}>
                         <View className='tit'>申诉记录</View>

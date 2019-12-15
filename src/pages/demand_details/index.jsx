@@ -35,6 +35,9 @@ class Demand_Details extends Component {
             })
         })
     }
+    went=(id)=>{
+        Taro.navigateTo({url:'/pages/demand/index?id='+id})
+    }
     render() { 
         let company=this.state.company;
         return (
@@ -54,7 +57,7 @@ class Demand_Details extends Component {
                      <import src='../../components/wxParse/wxParse.wxml' /><template is='wxParse' data='{{wxParseData:article.nodes}}' />
                 </View>}
                 {
-                    company.role>=5 && <View className='bton'>
+                    company.role>=5 && <View className='bton' onTap={this.went.bind(this,company.id)}>
                         <View className='sub'>提交需求</View>
                     </View>
                 }

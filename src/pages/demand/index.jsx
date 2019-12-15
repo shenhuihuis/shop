@@ -58,7 +58,7 @@ class Demand extends Component {
     }
     onSubmit = (e) => {
         let start=this.state.start,end=this.state.end;
-        let form=this.state.form;
+        let form=JSON.parse(JSON.stringify(this.state.form));
         if(!start || !end){
             return false;
         }
@@ -93,6 +93,13 @@ class Demand extends Component {
             return false;
         }
        newform.imgs=this.state.imgs;
+       newform.end_at=newform.end_at+" 00:00:00"
+       newform.start_at=newform.start_at+" 00:00:00"
+       newform.size=newform.size*1
+       newform.weight=newform.weight*1
+       if(this.$router.params.id){
+        newform.track_supplier_id=this.$router.params.id*1
+       }
         Taro.showLoading({
             mask:true,
             title:"正在上传需求"

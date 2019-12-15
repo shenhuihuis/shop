@@ -12,7 +12,7 @@ class Order extends Component {
             form:{
                 page:1,
                 limit:10,
-                status:null
+                //status:null
             },
             load:false,
             list:[],

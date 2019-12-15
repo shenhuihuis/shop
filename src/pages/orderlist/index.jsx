@@ -82,6 +82,11 @@ class Order extends Component {
             })
         })
     }
+    pay=(id)=>{
+        $http.post("account/order/pay",{id:id}).then(e=>{
+            console.log(e)
+        })
+    }
     orderok=(id,index)=>{           //确认收货
         $http.post("account/order/ok",{id:id}).then(e=>{
             Taro.showToast({
@@ -142,36 +147,39 @@ class Order extends Component {
                                         {
                                             list.map((ele,index)=>{
                                                 return (
-                                                    <View className='li' key={ele.id} onTap={this.went.bind(this,'/pages/order_detalis/index?id='+ele.id)}>
-                                                        <View className='tp'>
-                                                            <View className='name'>{ele.supplier_title}</View>
-                                                            <View className='status'>{orderStatus(ele.status)}</View>
-                                                        </View>
-                                                        {
-                                                            ele.product.map(element=>{
-                                                                return (
-                                                                    <View className='cter' key={element.product_id}>
-                                                                        <Image src={element.img[0]} mode='aspectFill'></Image>
-                                                                        <View className='rt'>
-                                                                            <View className='tit'>{element.title}</View>
-                                                                            <View className='ico'>{element.spec_title}</View>
-                                                                            <View className='num'>
-                                                                                ¥{element.price} <Text>X{element.num}</Text>
+                                                    <View className='li' key={ele.id}>
+                                                        <View  onTap={this.went.bind(this,'/pages/order_detalis/index?id='+ele.id)}>
+                                                            <View className='tp'>
+                                                                <View className='name'>{ele.supplier_title}</View>
+                                                                <View className='status'>{orderStatus(ele.status)}</View>
+                                                            </View>
+                                                            {
+                                                                ele.product.map(element=>{
+                                                                    return (
+                                                                        <View className='cter' key={element.product_id}>
+                                                                            <Image src={element.img[0]} mode='aspectFill'></Image>
+                                                                            <View className='rt'>
+                                                                                <View className='tit'>{element.title}</View>
+                                                                                <View className='ico'>{element.spec_title}</View>
+                                                                                <View className='num'>
+                                                                                    ¥{element.price} <Text>X{element.num}</Text>
+                                                                                </View>
                                                                             </View>
                                                                         </View>
-                                                                    </View>
-                                                                )
-                                                            })
-                                                        }
+                                                                    )
+                                                                })
+                                                            }
+                                                        </View>
                                                         <View className='bot'>
                                                             <View className='lf'>{ele.status==3 ? "付款信息待审核":''}</View>
                                                             <View className='btn'>
                                                                 { ele.status<2 && <View className='a' onTap={this.went.bind(this,"/pages/qxorder/index?id="+ele.id)}>取消订单</View> }
-                                                                { ele.status==2 && <View className='a'>支付</View> }
+                                                                { ele.status<=2 && <View className='a' onTap={this.pay.bind(this,ele.id)}>支付</View> }
+                                                                { ele.status<=2 && <View className='a' onTap={this.went.bind(this,"/pages/logupload/index?id="+ele.id)}>上传凭证</View> }
                                                                 { ele.status==4 && <View className='a' onTap={this.notify.bind(this,ele.id,index)}>提醒发货</View> }
                                                                 { ele.status==5 && <View className='a' onTap={this.went.bind(this,"/pages/seelog/index?id="+ele.id)}>查看物流</View> }
                                                                 { (ele.status>=5 || ele.state<7) && <View className='a' onTap={this.orderok.bind(this,ele.id,index)}>确认收货</View> }
-                                                                { ele.status<=7 && <View className='a' onTap={this.went.bind(this,"/pages/evaluateing/index?id="+ele.id)}>待评价</View> }
+                                                                { ele.status==7 && <View className='a' onTap={this.went.bind(this,"/pages/evaluateing/index?id="+ele.id)}>待评价</View> }
                                                                 { ele.status>=8 && <View className='a' onTap={this.del.bind(this,ele.id,index)}>删除订单</View> }
                                                             </View>
                                                         </View>

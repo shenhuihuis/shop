@@ -106,7 +106,7 @@ class Add_list extends Component {
                             </View>
                        )
                     })    
-                    :<View className='nobg'>这里什么也没有，去逛逛～</View>)
+                    :<View className='nobg'>暂无评论</View>)
                 }
             </View>
         );

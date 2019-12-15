@@ -21,6 +21,7 @@ class Order extends Component {
         })
     }
     componentWillMount(){
+        Taro.hideHomeButton()
         $http.get("product/category").then(e=>{
             e.map(ele=>{
                 ele.title=ele.Title;
@@ -31,7 +32,7 @@ class Order extends Component {
         })
     }
     went=(id)=>{
-        Taro.navigateTo({url:'/pages/list/index?category_id='+id})
+        Taro.navigateTo({url:"/pages/list/index?category_id="+id})
     }
     render() { 
         let hei;
@@ -59,7 +60,7 @@ class Order extends Component {
                                         {
                                             element.list.map(ele=>{
                                                 return (
-                                                    <View className='li' key={ele.ID} onTap={this.went.bind(this,ele.ID)}> 
+                                                    <View className='li' key={ele.id} onTap={this.went.bind(this,ele.id)}> 
                                                         <Image src={ele.img}></Image>
                                                         <View className='tit'>{ele.Title}</View>
                                                     </View>

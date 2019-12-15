@@ -34,10 +34,6 @@ export default class Index extends Component {
           if (response.code) {
             $http.post("wechat/login", { code: response.code }).then(e => {
               Taro.setStorageSync("token",e.token)
-              $http.get("account").then(user=>{
-                Taro.setStorageSync("user",JSON.stringify(user))
-                setGlobalData("user",JSON.stringify(user))
-              })
               _this.init()
             })
           } else {
@@ -85,7 +81,7 @@ export default class Index extends Component {
         banner: e
       })
     })
-    $http.get("product",{sell:true}).then(e=>{
+    $http.get("product",{sell:true,limit:4}).then(e=>{
       this.setState({
         list:e.list
       })
@@ -93,9 +89,14 @@ export default class Index extends Component {
     $http.get("app").then(e=>{
         setGlobalData("tel",e.tell)
     })
-    this.setState({
-      user:JSON.parse(Taro.getStorageSync("user")) || JSON.parse(getGlobalData("user")) //用户信息
+    $http.get("account").then(user=>{
+      Taro.setStorageSync("user",JSON.stringify(user))
+      setGlobalData("user",JSON.stringify(user))
+      this.setState({
+        user:user
+      })
     })
+    
   }
   toDd=(e)=>{     //物流   0前往认证 
     let status=this.state.user.status;
@@ -114,8 +115,11 @@ export default class Index extends Component {
         }
       })
     }
-    if(status==3){
+    else if(status==3){
       Taro.navigateTo({url:'/pages/logistics/index'})
+    }
+    else{
+      Taro.navigateTo({url:'/pages/attes/index'})
     }
   }
   render() {

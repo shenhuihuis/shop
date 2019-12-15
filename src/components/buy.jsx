@@ -34,19 +34,29 @@ export default class buyput extends Component {
             specs:arr,
             key: key,
             num:this.props.info.num,
-            type:this.props.info.type
+            type:this.props.info.type,
+            value:this.props.info.num,
            // current:key[0]
         })
     }
     buy = (e) =>{            //加入购物车
         let active=this.state.active;
+        let key=this.state.specs[this.state.current][active]
+        if(key.stock<this.state.num){
+            Taro.showToast({
+                title: "库存不足起订量",
+                icon: 'none',
+                duration: 1000
+            })
+            return false;
+        }
         if(active==null) return false;
         else{
            if(this.state.type==1){
                 let data={
                     product_id:this.props.info.id,
-                    spec_id:this.state.specs[this.state.current][active].id,
-                    num:this.state.value*1
+                    spec_id:key.id,
+                    num:this.state.value
                 }
                 $http.post("cart",data).then(e=>{
                     Taro.showToast({
@@ -62,7 +72,7 @@ export default class buyput extends Component {
                     this.close(false)
                 })
            }else{
-            let key=this.state.specs[this.state.current][this.state.active]
+            
             setGlobalData("product",{
                 product_id:this.props.info.id,
                 key:key,
@@ -75,6 +85,7 @@ export default class buyput extends Component {
         }
     }
     handleChange = (e) =>{
+        console.log(e)
         this.setState({
             value:e
         })
@@ -83,16 +94,18 @@ export default class buyput extends Component {
         this.props.handClose(false)
     }
     cueet = (e) =>{
+        let num=this.state.num;
         this.setState({
             current:e,
             active:null,
-            value:1
+            value:num
         })
     }
     cueetChild = (e) =>{
+        let num=this.state.num;
         this.setState({
             active:e,
-            value:1
+            value:num
         })
     }
     render() {
@@ -138,7 +151,7 @@ export default class buyput extends Component {
                     <View className='nums'>
                         <View className='span'>数量</View>
                         <View className='ck'>
-                            <AtInputNumber width={76} min={num} step={1} max={key2.stock} value={this.state.value} onChange={this.handleChange.bind(this)}/>
+                            <AtInputNumber  disabled={!this.state.active} width={76} min={num} step={1} max={key2.stock} value={this.state.value} onChange={this.handleChange.bind(this)}/>
                         </View>
                     </View>
                     <View className='sub' onTap={this.buy.bind(this)}>确定</View>

@@ -26,7 +26,7 @@ class Delist extends Component {
     render() { 
         return ( 
            <View className='main'>
-            {this.state.list.length==0?<View className='nobg'></View>:<View className='delist'>
+            {<View className='delist'>
                     {  
                     this.state.list.map((ele,index)=>{
                         return (

@@ -23,7 +23,7 @@ class List extends Component {
             count:null,        //总数量
             form:{
                 page:1,
-                limit:6,
+                limit:10,
                 search:'',          //搜索名
                 price:1,            //价格 1降下 2生序
                 sell:false,         //销量排行

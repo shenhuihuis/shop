@@ -70,7 +70,7 @@ class Demand_Details extends Component {
         return (
             <View className='details'>
                 <View className='banner'>
-                    <Swiper indicatorColor='#999' indicatorActiveColor='#333' circular autoplay>
+                    <Swiper indicatorColor='#999' indicatorActiveColor='#333' circular autoplay >
                         {
                             details.imgs.map(e => {
                                 return (
@@ -83,7 +83,7 @@ class Demand_Details extends Component {
                     </Swiper>
                 </View>
                 <View className='combox'>
-                    <View className='tit'>{details.title}</View>
+                    <View className='tit' >{details.title}</View>
                     <View className='price'>
                         <View className='money'>¥ <Text>{details.price}</Text></View>
                         <View className='xl'>销量：{details.sell_count}</View>
@@ -119,7 +119,7 @@ class Demand_Details extends Component {
                             )
                         })
                     }
-                    <View class='gys'>
+                    <View class='gys'  onTap={this.want.bind(this,details.supplier.id)}>
                         <Image mode='aspectFill' src={details.supplier.img}></Image>
                         <View className='gystit'>{details.supplier.uname}</View>
                     </View>
@@ -143,7 +143,7 @@ class Demand_Details extends Component {
                         <View className='a' onTap={this.put.bind(this, true,2)}>立即购买</View>
                     </View>
                 </View>
-                {isOpened && <BUY handClose={this.put.bind(this)} info={{ specs: details.specs, price: details.price, type: this.state.type, id: details.id, num_start: details.num_start,uname:details.supplier.uname,title:details.title}} />}
+                {isOpened && <BUY handClose={this.put.bind(this)} info={{ specs: details.specs, price: details.price, type: this.state.type, id: details.id, num: details.num_start,uname:details.supplier.uname,title:details.title}} />}
             </View>
         );
     }

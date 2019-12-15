@@ -17,20 +17,20 @@ class Order extends Component {
                 imgs2: ''
             },
             imgs1: [null], //营业执照
-            imgs2: [null],//相关许可证件
+            imgs2: [null],//相关许可证件f
             imgs3: [null, null],//身份证正反面
             reg: {
-                realname: { zero: '请填写您的姓名' },
+                real_name: { zero: '请填写您的姓名' },
                 company_tax:{zero:'请填写税号'},
                 compnay_title:{zero:'请填写企业名称'},
                 china_id: { reg: /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/, mess: '请填写正确的身份证号', zero: '请填写身份证号' }
             },
             person: {
-                china_id: '330282199307132212',
-                realname: 'huihui',
+                china_id: '',
+                real_name: '',
             },
             company: {
-                realname: '',
+                real_name: '',
                 company_tax: '',
                 compnay_title: ''
             }
@@ -107,26 +107,28 @@ class Order extends Component {
     }
     sub = (e) => {
         const type = this.state.type;  //1个人 2企业
+        let reg=this.state.reg;
         let form;
-        form = type == 1 ? this.state.person : this.state.company;
-        Object.keys(form).map(e => {
-            if (!form[e]) {
+        form = type == 1 ? JSON.parse(JSON.stringify(this.state.person)) :  JSON.parse(JSON.stringify(this.state.company));
+        for(let val in form){
+            if (!form[val]) {
                 Taro.showToast({
-                    title: this.state.reg[e].zero,
+                    title: reg[val].zero,
                     icon: 'none',
                     duration: 1000
-                })
+                });
                 return false;
             }
-            if (this.state.reg[e].reg && !this.state.reg[e].reg.test(form[e])) {
+
+            if (reg[val].reg && !reg[val].reg.test(form[val])) {
                 Taro.showToast({
-                    title: this.state.reg[e].mess,
+                    title: reg[val].mess,
                     icon: 'none',
                     duration: 1000
-                })
+                });
                 return false;
             }
-        })
+        };
         if (this.state.imgs3[0] == null || this.state.imgs3[1] == null) {
             Taro.showToast({
                 title: "请上传身份证",
@@ -153,6 +155,11 @@ class Order extends Component {
         }
         form.type=type;
         form.tel=this.state.phone;
+        form.imgs3=this.state.imgs3;
+        if(type==2){
+            form.imgs1=this.state.imgs1;
+            form.imgs2=this.state.imgs2;
+        }
         Taro.showLoading({ title: '正在认证',mask:true })
         $http.post("account/audit",form).then(e=>{
             Taro.showToast({
@@ -195,8 +202,8 @@ class Order extends Component {
                         <View className='tit'>姓名</View>
                         <View className='span'>
                             {
-                                type == 1 ? <Input placeholder='请填写您的姓名' onChange={this.bindValue.bind(this, "realname")} value={this.state.person.realname} ></Input> :
-                                    <Input placeholder='请填写您的姓名' onChange={this.bindValue.bind(this, "realname")} value={this.state.company.realname} ></Input>
+                                type == 1 ? <Input placeholder='请填写您的姓名' onChange={this.bindValue.bind(this, "real_name")} value={this.state.person.real_name} ></Input> :
+                                    <Input placeholder='请填写您的姓名' onChange={this.bindValue.bind(this, "real_name")} value={this.state.company.real_name} ></Input>
                             }
                         </View>
                     </View>

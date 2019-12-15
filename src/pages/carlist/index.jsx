@@ -14,23 +14,37 @@ class Order extends Component {
             all: false,
             load:false,
             list:[],
-            money:''
+            money:'',
+            isIphoneX: false
         }
     }
     config = {
         navigationBarTitleText: '购物车'
     }
+
     componentDidMount(){
+        let _this=this;
+        wx.getSystemInfo({
+            success:function (res) {
+                if (res.model.indexOf('iPhone X')>=0) {
+                    _this.setState({
+                        isIphoneX:true
+                    })
+                }
+            }
+        })
+        Taro.hideHomeButton()
         this.init();
+       
     }
     init=()=>{
         $http.get("cart").then(e=>{
-            
             e.map(ele=>{
                 ele.checked=false;
                 ele.data.map(element=>{
                     element.checked=false;
                     element.move=false;
+                    element.min=element.num
                 })
             })
             
@@ -127,6 +141,15 @@ class Order extends Component {
             
         }
     }
+    handleChange=(ind,index,e)=>{
+       
+        this.setState(preState=>{
+            preState.list[ind].data[index].num=e*1
+        })
+       setTimeout(e=>{
+        this.getmoney();
+       },300)
+    }
     del=(ind,index)=>{
         let list=this.state.list;
         $http.post("cart/del",{
@@ -172,7 +195,7 @@ class Order extends Component {
         Taro.navigateTo({url:'/pages/order_cart/index'})
     }
     render() {
-        const list = this.state.list
+        const list = this.state.list;
         return (
             <View className='carlist'>
                 {
@@ -195,12 +218,12 @@ class Order extends Component {
                                                             e.data.map((element, index) => {
                                                                 {element}
                                                                 return (
-                                                                    <View className={`dd ${element.move?"focus":""}}`} key={element.id} onTouchstart={this.touchStart.bind(this)} onTouchmove={this.touchMove.bind(this)} onTouchend={this.touchEnd.bind(this, ind, index)}>
+                                                                     <View className={`dd ${element.move?"focus":""}}`} key={element.id} onTouchstart={this.touchStart.bind(this)} onTouchmove={this.touchMove.bind(this)} onTouchend={this.touchEnd.bind(this, ind, index)}>
                                                                         <View className='conlf'>
                                                                             <View className='lf' onTap={this.ckbind.bind(this, ind, index)}>
                                                                                 <View className={`radio ${element.checked ? "cked" : ""}`}></View>
                                                                                 <Image src={element.img} mode='aspectFill'></Image>
-                                                                            </View>
+                                                                          </View>
                                                                             <View className='cbname'>
                                                                                 <View className='tit'>{element.title}</View>
                                                                                 <View className='ibox'>
@@ -209,7 +232,7 @@ class Order extends Component {
                                                                                 <View className='bot'>
                                                                                     <View className='money'>¥{element.price}</View>
                                                                                     <View className='num'>
-                                                                                        <AtInputNumber min={1} step={1} value={element.num} />
+                                                                                        <AtInputNumber min={element.min} step={1} value={element.num}  max={element.stock}  onChange={this.handleChange.bind(this,ind,index)}/>
                                                                                     </View>
                                                                                 </View>
                                                                             </View>
@@ -225,7 +248,7 @@ class Order extends Component {
                                         })
                                     }
                                 </View>
-                                <View className='sbtn'>
+                                <View className={`sbtn ${this.state.isIphoneX?'bmx':''}`} >
                                     <View className='lf' onTap={this.ckAll.bind(this)}>
                                         <View className={`radio ${this.state.all ? "cked" : ""}`}></View>
                                         <Text>全选</Text>

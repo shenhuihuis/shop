@@ -2,15 +2,12 @@ import Taro, { Component } from '@tarojs/taro'
 import { View ,Text} from '@tarojs/components'
 import './index.less'
 import $http from '@public/server'
-class List extends Component {
+class ColList extends Component {
     constructor(props) {
         super(props);
         this.state = {  
             list:props.list
         }
-    }
-    componentDidMount(props){
-      
     }
     hate=(ele,index,e)=>{
         e.stopPropagation()
@@ -26,7 +23,8 @@ class List extends Component {
         })
     }
     went = (id)=> {
-        Taro.navigateTo({url:"/pages/details/index?id="+id})
+       
+       Taro.navigateTo({url:"/pages/details/index?id="+id})
     }
     render() { 
         return ( 
@@ -56,4 +54,4 @@ class List extends Component {
     }
 }
  
-export default List;
+export default ColList;
