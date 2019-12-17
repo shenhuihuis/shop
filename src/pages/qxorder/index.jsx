@@ -10,7 +10,7 @@ class Qx extends Component {
         super(props);
         this.state = {
             txt:''
-          }
+        }
     }
     sub=()=>{
         if(!this.state.txt){
@@ -20,14 +20,34 @@ class Qx extends Component {
             })
             return false;
         }
-        $http.post("account/order/cancel",{
-            id:this.$router.params.id*1,
-            content:this.state.txt
-        }).then(e=>{
-            Taro.navigateBack({
-                delta:1
+        let params=this.$router.params;
+        if(params.id){
+            $http.post("account/order/cancel",{
+                id:params.id*1,
+                content:this.state.txt
+            }).then(e=>{
+                Taro.showToast({
+                    title:"已取消订单",
+                    icon:"success"
+                })
+                Taro.navigateBack({
+                    delta:1
+                })
             })
-        })
+        }else{
+            $http.post("account/track/order/cancel",{
+                id:params.logid*1,
+                content:this.state.txt
+            }).then(e=>{
+                Taro.showToast({
+                    title:"已取消订单",
+                    icon:"success"
+                })
+                Taro.navigateBack({
+                    delta:1
+                })
+            })
+        }
     }
     bindValue=(e)=>{
         this.setState({

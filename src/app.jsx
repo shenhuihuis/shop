@@ -7,33 +7,13 @@ import 'taro-ui/dist/style/index.scss'
 if (process.env.NODE_ENV !== 'production' && process.env.TARO_ENV === 'h5')  {
   require('nerv-devtools')
 }
-                                    /*
-                                                          .::::.
-                                                        .::::::::.
-                                                        :::::::::::  FUCK YOU
-                                                    ..:::::::::::'
-                                                  '::::::::::::'
-                                                    .::::::::::
-                                              '::::::::::::::.. 
-                                                    ..::::::::::::.
-                                                  ``::::::::::::::::
-                                                  ::::``:::::::::'        .:::.
-                                                  ::::'   ':::::'       .::::::::.
-                                                .::::'      ::::     .:::::::'::::.
-                                              .:::'       :::::  .:::::::::' ':::::.
-                                              .::'        :::::.:::::::::'      ':::::.
-                                            .::'         ::::::::::::::'         ``::::.
-                                        ...:::           ::::::::::::'              ``::.
-                                        ````':.          ':::::::::'                  ::::..
-                                                          '.:::::'                    ':'````..
-                                    */
 class App extends Component {
   config = {
     pages: [
       'pages/index/index',
+      'pages/loglist/index',
       'pages/center/index',
       'pages/attes/index',
-      'pages/loglist/index',
       'pages/settledIn/index',
       'pages/settledform/index',
       'pages/list/index',
@@ -65,7 +45,6 @@ class App extends Component {
       'pages/qxorder/index',
       'pages/logdetails/index',
       'pages/order_detalis/index',
-      
       'pages/order/index',
       'pages/evaluate/index',
       

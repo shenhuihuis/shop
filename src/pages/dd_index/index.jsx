@@ -90,6 +90,10 @@ class Add_list extends Component {
     onScroll = () => {
         if(this.state.list.length>=this.state.count) return false;
         else{
+            Taro.showLoading({
+                title:"正在加载中",
+                mask:true
+            })
             let page=this.state.form.page;
             page=page+1
             this.setState((preState) => {

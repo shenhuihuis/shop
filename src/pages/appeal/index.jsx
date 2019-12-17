@@ -15,6 +15,7 @@ class Appeal extends Component {
                 tel:'',
                 info:''
             },
+            order_id:null,
             path:[],
             imgs:[]
         }
@@ -45,35 +46,59 @@ class Appeal extends Component {
             })
             return false;
         }
-        let newform={
-            order_id:this.$router.params.id * 1,
-            product_id:info.product_id,
-            spec_id:info.spec_id,
-            num:info.num,
-            contact:form.contact,
-            tel:form.tel,
-            info:form.info,
-            imgs:this.state.imgs
+        if(this.state.order_id==null){
+            let newform={
+                order_id:this.$router.params.id * 1,
+                product_id:info.product_id,
+                spec_id:info.spec_id,
+                num:info.num,
+                contact:form.contact,
+                tel:form.tel,
+                info:form.info,
+                imgs:this.state.imgs
+            }
+            
+            $http.post('account/order/appeal',newform).then(e=>{
+                Taro.showToast({
+                    title:"申诉成功",
+                    icon:"success"
+                })
+                Taro.redirectTo({
+                    url:"/pages/order_detalis/index?id="+this.$router.params.id
+                })
+            })  
+        }else{
+            let newform={
+                order_id:this.state.order_id,
+                contact:form.contact,
+                tel:form.tel,
+                info:form.info,
+                imgs:this.state.imgs
+            }
+            $http.post('account/track/appeal',newform).then(e=>{
+                Taro.showToast({
+                    title:"申诉成功",
+                    icon:"success"
+                })
+                Taro.redirectTo({
+                    url:"/pages/logdetails/index?id="+this.state.order_id
+                })
+            })  
         }
-        
-        $http.post('account/order/appeal',newform).then(e=>{
-            Taro.showToast({
-                title:"申诉成功",
-                icon:"success"
-            })
-            Taro.redirectTo({
-                url:"/pages/order_detalis/index?id="+this.$router.params.id
-            })
-        })  
-
     }
     init=()=>{
         let params=this.$router.params;
-        $http.get("account/order/info",{id:params.id}).then(e=>{
-            this.setState({
-                info:e.product[params.index*1]
+        if(params.id){
+            $http.get("account/order/info",{id:params.id}).then(e=>{
+                this.setState({
+                    info:e.product[params.index*1]
+                })
             })
-       })
+        }else{
+            this.setState({
+                order_id:params.order_id*1
+            })
+        }
     }
     bindValue=(key,e)=>{
         this.setState(prestate=>{
@@ -138,7 +163,7 @@ class Appeal extends Component {
         let info=this.state.info
         return ( 
             <View className='appeal'>
-                <View className='conbox cterbox'>
+              {this.state.order_id==null && <View className='conbox cterbox'>
                     <View className='cter'>
                         <Image src={info.img[0]} mode='aspectFill'></Image>
                         <View className='rt'>
@@ -149,7 +174,7 @@ class Appeal extends Component {
                             </View>
                         </View>
                     </View>
-                </View>
+                </View>}
                 <View className='conbox cterbox'>
                     <View className='li'>
                         <View className='label'>联系人</View>

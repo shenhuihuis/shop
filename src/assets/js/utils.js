@@ -100,8 +100,8 @@ export const promisify = (func, ctx) => {
         { type:4, tit:"待发货" },
         { type:5,tit:'部分发货'},
         { type:6, tit:"待收货" },
-        { type:7, tit:"完成" },
-        { type:8, tit:"取消" }
+        { type:7, tit:"已完成" },
+        { type:8, tit:"已取消" }
       ]
       return statusList.filter(ele=>{
         return ele.type==code
@@ -116,8 +116,8 @@ export const promisify = (func, ctx) => {
       { type:4, tit:"待分配" },
       { type:5,tit:'待运输'},
       { type:6, tit:"待收货" },
-      { type:7, tit:"完成" },
-      { type:8, tit:"取消" }
+      { type:7, tit:"已完成" },
+      { type:8, tit:"已取消" }
     ]
     return statusList.filter(ele=>{
       return ele.type==code

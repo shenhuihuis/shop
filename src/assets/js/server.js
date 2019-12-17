@@ -35,7 +35,13 @@ export default {
       Taro.request(option).then(e=>{
         if(e.data.code==1000){
           resolve(e.data.data)
-        }else{
+        }
+        else if(e.data.code==1014){
+          Taro.clearStorageSync()
+          Taro.reLaunch({url:"/pages/index/index"})
+          return false;
+        }
+        else{
           Taro.showToast({
             title: e.data.msg,
             icon: 'none',

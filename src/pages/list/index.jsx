@@ -46,6 +46,10 @@ class List extends Component {
     onScroll=()=>{
         if(this.state.list.length>=this.state.count) return false;
         else{
+            Taro.showLoading({
+                title:"正在加载中",
+                mask:true
+            })
             let page=this.state.form.page;
             page=page+1
             this.setState((preState) => {
@@ -117,6 +121,7 @@ class List extends Component {
                 count:e.count,
                 list:list.concat(e.list)
             })
+
             Taro.hideLoading()
         })
     }

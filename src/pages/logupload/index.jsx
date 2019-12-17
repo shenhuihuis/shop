@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View ,Text} from '@tarojs/components'
 import './index.less'
+import $http from "@public/server"
 class AppealDetails extends Component {
     config = {
         navigationBarTitleText: '上传支付凭证',
@@ -14,6 +15,32 @@ class AppealDetails extends Component {
             },
             imgs: [null], //相关许可证件
 
+        }
+    }
+    sub=()=>{
+        let params=this.$router.params;
+        if(this.state.imgs[0]==null){
+            Taro.showToast({
+                title:"请上传支付凭证",
+                icon:"none"
+            })
+            return false;
+        }
+        if(params.logid){           //物流
+            $http.post("account/track/order/pay",{
+                id:params.logid*1,
+                imgs:this.state.imgs
+            }).then(e=>{
+                Taro.showToast({
+                    title:'已上传凭证',
+                    icon:"success"
+                })
+                Taro.navigateBack({
+                    delta:1
+                })
+            })
+        }else{
+            
         }
     }
     del = (key, index, path) => {
@@ -86,7 +113,7 @@ class AppealDetails extends Component {
                     </View>
                 </View>
                 <View className='bton'>
-                    <View className='sub'>确认上传</View>
+                    <View className='sub' onTap={this.sub.bind(this)}>确认上传</View>
                 </View>
             </View>
         );

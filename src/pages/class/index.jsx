@@ -20,8 +20,10 @@ class Order extends Component {
           current: value
         })
     }
-    componentWillMount(){
+    componentDidMount(){
         Taro.hideHomeButton()
+    }
+    componentDidShow(){
         $http.get("product/category").then(e=>{
             e.map(ele=>{
                 ele.title=ele.Title;

@@ -36,6 +36,10 @@ class Collect extends Component {
     onScroll = () => {
         if (this.state.list.length >= this.state.count) return false;
         else {
+            Taro.showLoading({
+                title:"正在加载中",
+                mask:true
+            })
             let page = this.state.form.page;
             page = page + 1
             this.setState((preState) => {
@@ -67,7 +71,7 @@ class Collect extends Component {
             product_id: ele.product_id,
             spec_id: ele.spec_id
         }).then(e => {
-            list = list.splice(index, 0);
+            list.splice(index, 1);
             this.setState({
                 list: list
             })
@@ -79,7 +83,7 @@ class Collect extends Component {
         $http.post("account/favorite/supplier/del", {
             supplier_id: ele.product_id,
         }).then(e => {
-            list = list.splice(index, 0);
+            list.splice(index, 1);
             this.setState({
                 list: list
             })
@@ -102,6 +106,7 @@ class Collect extends Component {
                 list: list,
                 loading: true
             })
+            Taro.hideLoading()
         })
     }
     ck = (index) => {
@@ -147,7 +152,7 @@ class Collect extends Component {
                                 list.length==0?<View className='nobg'></View>:
                                 list.map((ele,index)=>{
                                     return (
-                                    <View className='li' key={ele.id} onTap={this.went.bind(this,ele.product_id)}>
+                                    <View className='li' key={ele.id} onTap={this.want.bind(this,ele.product_id)}>
                                         <Image src={ele.img}  mode='aspectFill'></Image>
                                         <View className='tit'>{ele.title}</View>
                                         <View className='bot'>
@@ -155,7 +160,7 @@ class Collect extends Component {
                                                 <View className='money'> 
                                                     <small>¥</small>{ele.price || 0}
                                                 </View>
-                                                <View className='span'>销量：</View>
+                                                <View className='span'>销量：{ele.sell_count || 0}</View>
                                             </View>
                                             <View className='like' onTap={this.hatePro.bind(this,ele,index)}></View>
                                         </View>
@@ -169,7 +174,7 @@ class Collect extends Component {
                                     {
                                         list.map((ele, index) => {
                                             return (
-                                                <View className='li' onTap={this.went.bind(this, ele.product_id)}>
+                                                <View className='li' onTap={this.went.bind(this, ele.id)}>
                                                     <View className='lf'>
                                                         <Image src={ele.img} mode='aspectFill'></Image>
                                                         <View className='tit'>{ele.uname}</View>

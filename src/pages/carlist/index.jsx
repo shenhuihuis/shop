@@ -142,12 +142,11 @@ class Order extends Component {
         }
     }
     handleChange=(ind,index,e)=>{
-       
         this.setState(preState=>{
             preState.list[ind].data[index].num=e*1
         })
        setTimeout(e=>{
-        this.getmoney();
+            this.getmoney();
        },300)
     }
     del=(ind,index)=>{
@@ -155,14 +154,17 @@ class Order extends Component {
         $http.post("cart/del",{
             ids:[list[ind].data[index].id]
         }).then(e=>{
-            list[ind].data.splice(index,1);
-            this.setState({
-                list:list
-            })
             Taro.showToast({
                 title:"删除成功",
                 icon:'success'
             })
+            this.setState({
+                all: false,
+                load:false,
+                list:[],
+                money:'',
+            })
+            this.init()
         })
     }
     sub=(e)=>{

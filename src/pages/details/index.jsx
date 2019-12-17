@@ -5,7 +5,7 @@ import $http from "@public/server"
 import { formatTime } from "@public/utils"
 import WxParse from './../../components/wxParse/wxParse'
 import BUY from '../../components/buy'
-import { getGlobalData } from '@public/global_data'
+import { getGlobalData ,setStorageSync} from '@public/global_data'
 class Demand_Details extends Component {
     constructor(props) {
         super(props);
@@ -18,15 +18,53 @@ class Demand_Details extends Component {
     config = {
         navigationBarTitleText: '商品详情'
     }
+    
     componentWillMount() {
+        if(this.$router.params.share){
+            Taro.login().then(response => {
+                if (response.code) {
+                  $http.post("wechat/login", { code: response.code }).then(e => {
+                    Taro.setStorageSync("token",e.token)
+                    setTimeout(e=>{
+                        this.init()
+                    },500)
+                  })
+                } else {
+      
+                }
+              }).catch(err => {
+                Taro.showToast({
+                  title: '发生错误，请重试!',
+                  icon: 'none'
+                })
+              })
+        }else{
+            this.init()
+        }
        // let arr = [{ id: 14, img: [], key1: "红色", key2: "64g", price: 22, stock: 22 }, { id: 14, img: [], key1: "红色", key2: "128g", price: 22, stock: 22 }, { id: 14, img: [], key1: "绿色", key2: "64g", price: 22, stock: 22 }, { id: 14, img: [], key1: "绿色", key2: "128g", price: 22, stock: 22 }]
+       
+    }
+    init =()=>{
         $http.get("product/info", { id: this.$router.params.id || 1}).then(e => {
-         //   e.specs = arr
-            this.setState({
-                details: e,
-            })
-            WxParse.wxParse('article', 'html', e.content, this.$scope, 5)
+            //   e.specs = arr
+               this.setState({
+                   details: e,
+               })
+               WxParse.wxParse('article', 'html', e.content, this.$scope, 5)
         })
+    }
+    onShareAppMessage(res){
+        if (res.from === 'button') {
+          console.log(res.target)
+        }
+        return {
+          imageUrl:this.state.details.imgs[0],
+          title: this.state.details.title,
+          path: '/pages/details/index?share=1&id='+this.state.details.id,
+          success: function (res) {
+            console.log('成功', res)
+          }
+        }
     }
     put = (e, type) => {      //弹出购买
         this.setState({
@@ -70,6 +108,7 @@ class Demand_Details extends Component {
         return (
             <View className='details'>
                 <View className='banner'>
+                 <button class="share" id="shareBtn" open-type="share" type="primary"></button>
                     <Swiper indicatorColor='#999' indicatorActiveColor='#333' circular autoplay >
                         {
                             details.imgs.map(e => {

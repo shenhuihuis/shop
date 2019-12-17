@@ -14,7 +14,7 @@ class Order extends Component {
     config = {
         navigationBarTitleText: '个人中心'
     }
-    componentWillMount(){
+    componentDidMount(){
         Taro.hideHomeButton()
         $http.get("account").then(user=>{
             Taro.setStorageSync("user",JSON.stringify(user))

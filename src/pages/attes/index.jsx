@@ -37,7 +37,7 @@ class Order extends Component {
                 <View className='list'>
                     {info.type == 2 && <View className='li'>
                         <View className='tit'>企业名称</View>
-                        <View className='span'>{info.compnay_title}</View>
+                        <View className='span'>{info.company_title}</View>
                     </View>}
                     {info.type == 2 && <View className='li'>
                         <View className='tit'>税号</View>

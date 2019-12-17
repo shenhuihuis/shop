@@ -16,6 +16,8 @@ class Demand extends Component {
                 size:{zero:'请填写体积'},
                 weight:{zero:'请填写重量'},
                 end_at:{zero:'请选择到货时间'},
+                contact:{zero:"请输入联系人"},
+                tel:{zero:"请输入联系人电话"},
                 start_at:{zero:'请选择发货时间'},
                 track_type_id:{zero:'请选择物流方式'},
                 end_province_id:{zero:'请选择收货地址'},
@@ -28,6 +30,8 @@ class Demand extends Component {
             imgs:[],        //上传图片保存地址
             path:[],        //上传图片路径
             form:{
+                contact:'',
+                tel:'',
                 track_type_id:null,
                 warm_type:null,
                 size:null,
@@ -73,6 +77,14 @@ class Demand extends Component {
                 })
                 return false;
             }
+        }
+        if(!/^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/.test(form.tel)){
+            Taro.showToast({
+                title: "请输入正确的手机号",
+                icon: 'none',
+                duration: 1000
+            })
+            return false;
         }
         delete newform.Index;
         delete newform.place;
@@ -269,14 +281,14 @@ class Demand extends Component {
                             </Picker>
                         </View>
                     </View>
-                  {/*  <View className='li'>
+                    <View className='li'>
                         <View className='label'>联系人</View>
-                        <Input placeholder='输入联系人姓名'  type='text' onChange={this.bindValue.bind(this,"end_at")}></Input>
+                        <Input placeholder='输入联系人姓名'  type='text' onChange={this.bindValue.bind(this,"contact")}></Input>
                     </View>
                     <View className='li'>
                         <View className='label'>联系方式</View>
-                        <Input placeholder='请输入联系电话'  type='number' onChange={this.bindValue.bind(this,"end_at")}></Input>
-                        </View>*/}
+                        <Input placeholder='请输入联系电话'  type='number' onChange={this.bindValue.bind(this,"tel")}></Input>
+                    </View>
                 </View>
                 <View className='formson'>
                     <View className='li'>

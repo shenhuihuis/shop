@@ -1,8 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import "./index.less"
-import Order from "./order"
-import Log from "./log"
 import $http from '@public/server'
 class Record extends Component {
     constructor(props) {
@@ -24,8 +22,9 @@ class Record extends Component {
         enablePullDownRefresh: true,
         onReachBottomDistance: 50
     }
-    componentWillMount() {
-        this.getList(0)
+    componentDidShow() {
+        let params=this.$router.params;
+        this.secked(params.index*1 || 0)
     }
     secked = (index) => {
         if (this.state.current == index && this.state.count) return false
@@ -59,6 +58,10 @@ class Record extends Component {
     onScroll = () => {
         if (this.state.list.length >= this.state.count) return false;
         else {
+            Taro.showLoading({
+                title:"正在加载中",
+                mask:true
+            })
             let page = this.state.form.page;
             page = page + 1
             this.setState((preState) => {
@@ -69,11 +72,12 @@ class Record extends Component {
             }, 500)
         }
     }
-    went=(id)=>{
+    went = (url) => {
         Taro.navigateTo({
-            url:"/pages/appealDetails/index?id="+id +"&index=0"
+            url:url
         })
     }
+    
     getList = (index) => {
         let url = ["account/order/appeal", "account/track/appeal"];
         $http.get(url[index], this.state.form).then(e => {
@@ -100,7 +104,7 @@ class Record extends Component {
                                 {
                                     this.state.list.map(ele => {
                                         return (
-                                            <View className='li' key={ele.id} onTap={this.went.bind(this, ele.id)}>
+                                            <View className='li' key={ele.id} onTap={this.went.bind(this, "/pages/appealDetails/index?id=" + ele.id)}>
                                                 <View className='tp'>
                                                     <View className='name'>订单号：{ele.order_no}</View>
                                                     <View className='status'>{ele.status == 1 ? "待处理" : "已处理"}</View>
@@ -125,7 +129,48 @@ class Record extends Component {
                                     })
                                 }
                             </View>
-                            : <Log list={this.state.list} />)
+                            : <View className='log'>
+                                {this.state.list.map(ele => {
+                                    return (
+                                        <View className='li' key={ele.id} key={ele.id} onTap={this.went.bind(this, "/pages/appealDetails/index?logid=" + ele.id)}>
+                                            <View className='tp'>
+                                                <View className='name'>订单号：{ele.order_no}</View>
+                                                <View className='status over'>{ele.status == 1 ? "待处理" : "已处理"}</View>
+                                            </View>
+                                            <View className='cter'>
+                                                <View className='lf'>
+                                                </View>
+                                                <View className='rt'>
+                                                    <View className='address'>
+                                                        <View className='ico1'></View>
+                                                        <View className='out'>
+                                                            <View className='info'>{ele.start_area + ele.start_address}</View>
+                                                            <View className='t'>
+                                                                <Text>{ele.start_user}</Text>
+                                                                <Text>{ele.start_tel}</Text>
+                                                            </View>
+                                                        </View>
+                                                    </View>
+                                                    <View className='address'>
+                                                        <View className='ico3'></View>
+                                                        <View className='out'>
+                                                            <View className='info'>{ele.end_area + ele.end_address}</View>
+                                                            <View className='t'>
+                                                                <Text>{ele.end_user}</Text>
+                                                                <Text>{ele.end_tel}</Text>
+                                                            </View>
+                                                        </View>
+                                                    </View>
+                                                </View>
+                                            </View>
+                                            <View className='btn'>
+                                                <View className='a'>{ele.status == 1 ? "撤销申诉" : "申诉详情"}</View>
+                                            </View>
+                                        </View>
+                                    )
+                                })}
+                            </View>
+                        )
                     }
                 </ScrollView>}
             </View>

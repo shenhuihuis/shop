@@ -22,7 +22,7 @@ class Order extends Component {
             reg: {
                 real_name: { zero: '请填写您的姓名' },
                 company_tax:{zero:'请填写税号'},
-                compnay_title:{zero:'请填写企业名称'},
+                company_title:{zero:'请填写企业名称'},
                 china_id: { reg: /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/, mess: '请填写正确的身份证号', zero: '请填写身份证号' }
             },
             person: {
@@ -32,7 +32,7 @@ class Order extends Component {
             company: {
                 real_name: '',
                 company_tax: '',
-                compnay_title: ''
+                company_title: ''
             }
         }
     }
@@ -185,7 +185,7 @@ class Order extends Component {
                         <View className='li'>
                             <View className='tit'>企业名称</View>
                             <View className='span'>
-                                <Input placeholder='请填写企业名称' onChange={this.bindValue.bind(this, "compnay_title")} value={this.state.company.compnay_title} ></Input>
+                                <Input placeholder='请填写企业名称' onChange={this.bindValue.bind(this, "company_title")} value={this.state.company.company_title} ></Input>
                             </View>
                         </View>
                     }
