@@ -20,7 +20,7 @@ class Order extends Component {
     }
     componentWillMount() {
         $http.get("account/audit").then(e => {
-            e.status=JSON.parse(getGlobalData("user")).status;
+            e.status=Taro.getStorageSync("status")
             this.setState({
                 info: e
             })
@@ -31,7 +31,9 @@ class Order extends Component {
         return (
             <View className='attes'>
                 <View className='tp'>
-                    <View  className={`ico ${info.status==1?"ingico":""}}`}>{info.status==1?"认证资料审核中":'认证资料失败'}</View>
+                    {info.status==3 && <View  className='ico okyico'>认证资料成功</View>}
+                    {info.status==1 && <View  className="ico ingico">认证资料审核中</View>}
+                    {info.status==2 && <View  className='ico'>认证资料失败</View>}
                     <View className='say'>{info.note}</View>
                 </View>
                 <View className='list'>

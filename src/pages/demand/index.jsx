@@ -10,19 +10,20 @@ class Demand extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            intext:false,
             Index:[0,0],
             reg: {
-                warm_type: { zero: '请选择温区' },
-                size:{zero:'请填写体积'},
-                weight:{zero:'请填写重量'},
+                start_province_id:{zero:'请选择提货地址'},
+                end_province_id:{zero:'请选择收货地址'},
+                track_type_id:{zero:'请选择物流方式'},
+                start_at:{zero:'请选择发货时间'},
                 end_at:{zero:'请选择到货时间'},
                 contact:{zero:"请输入联系人"},
                 tel:{zero:"请输入联系人电话"},
-                start_at:{zero:'请选择发货时间'},
-                track_type_id:{zero:'请选择物流方式'},
-                end_province_id:{zero:'请选择收货地址'},
-                start_province_id:{zero:'请选择提货地址'}
-            },
+                weight:{zero:'请填写重量'},
+                size:{zero:'请填写体积'},
+                warm_type: { zero: '请选择温区' },  
+           },
             warm_type:[{title:"常温",id:1},{title:"冷藏",id:2},{title:"冷冻",id:3},],   //温区列表
             ckWarm:'',              //温区选择结果
             category:[],        //初始运输方式
@@ -119,8 +120,8 @@ class Demand extends Component {
         $http.post("track/order",newform).then(e=>{
             setGlobalData("start",null)
             setGlobalData("end",null)
-            Taro.navigateBack({
-                delta:1
+            Taro.redirectTo({
+                url:'/pages/loglist/index'
             })
             Taro.hideLoading()
         })
@@ -216,6 +217,11 @@ class Demand extends Component {
             }
         })
     }
+    intxtFocus=(bool)=>{
+        this.setState({
+            intext:bool
+        })
+    }
     render() {
         let start=this.state.start,end=this.state.end
         return (
@@ -256,7 +262,7 @@ class Demand extends Component {
                         <View className='pickers'>
                             <Picker mode='multiSelector' onColumnchange={this.onTimeChange.bind(this)} rangeKey="title" value={this.state.Index}  range={this.state.catelist} onChange={this.cityCk.bind(this)}>
                                 <View className='picker'>
-                                    {this.state.form.track_type_id?this.state.category[this.state.Index[0]].list[this.state.Index[1]].title:"请选择"}
+                                    {this.state.form.track_type_id?this.state.category[this.state.Index[0]].list[this.state.Index[1]].title:<View className='brown'>请选择</View>}
                                 </View>
                             </Picker>
                         </View>
@@ -266,7 +272,7 @@ class Demand extends Component {
                         <View className='pickers'>
                             <Picker mode='date' onChange={this.bindValue.bind(this,"start_at")}>
                                 <View className='picker'>
-                                    {this.state.form.start_at || "请选择"}
+                                    {this.state.form.start_at || <View className='brown'>请选择</View>}
                                 </View>
                             </Picker>
                         </View>
@@ -276,7 +282,7 @@ class Demand extends Component {
                         <View className='pickers'>
                             <Picker mode='date' onChange={this.bindValue.bind(this,"end_at")}>
                                 <View className='picker'>
-                                    {this.state.form.end_at  || "请选择"}
+                                    {this.state.form.end_at  || <View className='brown'>请选择</View>}
                                 </View>
                             </Picker>
                         </View>
@@ -293,18 +299,24 @@ class Demand extends Component {
                 <View className='formson'>
                     <View className='li'>
                         <View className='label'>物品重量</View>
-                        <Input placeholder='请填写物品质量' type='number' onChange={this.bindValue.bind(this,"weight")}></Input>
+                        <View className='input'>
+                            <Input placeholder='请填写物品质量' type='number' onChange={this.bindValue.bind(this,"weight")}></Input>
+                            <View className='span'>kg*</View>
+                        </View>
                     </View>
                     <View className='li'>
                         <View className='label'>物品体积</View>
-                        <Input placeholder='请填写物品体积' type='number' onChange={this.bindValue.bind(this,"size")}></Input>
+                        <View className='input'>
+                            <Input placeholder='请填写物品体积' type='number' onChange={this.bindValue.bind(this,"size")}></Input>
+                            <View className='span'>cm³</View>
+                        </View>
                     </View>
                     <View className='li'>
                         <View className='label'>温区选择</View>
                         <View className='pickers'>
                             <Picker mode='selector' onChange={this.warmCk.bind(this)} rangeKey="title" range={this.state.warm_type}>
                                 <View className='picker'>
-                                    {this.state.ckWarm || "请选择"}
+                                    {this.state.ckWarm || <View className='brown'>请选择</View>}
                                 </View>
                             </Picker>
                         </View>
@@ -312,7 +324,10 @@ class Demand extends Component {
                 </View>
                 <View className='formson'>
                     <View className='htit'>物品描述</View>
-                    <Input className='txt' placeholder='补充详细信息…' onChange={this.bindValue.bind(this,"product_note")}></Input>
+                    {
+                        this.state.intext ?  <Textarea  className='txt' placeholder='补充详细信息…' onInput={this.bindValue.bind(this,"product_note")} focus={this.state.intext} value={this.state.form.product_note} onBlur={this.intxtFocus.bind(this,false)}></Textarea>:
+                        <View className='txt' onTap={this.intxtFocus.bind(this,true)}>{this.state.form.product_note || "补充详细信息…"}</View>
+                    }
                     <View className='htit'>物品图片</View>
                     <View className='imgbox'>
                         {
@@ -325,7 +340,7 @@ class Demand extends Component {
                                 )
                             })
                         }
-                        {this.state.imgs.length<3 && <View className='imgs' onTap={this.changeAvatar.bind(this)}></View>}
+                        {this.state.imgs.length<6 && <View className='imgs' onTap={this.changeAvatar.bind(this)}></View>}
                     
                     </View>
                     <View className='lli'>

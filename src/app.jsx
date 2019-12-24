@@ -10,7 +10,9 @@ if (process.env.NODE_ENV !== 'production' && process.env.TARO_ENV === 'h5')  {
 class App extends Component {
   config = {
     pages: [
+     
       'pages/index/index',
+      // 'pages/log/index',
       'pages/loglist/index',
       'pages/center/index',
       'pages/attes/index',
@@ -53,7 +55,8 @@ class App extends Component {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'black'
+      navigationBarTextStyle: 'black',
+      enablePullDownRefresh: false
     }
   }
 

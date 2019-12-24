@@ -1,19 +1,19 @@
+page{
+    background:linear-gradient(180deg,rgba(255,255,255,1) 0%,rgba(247,249,252,1) 100%);
+}
 .index{
     padding:0 20rpx 138rpx;
     background:linear-gradient(180deg,rgba(255,255,255,1) 0%,rgba(247,249,252,1) 100%);
-    min-height: 100vh;
     .banner{
         width:100%;
         height:236rpx;
         box-sizing: border-box;
         margin-bottom: 30rpx;
-        box-shadow: 0 0 4rpx #333;
         overflow: hidden;
+        border-radius:20rpx;
         image{
            width:100%;
-           height:236rpx;
-          
-           border-radius:20rpx;
+           height:236rpx;           
         }
     }
     .find{
@@ -106,7 +106,7 @@
         .li{
             height:530rpx;
             background: #fff;
-            box-shadow:0px 4rpx 20rpx 0px rgba(0,0,0,0.06);
+            // box-shadow:0px 4rpx 20rpx 0px rgba(0,0,0,0.06);
             border-radius:20rpx;
             margin-bottom: 20rpx;
             overflow: hidden;
@@ -158,7 +158,29 @@
             }
         }
     }
+    
 }
 .iphonex{
     padding-bottom: 34rpx;
+}
+.messcode{
+    font-size:30rpx;
+    color:#888;
+    text-align:center;
+}
+.gre{
+    color:#319F5F;
+}
+.indexMol .close{
+    width:62rpx;
+    height:62rpx;
+    background-image:url("../../assets/img/closes.png");
+    background-size:100% 100%;
+    background-position:center top;
+    position:absolute;
+    right:0;
+    top:-58rpx;
+}
+.indexMol .at-modal__container{
+    overflow:visible;
 }

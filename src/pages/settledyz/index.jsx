@@ -15,9 +15,7 @@ class Settleyz extends Component {
         }
     }
     componentDidMount() { 
-        this.setState({
-          user:JSON.parse(Taro.getStorageSync("user")) || JSON.parse(getGlobalData("user"))  //用户信息
-        })
+        
     }
     getPhoneNumber=(e)=>{
         $http.post("wechat/tel",{data:e.detail.encryptedData,iv:e.detail.iv}).then(e=>{
@@ -57,10 +55,10 @@ class Settleyz extends Component {
             <View className='settleyz'>
                 <View className='form'>
                     <View className='inpt'>
-                        <Input placeholder='请输入手机号码' value={this.state.phone} onChange={this.handPhone.bind(this)}></Input>
+                        <Input placeholder='请输入手机号码' value={this.state.phone} onChange={this.handPhone.bind(this)} ></Input>
                         {!this.state.phone && <Button className="send" open-type="getPhoneNumber" ongetphonenumber={this.getPhoneNumber.bind(this)}>快速获取</Button>}
                     </View>
-                    <View className='sub' onTap={this.sub.bind(this)}>验证</View>
+                    {this.state.phone ? <View className='sub' onTap={this.sub.bind(this)}>验证</View>:<View className='sub error'>验证</View>}
                 </View>
             </View>
         );

@@ -112,27 +112,28 @@ class List extends Component {
                                                         ¥{ele.price} <Text>X{ele.num}</Text>
                                                     </View>
                                                 </View>
-                                                <View className='appealbtn' onTap={this.went.bind(this, "/pages/appeal/index?id=" + details.id + "&index=" + index)}>申诉</View>
+                                               {(details.status>=5 && details.status<8) && (ele.is_appeal?<View className='appealbtn' onTap={this.went.bind(this, "/pages/appealDetails/index?id=" + ele.id+"&index="+index)}>申诉详情</View>:
+                                                <View className='appealbtn' onTap={this.went.bind(this, "/pages/appeal/index?id=" + details.id+"&index="+index)}>申诉</View>)}
                                             </View>
                                         )
                                     })
                                 }
                                 <View className='li'>
                                     <View className='label'>商品金额</View>
-                                    <Text>¥{details.money}</Text>
+                                    <Text>¥{details.money-details.track_fee}</Text>
                                 </View>
                                 <View className='li'>
                                     <View className='label'>运费</View>
-                                    <Text>{details.track_fee == 0 ? "免运费" : details.track_fee}</Text>
+                                    <Text>{details.track_fee == 0  ? (details.status==1 ?"计算中":'免运费') : details.track_fee}</Text>
                                 </View>
-                                <View className='li smli'>
+                               {details.note && <View className='li smli'>
                                     <View className='label'>备注</View>
                                     <Text>{details.note}</Text>
-                                </View>
+                                </View>}
                                 <View className='last'>
                                     <View className='tlaop'>
                                         <View className='how'>共{details.product.length}件</View>
-                                        <View className='money'>合计：<Text>¥{details.money + details.track_fee}</Text></View>
+                                        <View className='money'>合计：<Text>¥{details.money}</Text></View>
                                     </View>
                                     {/*   <View className='has'>不含运费</View>*/}
                                 </View>
@@ -148,33 +149,39 @@ class List extends Component {
                                     {details.created_at}
                                 </View>
                                 {
-                                    details.status >= 3 && details.status != 7 && <View className='p'>
+                                    details.status >= 3 && details.status != 8 && <View className='p'>
                                         <View className='label'>支付时间:</View>
                                         {details.pay_at}
                                     </View>
                                 }
                                 {
-                                    details.status >= 5 && details.status != 7 && <View className='p'>
+                                    details.status >= 5 && details.status != 8 && <View className='p'>
                                         <View className='label'>发货时间:</View>
                                         {details.track_at}
                                     </View>
                                 }
                                 {
-                                    details.status >= 6 && details.status != 7 && <View className='p'>
-                                        <View className='label'>确认收货时间:</View>
+                                    details.status >= 6 && details.status != 8 && <View className='p'>
+                                        <View className='label'>收货时间:</View>
                                         {details.end_at_real}
+                                    </View>
+                                }
+                                {
+                                    details.status == 8 && <View className='p'>
+                                    <View className='label'>取消时间:</View>
+                                        {details.cancel_at}
                                     </View>
                                 }
                             </View>
                         </View>
                         <View className='sbtn'>
-                            {details.status < 2 && <View className='smbtn' onTap={this.went.bind(this, "/pages/qxorder/index?id=" + details.id)}>取消订单</View>}
-                            {(details.status == 2 && details.pay_type==0) && <View className='smbtn' onTap={this.pay.bind(this,details.id)}>支付</View>}
-                            {(details.status == 2 && details.pay_type==2) && <View className='smbtn'  onTap={this.went.bind(this,"/pages/logupload/index?id="+details.id)}>上传凭证</View>}
+                            {details.status <=2 && <View className='smbtn' onTap={this.went.bind(this, "/pages/qxorder/index?id=" + details.id)}>取消订单</View>}
+                            {(details.status == 2 && details.pay_type<=1) && <View className='smbtn' onTap={this.pay.bind(this,details.id)}>支付</View>}
+                            {(details.status == 2 && details.pay_type>=2) && <View className='smbtn'  onTap={this.went.bind(this,"/pages/logupload/index?id="+details.id)}>上传凭证</View>}
                             {details.status == 4 && <View className='smbtn' onTap={this.notify.bind(this, details.id)}>提醒发货</View>}
-                            {(details.status >= 5 && details.status <8) && <View className='smbtn' onTap={this.went.bind(this,"/pages/seelog/index?id="+details.id)}>查看物流</View>}
+                            {(details.status >= 5 && details.status <8) && <View className='smbtn' onTap={this.went.bind(this,"/pages/seelog/index?id="+details.id+"&len="+details.product.length)}>查看物流</View>}
                             {(details.status >= 5 && details.status <7) && <View className='smbtn' onTap={this.orderok.bind(this, details.id)}>确认收货</View>}
-                            {details.status == 7 && <View className='smbtn' onTap={this.went.bind(this,"/pages/evaluateing/index?id="+details.id)}>待评价</View>}
+                            {(details.status==7 && !details.is_comment)  && <View className='smbtn' onTap={this.went.bind(this,"/pages/evaluateing/index?id="+details.id)}>评价</View>}
                             {details.status >= 8 && <View className='smbtn' onTap={this.del.bind(this, details.id)}>删除订单</View>}
                         </View>
                     </View>

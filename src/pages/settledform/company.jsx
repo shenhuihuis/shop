@@ -2,6 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text} from '@tarojs/components'
 import "./index.less"
 import $http from "@public/server"
+import { AtActionSheet, AtActionSheetItem } from "taro-ui"
 class Company extends Component {
     constructor(props) {
         super(props);
@@ -10,9 +11,9 @@ class Company extends Component {
             Imgurl: {
                 imgs1: '',
                 imgs4: '',
-                imgs2: ''
+                imgs2: []
             },
-            imgs2: [null], //相关许可证件
+            imgs2: [], //相关许可证件
             imgs1: [null], //营业执照	
             imgs4: [null], //开户卡 
             reg: {
@@ -35,7 +36,7 @@ class Company extends Component {
                 bank_id: '',
                 bank_user: '',
                 bank_name: '',
-            },
+            },  
         }
     }
     componentWillMount () {
@@ -48,53 +49,85 @@ class Company extends Component {
     }
     del = (key, index, path) => {
         this.setState(preState => {
-            preState.Imgurl[path] = '';
-            preState[key][index] = null;
-        });
-    };
-    changeAvatar = (key, index, path) => {
-        let token = wx.getStorageSync("token"),
-            _this = this;
-        wx.chooseImage({
-            count: 1, // 默认9
-            sizeType: ['compressed'], // 可以指定是原图还是压缩图，默认二者都有
-            success: function (res) {
-                Taro.showLoading({ title: '正在上传中' });
-                var tempFilePaths = res.tempFilePaths;
-                wx.uploadFile({
-                    url: process.env.HOST + 'uploads', //里面填写你的上传图片服务器API接口的路径 
-                    filePath: tempFilePaths[0], //要上传文件资源的路径 String类型 
-                    name: 'file', //按个人情况修改，文件对应的 key,开发者在服务器端通过这个 key 可以获取到文件二进制内容，(后台接口规定的关于图片的请求参数)
-                    header: {
-                        "Content-Type": "multipart/form-data", //记得设置
-                        Authorization: `Bearer ${token}`
-                    },
-                    success(e) {
-                        let data = JSON.parse(e.data);
-                        if (e.statusCode == 200) {
-                            if (data.code == 1000) {
-                                Taro.showToast({
-                                    title: "上传成功",
-                                    icon: 'none',
-                                    duration: 1000
-                                });
-                                _this.setState(preState => {
-                                    preState.Imgurl[path] = tempFilePaths[0];
-                                    preState[key][index] = data.data[0].id;
-                                });
-                            } else {
-                                Taro.showToast({
-                                    title: data.msg,
-                                    icon: 'none',
-                                    duration: 1000
-                                });
-                            }
-                        }
-                        wx.hideLoading();
-                    }
-                });
+            let imgs=preState.Imgurl[path],keys=preState[key];
+            if(key=="imgs2"){
+                imgs.splice(index,1);
+                keys.splice(index,1);
+            }else{
+                imgs=null;
+                keys=[null]
             }
+            preState.Imgurl[path]=imgs
+            preState[key]=keys;
         });
+    }
+    success=(key, index, path,res)=>{
+            Taro.showLoading({ title: '正在上传中' });
+            let file=res.tempFiles,_this=this, token = wx.getStorageSync("token")
+
+            wx.uploadFile({
+                url: process.env.HOST + 'uploads', //里面填写你的上传图片服务器API接口的路径 
+                filePath: file[0].path, //要上传文件资源的路径 String类型 
+                name: 'file', //按个人情况修改，文件对应的 key,开发者在服务器端通过这个 key 可以获取到文件二进制内容，(后台接口规定的关于图片的请求参数)
+                header: {
+                    "Content-Type": "multipart/form-data", //记得设置
+                    Authorization: `Bearer ${token}`
+                },
+                success(e) {
+                    let data = JSON.parse(e.data);
+                    if (e.statusCode == 200) {
+                        if (data.code == 1000) {
+                            Taro.showToast({
+                                title: "上传成功",
+                                icon: 'none',
+                                duration: 1000
+                            });
+                            _this.setState(preState => {
+                                if(key=="imgs2"){
+                                    if(file[0].type=="file"){
+                                        preState.Imgurl[path] = preState.Imgurl[path].concat("pdf");
+                                    }
+                                    else{
+                                        preState.Imgurl[path] = preState.Imgurl[path].concat(file[0].path);
+                                    }
+                                    preState[key]=preState[key].concat(data.data[0].id);
+                                }else{
+                                    preState.Imgurl[path] = file[0].path;
+                                    preState[key][index] = data.data[0].id;
+                                }
+                            });
+                        } else {
+                            Taro.showToast({
+                                title: data.msg,
+                                icon: 'none',
+                                duration: 1000
+                            });
+                        }
+                    }
+                    wx.hideLoading();
+                }
+            });
+  
+    }
+    changeAvatar = (key, index, path) => {
+        let _this = this;
+        if (key == "imgs2") {
+                wx.chooseMessageFile({
+                    type: "file",
+                    count: 1,
+                    success: (res) => {
+                        _this.success(key, index, path, res)
+                    }
+                })
+            }else{
+                wx.chooseImage({
+                    count: 1,// 默认9
+                    sizeType: ['compressed'],// 可以指定是原图还是压缩图，默认二者都有
+                    success: (res) => {
+                        _this.success(key, index, path, res)
+                    }
+                })
+        }
     }
     onSubmit = (e) => {
         const type = this.state.type; //3 商品 5物流
@@ -133,13 +166,14 @@ class Company extends Component {
             });
             return false;
           }
+          form.tel=form.tel.toString();
           form.imgs2=this.state.imgs2
           form.imgs1=this.state.imgs1
           form.imgs4=this.state.imgs4
           form.type=this.state.type;
           Taro.showLoading({
             mask:true,
-            title:"正在上传需求"
+            title:"供应商入驻信息正在提交"
          })
           $http.post("account/supplier",form).then(e=>{
             Taro.redirectTo({
@@ -192,7 +226,7 @@ class Company extends Component {
                     <View className='smli'>
                         <View className='tit'>开户许可证</View>
                         <View className="imgbox">
-                        {this.state.imgs4[0] == null ? <View className="imgs" onTap={this.changeAvatar.bind(this, "imgs4", 0, "imgs4")}>上传银行卡照片</View> : <View className="imgsbefor">
+                        {this.state.imgs4[0] == null ? <View className="imgs" onTap={this.changeAvatar.bind(this, "imgs4", 0, "imgs4")}>上传开户许可证</View> : <View className="imgsbefor">
                             <View class='at-icon at-icon-close-circle close'  onTap={this.del.bind(this, "imgs4", 0, "imgs4")}></View>
                             <Image mode="aspectFill" src={this.state.Imgurl.imgs4}></Image>
                         </View>}
@@ -210,10 +244,21 @@ class Company extends Component {
                     <View className='smli'>
                         <View className='tit'>相关许可证</View>
                         <View className="imgbox">
-                            {this.state.imgs2[0] == null ? <View className="imgs" onTap={this.changeAvatar.bind(this, "imgs2", 0, "imgs2")}>上传相关许可证</View> : <View className="imgsbefor">
-                                <View class='at-icon at-icon-close-circle close'  onTap={this.del.bind(this, "imgs2", 0, "imgs2")}></View>
-                                <Image mode="aspectFill" src={this.state.Imgurl.imgs2}></Image>
-                            </View>}
+                        {
+                            this.state.Imgurl.imgs2.map((ele,index)=>{
+                                return (
+                                    <View className="imgsbefor">
+                                        <View class='at-icon at-icon-close-circle close'  onTap={this.del.bind(this, "imgs2", index, "imgs2")}></View>
+                                         {
+                                             ele=="pdf"?<View className='pdf'></View>:<Image mode="aspectFill" src={ele}></Image>
+                                         }
+                                        
+                                    </View>
+                                )
+                            })
+                        }
+                        {this.state.imgs2.length<6 && <View className='imgs' onTap={this.changeAvatar.bind(this,"imgs2", 0, "imgs2")}>上传相关许可证</View>}
+                        
                         </View>
                     </View>
                 </View>

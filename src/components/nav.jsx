@@ -8,7 +8,7 @@ import ico1H from "../assets/img/ico1h.png";
 import ico2H from "../assets/img/ico2h.png";
 import ico3H from "../assets/img/ico3h.png";
 import ico4H from "../assets/img/ico4h.png";
-
+import { getGlobalData } from "@public/global_data"
 export default class Nav extends Taro.Component {
   constructor (props) {
     super(props)
@@ -23,10 +23,10 @@ export default class Nav extends Taro.Component {
     }
   }
   handleClick (value) {
+    if(value==this.state.current) return false;
     this.setState({
       current: value
     })
-    
    Taro.reLaunch({url:this.state.link[value].to})
   }
   render () {

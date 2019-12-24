@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text} from '@tarojs/components'
+import { View, Text } from '@tarojs/components'
 import "./index.less"
 import { getGlobalData } from '@public/global_data'
 class About extends Component {
@@ -9,11 +9,11 @@ class About extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tel:getGlobalData("tel")
+            tel: getGlobalData("tel")
         }
     }
-    componentWillMount () {
-        
+    componentWillMount() {
+
     }
     call = () => {  //联系客服
         wx.makePhoneCall({
@@ -26,21 +26,23 @@ class About extends Component {
             }
         })
     }
-    went=(e)=>{
-        Taro.navigateTo({url:e})
+    went = (e) => {
+        Taro.navigateTo({ url: e })
     }
     render() {
         return (
             <View className='about'>
                 <View className='logo'>小程序名称</View>
                 <View className='ul'>
-                    <View className='li' onTap={this.went.bind(this,"/pages/page/index?type=0")}>企业介绍</View>
-                    <View className='li' onTap={this.went.bind(this,"/pages/page/index?type=1")}>平台权益介绍</View>
-                    <View className='li' onTap={this.went.bind(this,"/pages/hotline/index")}>投诉与建议</View>
-                    <View className='li' onTap={this.call.bind(this)}>
-                    联系我们
+                    <View className='li' onTap={this.went.bind(this, "/pages/page/index?type=0")}>企业介绍</View>
+                    <View className='li' onTap={this.went.bind(this, "/pages/page/index?type=1")}>平台权益介绍</View>
+                    <View className='li' onTap={this.went.bind(this, "/pages/hotline/index")}>投诉与建议</View>
+                    <button class="li" open-type="contact" session-from="weapp">
+                        联系我们
                         <Text>{this.state.tel}</Text>
-                    </View>
+                    </button>
+
+
                 </View>
             </View>
         );

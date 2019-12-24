@@ -8,7 +8,9 @@ class Order extends Component {
     constructor(props) {
         super(props);
         this.state = {  
-            user:{}
+            status:0,
+            uname:Taro.getStorageSync("name"),
+            img:Taro.getStorageSync("avatarUrl")
         }
     }
     config = {
@@ -16,29 +18,56 @@ class Order extends Component {
     }
     componentDidMount(){
         Taro.hideHomeButton()
-        $http.get("account").then(user=>{
-            Taro.setStorageSync("user",JSON.stringify(user))
-            setGlobalData("user",JSON.stringify(user))
-            this.setState({
-                user:user
+        if(Taro.getStorageSync("status")!=3){
+            $http.get("account").then(user=>{
+                Taro.setStorageSync("status",user.status);
+                this.setState({
+                    status:user.status
+                })
             })
-       })
+        }else{
+            this.setState({
+                status:3
+            })
+        }
+    }
+    bindGetUserInfo = (e) => {
+        if (e.detail.encryptedData) {
+          wx.getUserInfo({
+            success: res => {
+              let data = JSON.parse(res.rawData)
+              console.log(res)
+              $http.post("wechat/base",{
+                data:res.encryptedData,
+                iv:res.iv
+              }).then(e=>{
+                Taro.setStorageSync("name",data.nickName)
+                Taro.setStorageSync("avatarUrl",data.avatarUrl)
+                this.setState({
+                    uname:data.nickName,
+                    img:data.avatarUrl
+                })
+              })
+            }
+          })
+        }
     }
     went=(e)=>{
         Taro.navigateTo({url:e})
     }
     render() { 
-        let user=this.state.user;
+        let status=this.state.status;
         return (
             <View className='center'>
                 <View className='tp'>
                     <View className='lf'>
-                        <View className='hello'>Hi~，{user.uname || "先生"}</View> 
-                        {    
-                            user.status==3 ? <View className='issee'>已认证</View> :<View className='tosee' onTap={this.went.bind(this,"/pages/attes/index")}>{["去认证","审核中","认证失败"][user.status]}</View>
-                        }
+                        <View className='hello'>Hi~，{this.state.uname || "Stranger"}</View> 
+                        { status==0 ? <View className='tosee' onTap={this.went.bind(this,"/pages/toattes/index")}>去认证</View>:<View  className={`tosee ${status==3?"issee":""}`}  onTap={this.went.bind(this,"/pages/attes/index")}>{status==1?"审核中":(status==2?"认证失败":'已认证')}</View>}
                     </View>
-                    <Image></Image>
+                   { this.state.uname?<Image src={this.state.img}></Image>:
+                   <View className='had'>
+                        <Button open-type="getUserInfo" ongetuserinfo={this.bindGetUserInfo.bind(this)} class='log'>点击授权</Button>
+                   </View>}
                 </View>
                 <View className='bnav'>
                     <View className='va' onTap={this.went.bind(this,"/pages/orderlist/index")}>商品订单</View>
@@ -61,7 +90,7 @@ class Order extends Component {
                         <View className='tit'>关于我们</View>
                     </View>
                     <View className='li'>
-                        <View className='tit'>客服</View>
+                        <button open-type="contact" session-from="weapp" class='tit'>客服</button>
                     </View>
                 </View>
                  <Navs index='3'></Navs>

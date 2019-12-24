@@ -3,7 +3,7 @@ import { View } from '@tarojs/components'
 import { AtInputNumber } from 'taro-ui'
 import "../assets/css/buy.less"
 import $http from "@public/server"
-import {setGlobalData} from "@public/global_data"
+import {setGlobalData , getGlobalData } from "@public/global_data";
 export default class buyput extends Component {
     constructor(props) {
         super(props)
@@ -38,9 +38,22 @@ export default class buyput extends Component {
             value:this.props.info.num,
            // current:key[0]
         })
+        setTimeout(e=>{
+            this.cueet(key[0])
+            this.cueetChild(0)
+        },200)
     }
     buy = (e) =>{            //加入购物车
         let active=this.state.active;
+        let status=Taro.getStorageSync("status");
+        if(status!=3){
+            Taro.showToast({
+                title: "您尚未认证成功",
+                icon: 'none',
+                duration: 1000
+            })
+            return false;
+        }
         let key=this.state.specs[this.state.current][active]
         if(key.stock<this.state.num){
             Taro.showToast({
@@ -56,7 +69,7 @@ export default class buyput extends Component {
                 let data={
                     product_id:this.props.info.id,
                     spec_id:key.id,
-                    num:this.state.value
+                    num:this.state.value*1
                 }
                 $http.post("cart",data).then(e=>{
                     Taro.showToast({
@@ -72,20 +85,20 @@ export default class buyput extends Component {
                     this.close(false)
                 })
            }else{
-            
             setGlobalData("product",{
                 product_id:this.props.info.id,
                 key:key,
-                price:parseFloat(this.props.info.price)+key.price,
+                price:parseFloat(key.price),
                 num:this.state.value*1,
                 uname:this.props.info.uname,
+                title:this.props.info.title
             })
+            this.close(false)
             Taro.navigateTo({url:'/pages/order/index'})
            }
         }
     }
     handleChange = (e) =>{
-        console.log(e)
         this.setState({
             value:e
         })
@@ -97,7 +110,7 @@ export default class buyput extends Component {
         let num=this.state.num;
         this.setState({
             current:e,
-            active:null,
+            active:0,
             value:num
         })
     }
@@ -107,6 +120,7 @@ export default class buyput extends Component {
             active:e,
             value:num
         })
+        
     }
     render() {
         let key2=this.state.active!=null && this.state.specs[this.state.current][this.state.active],
@@ -119,7 +133,7 @@ export default class buyput extends Component {
                             <Image src={key2.img} mode='aspectFill'></Image>
                         </View>
                         {
-                            this.state.active!=null ? <View className='money'>¥{parseFloat(this.props.info.price)+key2.price}</View>:
+                            this.state.active!=null ? <View className='money'>¥{parseFloat(key2.price)}</View>:
                             <View className='money'>¥{this.props.info.price}</View>
                         }
                         <View className='close' onClick={this.close.bind(this, false)}></View>
@@ -151,7 +165,7 @@ export default class buyput extends Component {
                     <View className='nums'>
                         <View className='span'>数量</View>
                         <View className='ck'>
-                            <AtInputNumber  disabled={!this.state.active} width={76} min={num} step={1} max={key2.stock} value={this.state.value} onChange={this.handleChange.bind(this)}/>
+                            <AtInputNumber  disabled={this.state.active==null} width={76} min={num} step={1} max={key2.stock} value={this.state.value} onChange={this.handleChange.bind(this)}/>
                         </View>
                     </View>
                     <View className='sub' onTap={this.buy.bind(this)}>确定</View>

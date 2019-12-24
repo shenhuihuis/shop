@@ -190,12 +190,12 @@ class DeAdd extends Component {
             title: type==1?"修改中,请稍等":"新增中,请稍等",
             mask:true
          })
+         Taro.showToast({
+            title:type==1?"修改成功":"新增成功",
+            icon:'success',
+            duration: 1000
+        })
         $http.post("account/address",form).then(e=>{//   需要返回上一级 并可能要传值  这边作标记 ！！！  
-            Taro.showToast({
-                title:type==1?"修改成功":"新增成功",
-                icon:'success',
-                duration: 1000
-            })
             Taro.redirectTo({url:"/pages/add_list/index?goLink="+this.state.goLink,success(){
                 setTimeout(function () {
                     Taro.hideLoading()
@@ -221,7 +221,7 @@ class DeAdd extends Component {
                         <View className='pickers'>
                             <Picker mode='multiSelector' onColumnchange={this.onTimeChange.bind(this)} range={this.state.area} rangeKey="title" value={this.state.Index} onChange={this.cityCk.bind(this)}>
                                 <View className='picker'>
-                                    {this.state.form.province_id ? areaJSON[Index[0]].title + areaJSON[Index[0]].list[Index[1]].title + areaJSON[Index[0]].list[Index[1]].list[Index[2]].title : "请选择"}
+                                    {this.state.form.province_id ? areaJSON[Index[0]].title + areaJSON[Index[0]].list[Index[1]].title + areaJSON[Index[0]].list[Index[1]].list[Index[2]].title : <View className='brown'>请选择</View>}
                                 </View>
                             </Picker>
                         </View>

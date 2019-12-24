@@ -15,12 +15,12 @@ class Order extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tabList: [{ title: '全部',status:0},{ title: '待处理' ,status:1}, { title: '待付款' ,status:2},{ title: '待发货',status:4 },{ title: '待收货' ,status:6}, { title: '已完成',status:7}],
+            tabList: [{ title: '全部',status:0},{ title: '待处理' ,status:1}, { title: '待付款' ,status:2},{ title: '待发货',status:4 },{ title: '待收货' ,status:6}, { title: '已完成',status:7},{ title: '已取消',status:8}],
             current: 0,
             form:{
                 page:1,
                 limit:10,
-                status:''
+                status:0
             },
             load:false,
             list:[],
@@ -60,7 +60,7 @@ class Order extends Component {
             })
             setTimeout(e=>{
                 this.getList()
-            },500)
+            },200)
         }
     }
     handleClick = (value) => {
@@ -183,15 +183,15 @@ class Order extends Component {
                                                             }
                                                         </View>
                                                         <View className='bot'>
-                                                            <View className='lf'>{ele.status==3 ? "付款信息待审核":''}</View>
+                                                            <View className='lf'>{ele.status==3 ? "付款信息待审核":''}{ele.status==5 ? "部分发货":''}</View>
                                                             <View className='btn'>
-                                                                { ele.status<2 && <View className='a' onTap={this.went.bind(this,"/pages/qxorder/index?id="+ele.id)}>取消订单</View> }
-                                                                { (ele.status==2 && ele.pay_type==0) &&  <View className='a' onTap={this.pay.bind(this,ele.id)}>支付</View> }
-                                                                { (ele.status==2 && ele.pay_type==2) &&  <View className='a' onTap={this.went.bind(this,"/pages/logupload/index?id="+ele.id)}>上传凭证</View> }
+                                                                { ele.status<=2 && <View className='a' onTap={this.went.bind(this,"/pages/qxorder/index?id="+ele.id)}>取消订单</View> }
+                                                                { (ele.status==2 && ele.pay_type<=1) &&  <View className='a' onTap={this.pay.bind(this,ele.id)}>支付</View> }
+                                                                { (ele.status==2 && ele.pay_type>=2) &&  <View className='a' onTap={this.went.bind(this,"/pages/logupload/index?id="+ele.id)}>上传凭证</View> }
                                                                 { ele.status==4 && <View className='a' onTap={this.notify.bind(this,ele.id,index)}>提醒发货</View> }
-                                                                { (ele.status>=5 && ele.status<8) && <View className='a' onTap={this.went.bind(this,"/pages/seelog/index?id="+ele.id)}>查看物流</View> }
+                                                                { (ele.status>=5 && ele.status<8) && <View className='a' onTap={this.went.bind(this,"/pages/seelog/index?len="+ele.product.length+"&id="+ele.id)}>查看物流</View> }
                                                                 { (ele.status>=5 && ele.status<7) && <View className='a' onTap={this.orderok.bind(this,ele.id,index)}>确认收货</View> }
-                                                                { ele.status==7 && <View className='a' onTap={this.went.bind(this,"/pages/evaluateing/index?id="+ele.id)}>待评价</View> }
+                                                                {(ele.status==7 && !ele.is_comment) && <View className='a' onTap={this.went.bind(this,"/pages/evaluateing/index?id="+ele.id)}>评价</View> }
                                                                 { ele.status>=8 && <View className='a' onTap={this.del.bind(this,ele.id,index)}>删除订单</View> }
                                                             </View>
                                                         </View>

@@ -18,12 +18,9 @@ class SettledForm extends Component {
     componentWillMount () {
         let params=this.$router.params;
         this.setState({
-            type:params.type * 1 || 4,
-            tel:params.tel || "13454752770"
+            type:params.type * 1 || 3,
+            tel:params.tel*1
         })
-    }
-    onSubmit = (e) => {
-        console.log(e)
     }
     render() {
         let type=this.state.type;

@@ -203,7 +203,7 @@ class DeAdd extends Component {
                         <View className='pickers'>
                             <Picker mode='multiSelector' onColumnchange={this.onTimeChange.bind(this)} range={this.state.area} rangeKey="title" value={this.state.Index} onChange={this.cityCk.bind(this)}>
                                 <View className='picker'>
-                                    {this.state.form.province_id ? areaJSON[Index[0]].title + areaJSON[Index[0]].list[Index[1]].title + areaJSON[Index[0]].list[Index[1]].list[Index[2]].title : "请选择"}
+                                    {this.state.form.province_id ? areaJSON[Index[0]].title + areaJSON[Index[0]].list[Index[1]].title + areaJSON[Index[0]].list[Index[1]].list[Index[2]].title : <View className='brown'>请选择</View>}
                                 </View>
                             </Picker>
                         </View>

@@ -93,7 +93,7 @@ class Collect extends Component {
         Taro.navigateTo({ url: "/pages/details/index?id=" + id })
     }
     went = (id) => {
-        Taro.navigateTo({ url: "/pages/demand_details/index?id=" + id })
+        Taro.navigateTo({ url: "/pages/demand_details/index?supplier_id=" + id })
     }
     getList = (type) => {         //0 收藏商品  //1商品供应商   //
         let url = this.state.nav[type].url;
@@ -174,7 +174,7 @@ class Collect extends Component {
                                     {
                                         list.map((ele, index) => {
                                             return (
-                                                <View className='li' onTap={this.went.bind(this, ele.id)}>
+                                                <View className='li' onTap={this.went.bind(this,ele.id)}>
                                                     <View className='lf'>
                                                         <Image src={ele.img} mode='aspectFill'></Image>
                                                         <View className='tit'>{ele.uname}</View>
@@ -189,7 +189,7 @@ class Collect extends Component {
                             </View>
 
                     }
-                </ScrollView> : <View className='nobg'></View>)}
+                </ScrollView> : <View className='nobg'>暂无收藏</View>)}
             </View>
         );
     }

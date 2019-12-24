@@ -12,6 +12,7 @@ class List extends Component {
         super(props);
         this.state = {  
             scrollTop:0,
+            showTop:false,
             nav:[
                 {tit:'默认',checked:true},
                 {tit:'价格',checked:false,order:false},
@@ -20,6 +21,7 @@ class List extends Component {
             ],
             list:[],
             loading:false,
+            carnum:0,
             count:null,        //总数量
             form:{
                 page:1,
@@ -37,8 +39,15 @@ class List extends Component {
             preState.form.search=this.$router.params.sname;
             preState.form.category_id=this.$router.params.category_id
         })
-        
+        this.getCar();
        
+    }
+    getCar=()=>{
+        $http.get("cart").then(e => {
+            this.setState({
+                carnum:e.length
+            })
+        })
     }
     componentDidMount(){
         this.getList()
@@ -143,6 +152,27 @@ class List extends Component {
         },1000)
        
     }
+    scrolling=(e)=>{
+       let top=e.detail.scrollTop,bool;
+       if(top>400){
+            bool=true;
+       }else{
+            bool=false;
+       }
+       this.setState({
+            scrollTop:top,
+            showTop:bool
+       })
+    }
+    toTop=(e)=>{
+        e.stopPropagation() 
+        this.setState({
+            scrollTop: 0
+        })
+    }
+    tocar = () =>{
+        Taro.navigateTo({url:"/pages/carlist/index"})
+    }
     render() { 
         let hei,list=this.state.list;
         wx.getSystemInfo({
@@ -153,11 +183,12 @@ class List extends Component {
         })
         return (
             <View classsName='contair'>
+                {this.showTop && <View className='toTop' onTap={this.toTop.bind(this)}></View>}
                 <View className='tp'>
                     <View class='find'>
                         <Input type='text' placeholder='输入商品名称' confirm-type='search' onConfirm={this.seach.bind(this)} value={this.state.form.search}/>
-                        <View className='ico'>
-                            <View className='num'>3</View>
+                        <View className='ico' onTap={this.tocar.bind(this)}>
+                            {this.state.carnum>0 && <View className='num'>{this.state.carnum}</View>}
                         </View>
                     </View>
                 </View>
@@ -176,7 +207,7 @@ class List extends Component {
                         })
                     }
                 </View>
-                {this.state.loading && (this.state.count>0 && list.length>0?<ScrollView className='list' scrollY scrollWithAnimation style={hei} lowerThreshold={30}  onScrolltolower={this.onScroll} scrollTop={this.state.scrollTop}>
+                {this.state.loading && (this.state.count>0 && list.length>0?<ScrollView enableBackToTop="true" className='list' scrollY  style={hei} lowerThreshold={30}  onScrolltolower={this.onScroll} onScroll={this.scrolling} scrollTop={this.state.scrollTop} ref='lists'>
                         {
                             list.map(element=>{
                                 return(

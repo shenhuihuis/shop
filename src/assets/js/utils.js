@@ -55,13 +55,13 @@ export const promisify = (func, ctx) => {
   }
    
   export const formatTime = date => {
-    date=new Date(date)
-    const year = date.getFullYear()
-    const month = date.getMonth() + 1
-    const day = date.getDate()
-    const hour = date.getHours()
-    const minute = date.getMinutes()
-    const second = date.getSeconds()
+    let dates=new Date(date)
+    const year = dates.getFullYear()
+    const month = dates.getMonth() + 1
+    const day = dates.getDate()
+    const hour = dates.getHours()
+    const minute = dates.getMinutes()
+    const second = dates.getSeconds()
    
     //return [year, month, day].map(formatNumber).join('/') + ' ' + [hour, minute, second].map(formatNumber).join(':')
     return [year, month, day].map(formatNumber).join('/')
@@ -111,11 +111,11 @@ export const promisify = (func, ctx) => {
   export const trackStatus= (code)=>{
     const statusList=[
       { type:1, tit:"待处理" },
-      { type:2, tit:"待支付" },
-      { type:3, tit:"待审核" },
-      { type:4, tit:"待分配" },
+      { type:2, tit:"待付款" },
+      { type:3, tit:"待付款" },   //待审核
+      { type:4, tit:"待运输" },   //待分配
       { type:5,tit:'待运输'},
-      { type:6, tit:"待收货" },
+      { type:6, tit:"运输中" },
       { type:7, tit:"已完成" },
       { type:8, tit:"已取消" }
     ]

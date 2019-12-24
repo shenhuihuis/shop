@@ -38,7 +38,7 @@ class List extends Component {
         })
     }
     notify = (id) => {      //提醒发货
-        $http.post("account/track/order/noitfy", { id: id }).then(e => {
+        $http.post("account/track/order/notify", { id: id }).then(e => {
             Taro.showToast({
                 title: "提醒发货成功",
                 icon: "success"
@@ -113,6 +113,10 @@ class List extends Component {
                                 </View>
                             </View>
                             <View className='conbox cterbox'>
+                                {details.status>1 && <View className='li'>
+                                    <View className='label'>价格</View>
+                                    <Text>{details.price}</Text>
+                                </View>}
                                 <View className='li'>
                                     <View className='label'>联系人</View>
                                     <Text>{details.contact}</Text>
@@ -123,11 +127,11 @@ class List extends Component {
                                 </View>
                                 <View className='li'>
                                     <View className='label'>发货时间</View>
-                                    <Text>{details.start_at}</Text>
+                                    <Text>{details.start_at.slice(0,10)}</Text>
                                 </View>
                                 <View className='li'>
                                     <View className='label'>到货时间</View>
-                                    <Text>{details.end_at}</Text>
+                                    <Text>{details.end_at.slice(0,10)}</Text>
                                 </View>
                                 <View className='li'>
                                     <View className='label'>物品重量</View>
@@ -135,7 +139,7 @@ class List extends Component {
                                 </View>
                                 <View className='li'>
                                     <View className='label'>物品体积</View>
-                                    <Text>{details.size}</Text>
+                                    <Text>{details.size}cm³</Text>
                                 </View>
                                 <View className='li'>
                                     <View className='label'>温区选择</View>
@@ -176,7 +180,7 @@ class List extends Component {
                                     <View className='label'>处理时间:</View>
                                     {details.audit_at}
                                 </View>}
-                               {details.track_at && <View className='p'>
+                               {details.track_at && details.status==6 && <View className='p'>
                                     <View className='label'>运输时间:</View>
                                     {details.track_at}
                                 </View>}
@@ -191,11 +195,14 @@ class List extends Component {
                             </View>
                         </View>
                         <View className='sbtn'>
+                            {details.status==3 ? "付款信息待审核":''}
+                            {details.status==4 ? "待分配供应商":''}
                             {details.status<=2 && <View className='smbtn' onTap={this.went.bind(this, "/pages/qxorder/index?logid=" + details.id)}>取消订单</View>}
                             {details.status==2 && <View className='smbtn' onTap={this.went.bind(this, "/pages/logupload/index?logid=" + details.id)}>支付</View>}
                             {details.status==5 && <View className='smbtn' onTap={this.notify.bind(this,details.id)}>提醒运输</View>}
                             {details.status==6 && <View className='smbtn' onTap={this.orderok.bind(this,details.id)}>确认送达</View>}
-                            {details.status>=6 && details.status<8 && <View className='smbtn' onTap={this.went.bind(this,"/pages/appeal/index?order_id="+details.id)}>申诉</View>}
+                            {(details.status>=6 && details.status<8 )&& (details.is_appeal?<View className='smbtn' onTap={this.went.bind(this, "/pages/appealDetails/index?logid=" + details.appeal_id)}>申诉详情</View>:
+                            <View className='smbtn' onTap={this.went.bind(this,"/pages/appeal/index?order_id="+details.id)}>申诉</View>)}
                             {details.status==8 && <View className='smbtn' onTap={this.del.bind(this,details.id)}>删除订单</View>}
                         </View>
                     </View>}

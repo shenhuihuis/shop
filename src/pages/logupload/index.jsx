@@ -14,8 +14,16 @@ class AppealDetails extends Component {
                 imgs: ''
             },
             imgs: [null], //相关许可证件
+            bank:null
 
         }
+    }
+    componentDidMount(){
+        $http.get("app").then(e=>{
+            this.setState({
+                bank:e.bank
+            })
+        })
     }
     sub=()=>{
         let params=this.$router.params;
@@ -40,7 +48,18 @@ class AppealDetails extends Component {
                 })
             })
         }else{
-            
+            $http.post("account/order/pay_up",{
+                id:params.id*1,
+                imgs:this.state.imgs
+            }).then(e=>{
+                Taro.showToast({
+                    title:'已上传凭证',
+                    icon:"success"
+                })
+                Taro.navigateBack({
+                    delta:1
+                })
+            })
         }
     }
     del = (key, index, path) => {
@@ -105,7 +124,7 @@ class AppealDetails extends Component {
                     </View>
                     <View className='li'>
                         <View className='label'>收款账号</View>
-                        <Text>6681020995603232</Text>
+                        <Text>{this.state.bank}</Text>
                     </View>
                     <View className='smli'>
                         <View className='label'>支付说明</View>

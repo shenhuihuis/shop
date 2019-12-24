@@ -8,12 +8,12 @@ class Order extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tabList: [{ title: '全部',status:0 }, { title: '待处理',status:1 }, { title: '待付款' ,status:2},{ title: '待运输' ,status:5}, { title: '待收货',status:6 }, { title: '已完成' ,status:7}],
+            tabList: [{ title: '全部',status:"1,2,3,4,5,6,7,8" }, { title: '待处理',status:1 }, { title: '待付款' ,status:"2,3"},{ title: '待运输' ,status:"4,5"}, { title: '运输中',status:6 }, { title: '已完成' ,status:7},{ title: '已取消' ,status:8}],
             current: 0,
             form: {
                 page: 1,
                 limit: 10,
-                status:null
+                status:"1,2,3,4,5,6,7,8"
             },
             load: false,
             list: [],
@@ -84,7 +84,7 @@ class Order extends Component {
     }
     notify = (id,e) => {      //提醒发货
         e.stopPropagation()
-        $http.post("account/track/order/noitfy", { id: id }).then(e => {
+        $http.post("account/track/order/notify", { id: id }).then(e => {
             Taro.showToast({
                 title: "提醒发货成功",
                 icon: "success"
@@ -178,13 +178,17 @@ class Order extends Component {
                                                                 </View>
                                                             </View>
                                                         </View>
-                                                        <View className='btn'>
-                                                            {element.status<=2 && <View className='a' onTap={this.went.bind(this, "/pages/qxorder/index?logid=" + element.id)}>取消订单</View>}
-                                                            {element.status==2 && <View className='a' onTap={this.went.bind(this, "/pages/logupload/index?logid=" + element.id)}>支付</View>}
-                                                            {element.status==5 && <View className='a' onTap={this.notify.bind(this,element.id)}>提醒运输</View>}
-                                                            {element.status==6 && <View className='a' onTap={this.orderok.bind(this,element.id)}>确认送达</View>}
-                                                            {element.status>=6 && element.status<8 && <View className='a' onTap={this.went.bind(this,"/pages/appeal/index?order_id="+element.id)}>申诉</View>}
-                                                            {element.status==8 && <View className='a' onTap={this.del.bind(this,element.id)}>删除订单</View>}
+                                                        <View className='bot'>
+                                                            <View className='lf'>{element.status==3 ? "付款信息待审核":''}{element.status==4 ? "待分配供应商":''}</View>
+                                                            <View className='btn'>
+                                                                {element.status<=2 && <View className='a' onTap={this.went.bind(this, "/pages/qxorder/index?logid=" + element.id)}>取消订单</View>}
+                                                                {element.status==2 && <View className='a' onTap={this.went.bind(this, "/pages/logupload/index?logid=" + element.id)}>支付</View>}
+                                                                {element.status==5 && <View className='a' onTap={this.notify.bind(this,element.id)}>提醒运输</View>}
+                                                                {element.status==6 && <View className='a' onTap={this.orderok.bind(this,element.id)}>确认送达</View>}
+                                                                {(element.status>=6 && element.status<8 )&& (element.is_appeal?<View className='a' onTap={this.went.bind(this, "/pages/appealDetails/index?logid=" + element.appeal_id)}>申诉详情</View>:
+                                                                <View className='a' onTap={this.went.bind(this,"/pages/appeal/index?order_id="+element.id)}>申诉</View>)}
+                                                                {element.status==8 && <View className='a' onTap={this.del.bind(this,element.id)}>删除订单</View>}
+                                                            </View>
                                                         </View>
                                                     </View>
                                                 )

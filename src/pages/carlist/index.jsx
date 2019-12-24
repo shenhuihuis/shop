@@ -1,20 +1,18 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import { AtInputNumber } from 'taro-ui'
+import { AtInputNumber, AtSwipeAction } from 'taro-ui'
 import Navs from "./../../components/nav"
 import $http from "@public/server"
 import './index.less'
-import {setGlobalData} from "@public/global_data"
+import { setGlobalData } from "@public/global_data"
 class Order extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            touchS: [0, 0],
-            touchE: [0, 0],
             all: false,
-            load:false,
-            list:[],
-            money:'',
+            load: false,
+            list: [],
+            money: '',
             isIphoneX: false
         }
     }
@@ -22,36 +20,38 @@ class Order extends Component {
         navigationBarTitleText: '购物车'
     }
 
-    componentDidMount(){
-        let _this=this;
+    componentDidMount() {
+        let _this = this;
         wx.getSystemInfo({
-            success:function (res) {
-                if (res.model.indexOf('iPhone X')>=0) {
+            success: function (res) {
+                if (res.model.indexOf('iPhone X') >= 0) {
                     _this.setState({
-                        isIphoneX:true
+                        isIphoneX: true
                     })
                 }
             }
         })
         Taro.hideHomeButton()
         this.init();
-       
+        
     }
-    init=()=>{
-        $http.get("cart").then(e=>{
-            e.map(ele=>{
-                ele.checked=false;
-                ele.data.map(element=>{
-                    element.checked=false;
-                    element.move=false;
-                    element.min=element.num
+    init = () => {
+        $http.get("cart").then(e => {
+            e.map(ele => {
+                ele.checked = false;
+                ele.data.map(element => {
+                    element.checked = false;
+                    element.move = false;
                 })
             })
-            
+
             this.setState({
-                load:true,
-                list:e
+                load: true,
+                list: e
             })
+           setTimeout(e=>{
+                this.ckAll()
+           },200)
         })
     }
     ckAll = () => {         //全选
@@ -69,19 +69,19 @@ class Order extends Component {
         })
         this.getmoney();
     }
-    getmoney=()=>{
-        let list=this.state.list;
-        let num=0;
-        list.map(ele=>{
-            ele.data.map(element=>{
-               if(element.checked)[
-                    num +=element.price*element.num
-               ]
+    getmoney = () => {
+        let list = this.state.list;
+        let num = 0;
+        list.map(ele => {
+            ele.data.map(element => {
+                if (element.checked) [
+                    num += element.price * element.num
+                ]
             })
         })
-        
+
         this.setState({
-            money:num
+            money: num
         })
     }
     ckbind = (ind, index) => {
@@ -109,92 +109,68 @@ class Order extends Component {
         })
         this.getmoney();
     }
-    touchStart = (e) => {
-        let sx = e.touches[0].pageX
-        let sy = e.touches[0].pageY
-        this.setState({
-            touchS: [sx, sy]
+    handleChange = (ind, index, element,e) => {
+        if(!element.checked) return false;
+        this.setState(preState => {
+            preState.list[ind].data[index].num = e * 1
         })
-    }
-    touchMove = (e) => {
-        let sx = e.touches[0].pageX;
-        let sy = e.touches[0].pageY;
-        this.setState({
-            touchE: [sx, sy]
-        })
-    }
-    touchEnd = (ind,index) => {
-        let start = this.state.touchS;
-        let end = this.state.touchE;
-        let dd=this.state.list[ind].data[index];
-        if (start[0] < end[0] - 50) {
-            dd.move=false;
-            this.setState({
-                [dd]:dd
-            })
-        } else if (start[0] > end[0] + 50) {
-            dd.move=true;
-            this.setState({
-                [dd]:dd
-            })
-        } else {
-            
-        }
-    }
-    handleChange=(ind,index,e)=>{
-        this.setState(preState=>{
-            preState.list[ind].data[index].num=e*1
-        })
-       setTimeout(e=>{
-            this.getmoney();
-       },300)
-    }
-    del=(ind,index)=>{
-        let list=this.state.list;
-        $http.post("cart/del",{
-            ids:[list[ind].data[index].id]
+        $http.post("cart",{
+            product_id:element.product_id,
+            spec_id:element.spec_id,
+            num:e * 1
         }).then(e=>{
+           
+            setTimeout(e => {
+                this.getmoney();
+            }, 300)
+        })
+    }
+    del = (ind, index) => {
+        let list = this.state.list;
+        $http.post("cart/del", {
+            ids: [list[ind].data[index].id]
+        }).then(e => {
             Taro.showToast({
-                title:"删除成功",
-                icon:'success'
+                title: "删除成功",
+                icon: 'success'
             })
             this.setState({
                 all: false,
-                load:false,
-                list:[],
-                money:'',
+                load: false,
+                list: [],
+                money: '',
             })
             this.init()
         })
     }
-    sub=(e)=>{
-        let list=this.state.list;
-        let info=[],money=0;
-        list.map((ele,index)=>{
-            ele.data.map(value=>{
-                if(value.checked){
-                   info[index]={
-                        supplier_id:ele.supplier_id,
-                        supplier_title:ele.supplier_title,
-                        note:'',
-                        data:ele.data.filter(val=>{
+    sub = (e) => {
+        let list = this.state.list;
+        let info = [], money = 0;
+        list.map((ele, index) => {
+            ele.data.map(value => {
+                if (value.checked) {
+                    info[index] = {
+                        supplier_id: ele.supplier_id,
+                        supplier_title: ele.supplier_title,
+                        note: '',
+                        data: ele.data.filter(val => {
                             return val.checked
                         })
-                   }
-                   money +=value.num*1*value.price
+                    }
+                    money += value.num * 1 * value.price
                 }
             })
         })
-        let n=[]
-        info.map(d=>{       //去除空的empty
-          n.push(d)
+        let n = []
+        info.map(d => {       //去除空的empty
+            n.push(d)
         })
-        if(n.length==0) return false;
-        setGlobalData("product",{
-            list:n,
-            money:money
+        if (n.length == 0) return false;
+        setGlobalData("product", {
+            list: n,
+            money: money
         })
-        Taro.navigateTo({url:'/pages/order_cart/index'})
+        Taro.navigateTo({ url: '/pages/order_cart/index' })
     }
     render() {
         const list = this.state.list;
@@ -209,38 +185,40 @@ class Order extends Component {
                                         list.map((e, ind) => {
                                             return (
                                                 <View className='li' key={e.id}>
-                                                   {
-                                                    e.data.length>0 && <View className='tp' onTap={this.ckbind.bind(this, ind, -1)}>
-                                                        <View className={`radio ${e.checked ? "cked" : ""}`}></View>
-                                                        <View className='tit'>{e.supplier_title}</View>
-                                                    </View>
-                                                   }
+                                                    {
+                                                        e.data.length > 0 && <View className='tp' onTap={this.ckbind.bind(this, ind, -1)}>
+                                                            <View className={`radio ${e.checked ? "cked" : ""}`}></View>
+                                                            <View className='tit'>{e.supplier_title}</View>
+                                                        </View>
+                                                    }
                                                     <View className='cter'>
                                                         {
                                                             e.data.map((element, index) => {
-                                                                {element}
+                                                                { element }
                                                                 return (
-                                                                     <View className={`dd ${element.move?"focus":""}}`} key={element.id} onTouchstart={this.touchStart.bind(this)} onTouchmove={this.touchMove.bind(this)} onTouchend={this.touchEnd.bind(this, ind, index)}>
-                                                                        <View className='conlf'>
-                                                                            <View className='lf' onTap={this.ckbind.bind(this, ind, index)}>
-                                                                                <View className={`radio ${element.checked ? "cked" : ""}`}></View>
-                                                                                <Image src={element.img} mode='aspectFill'></Image>
-                                                                          </View>
-                                                                            <View className='cbname'>
-                                                                                <View className='tit'>{element.title}</View>
-                                                                                <View className='ibox'>
-                                                                                    <View className='i'>{element.spec_title}</View>
+                                                                    <AtSwipeAction onClick={this.del.bind(this, ind, index)} options={[{ text: '删除', style: { backgroundColor: '#de544c', width:"124rpx;",padding:0,justifyContent:"center",marginLeft:"10rpx"} }]}>
+                                                                        <View className="dd" key={element.id}>
+                                                                            <View className='conlf'>
+                                                                                <View className='lf' onTap={this.ckbind.bind(this, ind, index)}>
+                                                                                    <View className={`radio ${element.checked ? "cked" : ""}`}></View>
+                                                                                    <Image src={element.img} mode='aspectFill'></Image>
                                                                                 </View>
-                                                                                <View className='bot'>
-                                                                                    <View className='money'>¥{element.price}</View>
-                                                                                    <View className='num'>
-                                                                                        <AtInputNumber min={element.min} step={1} value={element.num}  max={element.stock}  onChange={this.handleChange.bind(this,ind,index)}/>
+                                                                                <View className='cbname'>
+                                                                                    <View className='tit'>{element.title}</View>
+                                                                                    <View className='ibox'>
+                                                                                        <View className='i'>{element.spec_title}</View>
+                                                                                    </View>
+                                                                                    <View className='bot'>
+                                                                                        <View className='money'>¥{element.price}</View>
+                                                                                        <View className='num'>
+                                                                                            <AtInputNumber min={element.num_start} step={1} value={element.num} max={element.stock} onChange={this.handleChange.bind(this, ind, index,element)} />
+                                                                                        </View>
                                                                                     </View>
                                                                                 </View>
                                                                             </View>
+
                                                                         </View>
-                                                                        <View className='del' onTap={this.del.bind(this,ind,index)}>删除</View>
-                                                                    </View>
+                                                                    </AtSwipeAction>
                                                                 )
                                                             })
                                                         }
@@ -250,7 +228,7 @@ class Order extends Component {
                                         })
                                     }
                                 </View>
-                                <View className={`sbtn ${this.state.isIphoneX?'bmx':''}`} >
+                                <View className={`sbtn ${this.state.isIphoneX ? 'bmx' : ''}`} >
                                     <View className='lf' onTap={this.ckAll.bind(this)}>
                                         <View className={`radio ${this.state.all ? "cked" : ""}`}></View>
                                         <Text>全选</Text>

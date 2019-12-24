@@ -99,7 +99,7 @@ class Record extends Component {
                 {this.state.load && <ScrollView className='relist' scrollY scrollWithAnimation lowerThreshold={30} onScrolltolower={this.onScroll} scrollTop={this.state.scrollTop}>
                     {
 
-                        (this.state.list.length == 0) ? <View className='nobg'></View> : (this.state.current == 0 ?
+                        (this.state.list.length == 0) ? <View className='nobg'>暂无记录</View> : (this.state.current == 0 ?
                             <View className='record'>
                                 {
                                     this.state.list.map(ele => {

@@ -37,7 +37,7 @@ export default {
           resolve(e.data.data)
         }
         else if(e.data.code==1014){
-          Taro.clearStorageSync()
+          Taro.removeStorageSync("token")
           Taro.reLaunch({url:"/pages/index/index"})
           return false;
         }

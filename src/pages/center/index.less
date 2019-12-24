@@ -12,6 +12,10 @@
                 font-weight:500;
                 color:rgba(51,51,51,1);
                 line-height:60rpx;
+                display: flex;
+                align-items: center;
+                justify-content:flex-start;
+
             }
             .tosee{
                 font-size:22rpx;
@@ -22,7 +26,7 @@
                 background: url("../../assets/img/icongogreen@2x.png") no-repeat right center;
                 background-size: 10rpx auto;
                 width:90rpx;
-                margin-top:20rpx;
+                padding:20rpx 0;
             }
             .issee{
                 background: url("../../assets/img/renzheng@2x.png") no-repeat;
@@ -34,12 +38,36 @@
                 color:#fff;
                 background-size: 148rpx 52rpx;
                 margin-top:10rpx;
+                padding:0;
             }
         }
         image{
             width:152rpx;
             height:152rpx;
             border-radius:50%;
+        }
+        .had{
+            width:152rpx;
+            height:152rpx;
+            border-radius:50%;
+            background: url("../../assets/img/hand.png") no-repeat;
+            background-size: 152rpx 152rpx;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .log{
+            background:linear-gradient(140deg, #5FCD98 0%, #319F5F 100%);
+            border-radius: 10rpx;
+            width:140rpx;
+            line-height: 50rpx;
+            text-align: center;
+            color:#fff;
+            font-size: 24rpx;
+            padding:0;
+            display: inline-block;
+            margin:0;
+            height:50rpx;
         }
     }
     .bnav{
@@ -96,6 +124,15 @@
             .tit{
                 background: url("../../assets/img/go_03.png") no-repeat right center;
                 background-size: auto 28rpx;
+                border:0 none;
+                font-size: 28rpx;
+                color:#333;
+                text-align: left;
+                padding:0;
+                line-height:98rpx;
+                &::after{
+                    border:0 none;
+                }
             }
             &:nth-child(1){
                 background-image: url("../../assets/img/collect5.png");

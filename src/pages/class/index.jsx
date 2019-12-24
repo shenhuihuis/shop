@@ -9,7 +9,8 @@ class Order extends Component {
         super(props);
         this.state = {  
             current:0,
-            category:[]
+            category:[],
+            status:0
         }
     }
     config = {
@@ -26,15 +27,28 @@ class Order extends Component {
     componentDidShow(){
         $http.get("product/category").then(e=>{
             e.map(ele=>{
-                ele.title=ele.Title;
+                ele.title=ele.title;
             })
             this.setState({                
                 category:e
             })
+            $http.get("account").then(user => {
+                this.setState({
+                  status:user.status,
+                })
+            })
         })
     }
     went=(id)=>{
-        Taro.navigateTo({url:"/pages/list/index?category_id="+id})
+        let status = this.state.status;
+        if(status==3){
+            Taro.navigateTo({url:"/pages/list/index?category_id="+id})
+        }else if(status==0){
+            Taro.navigateTo({ url: '/pages/toattes/index'})
+        }else{
+            Taro.navigateTo({ url: '/pages/attes/index' })
+        }
+      
     }
     render() { 
         let hei;
@@ -57,14 +71,14 @@ class Order extends Component {
                     {
                         this.state.category.map((element,index)=>{
                             return(
-                                <AtTabsPane tabDirection='vertical' current={this.state.current} index={index}>
+                                <AtTabsPane tabDirection='vertical' current={this.state.current} key={element.id}>
                                     <View className='ul'>
                                         {
                                             element.list.map(ele=>{
                                                 return (
                                                     <View className='li' key={ele.id} onTap={this.went.bind(this,ele.id)}> 
                                                         <Image src={ele.img}></Image>
-                                                        <View className='tit'>{ele.Title}</View>
+                                                        <View className='tit'>{ele.title}</View>
                                                     </View>
                                                 )
                                             })

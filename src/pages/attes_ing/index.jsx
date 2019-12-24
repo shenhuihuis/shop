@@ -42,8 +42,8 @@ class Order extends Component {
     componentWillMount() {
         let params = this.$router.params;
         this.setState({
-            type: params.type * 1 || 2,
-            phone: params.phone || "13454752770"
+            type: params.type * 1,
+            phone: params.phone
         })
     }
     bindValue = (key, e) => {

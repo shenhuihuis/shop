@@ -44,9 +44,11 @@ class Hotline extends Component {
                 icon: 'success',
                 mask:true
             })
-            Taro.redirectTo({
-                url:"/pages/about/index"
-            })
+            setTimeout(e=>{
+                Taro.redirectTo({
+                    url:"/pages/about/index"
+                })
+            },500)
         })
     }
     changeAvatar = (e) => {

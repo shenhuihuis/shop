@@ -23,7 +23,7 @@ class Add_list extends Component {
                 price: 1,            //价格 1降下 2生序
                 sell: false,         //销量排行
                 new: false,          //新品
-                supplier_id: this.$router.params.supplier_id*1
+                supplier_id: Number(this.$router.params.supplier_id)
             },
             count: 0,        //总数量
             list: [],

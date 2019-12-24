@@ -60,7 +60,6 @@ class Order_cart extends Component {
                 note:ele.note
             }
         })
-        console.log(data)
         $http.post("order",{
             address_id:address.id,
             data:data
@@ -125,7 +124,7 @@ class Order_cart extends Component {
                 <View className='sbtn'>
                     <View className='lf'>
                         合计： <text>¥{info.money}</text>
-                        <View className='b'>(不含运费)</View>
+                       {/* <View className='b'>(不含运费)</View> */}
                     </View>
                     <View className='sub' onTap={this.sub.bind(this)}>提交订单</View>
                 </View>

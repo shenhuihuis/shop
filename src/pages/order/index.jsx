@@ -55,7 +55,8 @@ class Order extends Component {
             address_id:address.id,
             product_id:form.product_id,
             spec_id:form.key.id,
-            note:this.state.note
+            note:this.state.note,
+            num:form.num
         }).then(e=>{
             Taro.showToast({
                 title: "已下单成功",
@@ -105,7 +106,7 @@ class Order extends Component {
                 <View className='sbtn'>
                     <View className='lf'>
                         合计： <text>¥{info.price*(info.num*1)}</text>
-                        <View className='b'>(不含运费)</View>
+                       {/* <View className='b'>(不含运费)</View>*/}
                     </View>
                     <View className='sub' onTap={this.sub.bind(this)}>提交订单</View>
                 </View>

@@ -7,8 +7,8 @@ class Logistics extends Component {
         navigationBarTitleText: '找物流',
         navigationBarBackgroundColor: '#319F5F',
         navigationBarTextStyle: 'white',
-        enablePullDownRefresh: true,
-        onReachBottomDistance: 50
+        // enablePullDownRefresh: true,
+        // onReachBottomDistance: 50
     }
     constructor(props) {
         super(props);
@@ -17,11 +17,24 @@ class Logistics extends Component {
             list: [],
             count: 0,
             scrollTop:0,
-            loading: false
+            loading: false,
+            showTop: false
         }
     }
     componentDidMount() {
         this.getList()
+    }
+    scrolling=(e)=>{
+        let top=e.detail.scrollTop,bool;
+        if(top>400){
+             bool=true;
+        }else{
+             bool=false;
+        }
+        this.setState({
+             scrollTop:top,
+             showTop:bool
+        })
     }
     getList = () => {
         let list = this.state.list;
@@ -38,9 +51,11 @@ class Logistics extends Component {
             Taro.hideLoading()
         })
     }
-    onScroll() {
+    onScroll(e) {
+        
         if (this.state.list.length >= this.state.count) return false;
         else {
+            let top=e.target.offsetTop;
             Taro.showLoading({
                 title:"正在加载中",
                 mask:true
@@ -70,6 +85,12 @@ class Logistics extends Component {
     went = (url) => {
         Taro.navigateTo({ url: url })
     }
+    toTop=(e)=>{
+        e.stopPropagation() 
+       this.setState({
+        scrollTop: 0
+       })
+    }
     render() {
         let hei;
         wx.getSystemInfo({
@@ -80,6 +101,7 @@ class Logistics extends Component {
         })
         return (
             <View className='logistics'>
+                {this.showTop && <View className='toTop' onTap={this.toTop.bind(this)}></View>}
                 <View className='tp'>
                     <View className='tit'>
                         找物流
@@ -93,7 +115,7 @@ class Logistics extends Component {
                 {
                     this.state.loading && (this.state.count == 0 ? <View className='nobg'>暂无供应商</View> :
                        <View className='list'>
-                        <ScrollView  scrollY scrollWithAnimation style={hei} lowerThreshold={30} onScrolltolower={this.onScroll} scrollTop={this.state.scrollTop}>
+                        <ScrollView  scrollY  style={hei} lowerThreshold={30} onScrolltolower={this.onScroll}   onScroll={this.scrolling} scrollTop={this.state.scrollTop}>
                             {this.state.list.map(e => {
                                 return (
                                     <View className='li' key={e.id}>

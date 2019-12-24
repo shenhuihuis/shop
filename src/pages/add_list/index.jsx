@@ -48,8 +48,7 @@ class Add_list extends Component {
                                         <View className='li' key={ele.id} onTap={this.ckAdd.bind(this,ele)}>
                                             <View className='lf'>
                                                 <View className='tp'>
-                                                   {ele.is_def&&<Text>默认</Text>}
-                                                    <View className='tit'>{ele.address_full}</View>
+                                                    <View className='tit'>{ele.is_def&&<Text>默认</Text>}{ele.address_full}</View>
                                                 </View>
                                                 <View className='bot'>
                                                     <Text>{ele.contact}</Text>
