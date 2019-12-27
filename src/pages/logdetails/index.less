@@ -131,7 +131,7 @@
             }
         }
         .info{
-            padding-bottom: 30rpx;
+            
             .tit{
                 line-height:92rpx;
                 font-size: 34rpx;
@@ -216,6 +216,54 @@
             }
             text{
                 color:#999;
+            }
+        }
+    }
+}
+.callbtn{
+    height:88rpx;
+    display: flex;
+    line-height: 88rpx;
+    border-top: 1px solid #EFEFEF;
+    margin-top:30rpx;
+    .a{
+        font-size: 28rpx;
+        color:#333;
+        flex:1;
+        text-align: center;
+        position: relative;
+        &:nth-child(2){
+            background-image: url("../../assets/img/call.png");
+            background-repeat: no-repeat;
+            background-size: 30rpx 30rpx;
+            background-position: 24% center;
+            text-indent:20rpx;
+        }
+        &:nth-child(1)::before{
+            height:30rpx;
+            width:2rpx;
+            background: #EFEFEF;
+            position: absolute;
+            right:0;
+            top:50%;
+            margin-top:-15rpx;
+            content: '';
+            display: block;
+        }
+        button{
+            background: none;
+            border:0 none;
+            font-size: 28rpx;
+            line-height: 88rpx;
+            height:88rpx;
+            text-indent:20rpx;
+            color:#333;
+            background-image: url("../../assets/img/collect4.png");
+            background-repeat: no-repeat;
+            background-size: 40rpx 40rpx;
+            background-position: 24% center;
+            &::after{
+                border:0 none;
             }
         }
     }

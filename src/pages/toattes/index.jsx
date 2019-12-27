@@ -37,7 +37,7 @@ class Order extends Component {
         })
     }
     sub=(e)=>{      //下一步
-       // 1、若该手机号码被业务员提交过且审核失败，或从未被提交过，则进入下一步         0 2
+       // 1、若该手机号码被业务员提交过且审核失败，或从未被提交过，则进入下一步         0 2   
        // 2、若该手机号码被业务员提交过且处于审核中，则提示用户认证信息待审核          1
        // 3、若该手机号码被业务员提交过且审核通过，则提示用户认证成功                3
     //    if (!this.state.phone) {
@@ -57,7 +57,24 @@ class Order extends Component {
     //         return false;
     //     }
        const status=this.state.status;
-       if(status==0 || status==2){
+       if(status==0){
+           $http.post('account/audit_tel',{
+                tel:this.state.phone
+           }).then(e=>{
+               let code=e.status;
+            //    if(code==0){
+            //         Taro.redirectTo({url:"/pages/center/index"}) 
+            //    }
+               if(code==2 || code==4){
+                     Taro.redirectTo({url:"/pages/attes_ing/index?type="+this.state.current+"&phone="+this.state.phone})
+               }
+               else{
+                    Taro.redirectTo({url:"/pages/center/index"}) 
+               }
+              //  
+           })   
+       }
+       else if(status==2){
            Taro.redirectTo({url:"/pages/attes_ing/index?type="+this.state.current+"&phone="+this.state.phone})     //1 是个人认证  2是企业认证
        }else{
            Taro.showToast({
@@ -76,7 +93,7 @@ class Order extends Component {
                 </View>
                 <View className='txtbox'>
                     <Input placeholder='手机号码' value={this.state.phone} onChange={this.handPhone.bind(this)} disabled></Input>
-                   { !this.state.phone && <Button className='send' open-type="getPhoneNumber" ongetphonenumber={this.getPhoneNumber.bind(this)}>快速获取</Button>}
+                    <Button className='send' open-type="getPhoneNumber" ongetphonenumber={this.getPhoneNumber.bind(this)}>快速获取</Button>
                 </View>
                 <View className='bton'>
                     {this.state.phone ? <View className='sub' onTap={this.sub.bind(this)}>验证</View>:<View className='sub error'>验证</View>}

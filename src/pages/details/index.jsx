@@ -4,6 +4,7 @@ import './index.less'
 import $http from "@public/server"
 import { formatTime } from "@public/utils"
 import WxParse from './../../components/wxParse/wxParse'
+import lazy from "./../../assets/img/xlazy.png"
 import BUY from '../../components/buy'
 import { getGlobalData, setStorageSync } from '@public/global_data'
 class Demand_Details extends Component {
@@ -13,7 +14,10 @@ class Demand_Details extends Component {
             type: 0, //1加入购物车  2立即购买
             isOpened: false,
             details: {},
-            showTop: false
+            banner: [],
+            showTop: false,
+            load:false,
+            car:0
         }
     }
     config = {
@@ -45,8 +49,8 @@ class Demand_Details extends Component {
         // let arr = [{ id: 14, img: [], key1: "红色", key2: "64g", price: 22, stock: 22 }, { id: 14, img: [], key1: "红色", key2: "128g", price: 22, stock: 22 }, { id: 14, img: [], key1: "绿色", key2: "64g", price: 22, stock: 22 }, { id: 14, img: [], key1: "绿色", key2: "128g", price: 22, stock: 22 }]
 
     }
-    toCar = () =>{
-        Taro.navigateTo({url:"/pages/carlist/index"})
+    toCar = () => {
+        Taro.navigateTo({ url: "/pages/carlist/index" })
     }
     toTop = () => {
         wx.pageScrollTo({
@@ -67,11 +71,31 @@ class Demand_Details extends Component {
     init = () => {
         $http.get("product/info", { id: this.$router.params.id || 1 }).then(e => {
             //   e.specs = arr
-            e.produce_at=e.produce_at.slice(0,10)
+            e.produce_at = e.produce_at.slice(0, 10)
+            let banner = e.imgs.map(ele => {
+                return {
+                    src: ele,
+                    isload: false
+                }
+            })
+            this.getcarNum()
             this.setState({
                 details: e,
+                banner: banner,
+                load:true
             })
             WxParse.wxParse('article', 'html', e.content, this.$scope, 5)
+        })
+    }
+    getcarNum=()=>{
+        $http.get("cart").then(e => {
+            let num=0;
+             e.map(ele=>{
+                num +=ele.data.length
+             })
+            this.setState({
+                car:num
+            })
         })
     }
     onShareAppMessage(res) {
@@ -88,6 +112,9 @@ class Demand_Details extends Component {
         }
     }
     put = (e, type) => {      //弹出购买
+        if(e==false){
+            this.getcarNum()
+        }
         this.setState({
             isOpened: e,
             type: type
@@ -123,92 +150,102 @@ class Demand_Details extends Component {
             }
         })
     }
+    imgs = (index) => {
+       setTimeout(e=>{
+            this.setState(preState => {
+                preState.banner[index].isload = true;
+            })
+       },300)
+    }
     render() {
         let details = this.state.details, isOpened = this.state.isOpened;
 
         return (
-            <View className='details'>
-                {this.showTop && <View className='toTop' onTap={this.toTop.bind(this)}></View>}
-                <View className='banner'>
-                    <button class="share" id="shareBtn" open-type="share" type="primary"></button>
-                    <Swiper indicatorColor='#999' indicatorActiveColor='#333' circular autoplay >
+            <View>
+                {this.state.load && <View className='details'>
+                    {this.showTop && <View className='toTop' onTap={this.toTop.bind(this)}></View>}
+                    <View className='banner'>
+                        <button class="share" id="shareBtn" open-type="share" type="primary"></button>
+                        <Swiper indicatorColor='#ccc' indicatorActiveColor='#319F5F' indicatorDots={true} circular autoplay interval={4000} >
+                            {
+                                this.state.banner.map((e, index) => {
+                                    return (
+                                        <SwiperItem key={e.src}>
+
+                                            <Image mode="widthFix" src={e.isload ? e.src : lazy} lazy-load='true' onload={this.imgs.bind(this, index)}></Image>
+                                        </SwiperItem>
+                                    )
+                                })
+                            }
+                        </Swiper>
+                    </View>
+                    <View className='combox'>
+                        <View className='tit' >{details.title}</View>
+                        <View className='price'>
+                            <View className='money'>¥ <Text>{details.price}</Text></View>
+                            <View className='xl'>销量：{details.sell_count}</View>
+                        </View>
+                        <View className='cter'>
+                            <View className='htit'>商品评价({details.comment_count})</View>
+                            <View className='rt' onTap={this.see.bind(this, details.id)}>查看全部评价</View>
+                        </View>
                         {
-                            details.imgs.map(e => {
+                            details.comment.map(e => {
                                 return (
-                                    <SwiperItem key={e}>
-                                        <Image mode="widthFix" src={e}></Image>
-                                    </SwiperItem>
+                                    <View className='answer' key={e.created_at}>
+                                        <View className='top'>
+                                            <View className='lf'>
+                                                <Image mode='aspectFill' src={e.account.img}></Image>
+                                                <View className='bname'>
+                                                    <View className='name'>{e.account.name}</View>
+                                                    <View className='time'>{e.created_at}</View>
+                                                </View>
+                                            </View>
+                                            <View className='sex'>
+                                                {
+                                                    [1, 2, 3, 4, 5].map(element => {
+                                                        return (
+                                                            <View key={element} className={`i ${element <= e.star ? "curi" : ""}`}></View>
+                                                        )
+                                                    })
+                                                }
+                                            </View>
+                                        </View>
+                                        <View className='say'>{e.content}</View>
+                                    </View>
                                 )
                             })
                         }
-                    </Swiper>
-                </View>
-                <View className='combox'>
-                    <View className='tit' >{details.title}</View>
-                    <View className='price'>
-                        <View className='money'>¥ <Text>{details.price}</Text></View>
-                        <View className='xl'>销量：{details.sell_count}</View>
+                        <View class='gys' onTap={this.want.bind(this, details.supplier.id)}>
+                            <Image mode='aspectFill' src={details.supplier.img}></Image>
+                            <View className='gystit'>{details.supplier.uname}</View>
+                        </View>
+                        <View className='h2'>宝贝详情</View>
+                        <View className='brown'>
+                            <View className='dd'>原产地：{details.origin || '/'}</View>
+                            <View className='dd'>储存条件：{details.stockpile || '/'}</View>
+                            <View className='dd'>生产日期：{details.produce_at || '/'}</View>
+                            <View className='dd'>保质期：{details.best_before || '/'}</View>
+                        </View>
+                        {<View className='de_say'> <import src='../../components/wxParse/wxParse.wxml' /><template is='wxParse' data='{{wxParseData:article.nodes}}' /></View>}
                     </View>
-                    <View className='cter'>
-                        <View className='htit'>商品评价({details.comment_count})</View>
-                        <View className='rt' onTap={this.see.bind(this, details.id)}>查看全部评价</View>
-                    </View>
-                    {
-                        details.comment.map(e => {
-                            return (
-                                <View className='answer' key={e.created_at}>
-                                    <View className='top'>
-                                        <View className='lf'>
-                                            <Image mode='aspectFill' src={e.account.img}></Image>
-                                            <View className='bname'>
-                                                <View className='name'>{e.account.name}</View>
-                                                <View className='time'>{e.created_at}</View>
-                                            </View>
-                                        </View>
-                                        <View className='sex'>
-                                            {
-                                                [1, 2, 3, 4, 5].map(element => {
-                                                    return (
-                                                        <View key={element} className={`i ${element <= e.star ? "curi" : ""}`}></View>
-                                                    )
-                                                })
-                                            }
-                                        </View>
-                                    </View>
-                                    <View className='say'>{e.content}</View>
-                                </View>
-                            )
-                        })
-                    }
-                    <View class='gys' onTap={this.want.bind(this, details.supplier.id)}>
-                        <Image mode='aspectFill' src={details.supplier.img}></Image>
-                        <View className='gystit'>{details.supplier.uname}</View>
-                    </View>
-                    <View className='h2'>宝贝详情</View>
-                    <View className='brown'>
-                        <View className='dd'>原产地：{details.origin || '/'}</View>
-                        <View className='dd'>储存条件：{details.stockpile || '/'}</View>
-                        <View className='dd'>生产日期：{details.produce_at || '/'}</View>
-                        <View className='dd'>保质期：{details.best_before || '/'}</View>
-                    </View>
-                    {<View className='de_say'> <import src='../../components/wxParse/wxParse.wxml' /><template is='wxParse' data='{{wxParseData:article.nodes}}' /></View>}
-                </View>
-                <View className='sbtn'>
-                    <View className='btn'>
-                         <View onTap={this.collected.bind(this, details.id)} className={`a ${this.state.details.is_favorite ? "liked" : ""}`}>{details.is_favorite ? "已收藏" : "收藏"}</View>
-                       
-                        {/*<View className='a' onTap={this.call.bind(this)}>客服</View>*/}
-                        <button class="a" open-type="contact" session-from="weapp">
-                            客服
+                    <View className='sbtn'>
+                        <View className='btn'>
+                            <View onTap={this.collected.bind(this, details.id)} className={`a ${this.state.details.is_favorite ? "liked" : ""}`}>{details.is_favorite ? "已收藏" : "收藏"}</View>
+
+                            {/*<View className='a' onTap={this.call.bind(this)}>客服</View>*/}
+                            <button class="a" open-type="contact" session-from="weapp">
+                                客服
                         </button>
-                        <View className='a' onTap={this.toCar.bind(this)}>购物车</View>
+                            <View className='a' onTap={this.toCar.bind(this)}>购物车{this.state.car>0 && <View className='i'>{this.state.car}</View>}</View>
+                        </View>
+                        <View className='subbtn'>
+                            <View className='a' onTap={this.put.bind(this, true, 1)}>加入购物车</View>
+                            <View className='a' onTap={this.put.bind(this, true, 2)}>立即购买</View>
+                        </View>
                     </View>
-                    <View className='subbtn'>
-                        <View className='a' onTap={this.put.bind(this, true, 1)}>加入购物车</View>
-                        <View className='a' onTap={this.put.bind(this, true, 2)}>立即购买</View>
-                    </View>
-                </View>
-                {isOpened && <BUY handClose={this.put.bind(this)} info={{ specs: details.specs, price: details.price, type: this.state.type, id: details.id, num: details.num_start, uname: details.supplier.uname, title: details.title }} />}
+                    {isOpened && <BUY handClose={this.put.bind(this)} info={{ specs: details.specs, price: details.price, type: this.state.type, id: details.id, num: details.num_start, uname: details.supplier.uname, title: details.title }} />}
+                </View>}
             </View>
         );
     }

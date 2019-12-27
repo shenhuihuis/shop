@@ -235,7 +235,7 @@ class Company extends Component {
                     <View className='smli'>
                         <View className='tit'>营业执照</View>
                         <View className="imgbox">
-                            {this.state.imgs1[0] == null ? <View className="imgs" onTap={this.changeAvatar.bind(this, "imgs1", 0, "imgs1")}>上传银行卡照片</View> : <View className="imgsbefor">
+                            {this.state.imgs1[0] == null ? <View className="imgs" onTap={this.changeAvatar.bind(this, "imgs1", 0, "imgs1")}>上传营业执照</View> : <View className="imgsbefor">
                                 <View class='at-icon at-icon-close-circle close'  onTap={this.del.bind(this, "imgs1", 0, "imgs1")}></View>
                                 <Image mode="aspectFill" src={this.state.Imgurl.imgs1}></Image>
                             </View>}

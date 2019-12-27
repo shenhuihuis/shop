@@ -2,6 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import './index.less'
 import $http from "@public/server";
+import {getGlobalData } from "@public/global_data";
 import { trackStatus } from "@public/utils"
 import ico1 from "./../../assets/img/oico1.png"; //待处理
 import ico2 from "./../../assets/img/oico2.png"; //待支付
@@ -29,12 +30,12 @@ class List extends Component {
         this.init()
     }
     del = (id) => {   //删除订单
-        $http.post("account/track/order/del", { id: id }).then(e => {
+        $http.post("account/track/order/del", { id: id}).then(e => {
             Taro.showToast({
                 title: "已删除订单",
                 icon: "success"
             })
-            Taro.redirectTo({url:'/pages/loglist/index'})
+            Taro.redirectTo({ url: '/pages/loglist/index' })
         })
     }
     notify = (id) => {      //提醒发货
@@ -43,7 +44,7 @@ class List extends Component {
                 title: "提醒发货成功",
                 icon: "success"
             })
-          
+
         })
     }
     orderok = (id) => {           //确认收货
@@ -62,7 +63,7 @@ class List extends Component {
         })
     }
     init = () => {
-        $http.get("account/track/order/info", { id: this.$router.params.id }).then(e => {
+        $http.get("account/track/order/info", { id: this.$router.params.id}).then(e => {
             e.warm = [{ title: "常温", id: 1 }, { title: "冷藏", id: 2 }, { title: "冷冻", id: 3 }].filter(ele => {
                 return ele.id == e.warm_type
             })[0].title
@@ -72,8 +73,19 @@ class List extends Component {
             })
         })
     }
+    previewImage = (current) => {
+        Taro.previewImage({
+            current: current, // 当前显示图片的http链接
+            urls: this.state.details.imgs // 需要预览的图片http链接列表
+        })
+    }
+    call = () => {  //联系客服
+        Taro.makePhoneCall({
+            phoneNumber:getGlobalData("tel")
+        })
+    }
     render() {
-        let ico = [ico1, ico2, ico3, ico4,ico4, ico5, ico6, ico7], details = this.state.details;
+        let ico = [ico1, ico2, ico3, ico4, ico4, ico5, ico6, ico7], details = this.state.details;
         return (
             <View className='order_details'>
                 {this.state.load &&
@@ -113,7 +125,7 @@ class List extends Component {
                                 </View>
                             </View>
                             <View className='conbox cterbox'>
-                                {details.status>1 && <View className='li'>
+                                {details.status > 1 && <View className='li'>
                                     <View className='label'>价格</View>
                                     <Text>{details.price}</Text>
                                 </View>}
@@ -127,11 +139,11 @@ class List extends Component {
                                 </View>
                                 <View className='li'>
                                     <View className='label'>发货时间</View>
-                                    <Text>{details.start_at.slice(0,10)}</Text>
+                                    <Text>{details.start_at.slice(0, 10)}</Text>
                                 </View>
                                 <View className='li'>
                                     <View className='label'>到货时间</View>
-                                    <Text>{details.end_at.slice(0,10)}</Text>
+                                    <Text>{details.end_at.slice(0, 10)}</Text>
                                 </View>
                                 <View className='li'>
                                     <View className='label'>物品重量</View>
@@ -148,22 +160,24 @@ class List extends Component {
                             </View>
                             <View className='conbox sayabout'>
                                 <View className='htit'>物品描述</View>
-                                <View className='say'>{details.product_note}</View>
+                                <View className='say'>{details.product_note || "暂无描述"}</View>
                                 <View className='htit'>物品图片</View>
                                 <View className='imglist'>
-                                    {
-                                        details.imgs.map((ele, index) => {
-                                            return (
-                                                <View className='imgsbefor' key={ele} >
-                                                    <Image src={ele} mode='aspectFill'></Image>
-                                                </View>
-                                            )
-                                        })
-                                    }
+                                    <View className='imgsbefor'>
+                                        {
+                                            details.imgs.map((ele, index) => {
+                                                return (
+
+                                                    <Image src={ele} mode='aspectFill' key={ele} onTap={this.previewImage.bind(this, ele)}></Image>
+
+                                                )
+                                            })
+                                        }
+                                    </View>
                                 </View>
                                 <View className='li'>
                                     <View className='label'>备注</View>
-                                    <Text>{details.note}</Text>
+                                    <Text>{details.note || "/"}</Text>
                                 </View>
                             </View>
                             <View className='conbox info'>
@@ -180,11 +194,11 @@ class List extends Component {
                                     <View className='label'>处理时间:</View>
                                     {details.audit_at}
                                 </View>}
-                               {details.track_at && details.status==6 && <View className='p'>
+                                {details.track_at && details.status == 6 && <View className='p'>
                                     <View className='label'>运输时间:</View>
                                     {details.track_at}
                                 </View>}
-                               {details.ok_at && <View className='p'>
+                                {details.ok_at && <View className='p'>
                                     <View className='label'>确认收货时间:</View>
                                     {details.ok_at}
                                 </View>}
@@ -192,18 +206,24 @@ class List extends Component {
                                     <View className='label'>取消时间:</View>
                                     {details.cancel_at}
                                 </View>}
+                                <View className='callbtn'>
+                                    <View className='a'>
+                                        <Button  open-type="contact" session-from="weapp" >联系客服</Button>
+                                    </View>
+                                    <View className='a' onTap={this.call.bind(this)}>拨打电话</View>
+                                </View>
                             </View>
                         </View>
                         <View className='sbtn'>
-                            {details.status==3 ? "付款信息待审核":''}
-                            {details.status==4 ? "待分配供应商":''}
-                            {details.status<=2 && <View className='smbtn' onTap={this.went.bind(this, "/pages/qxorder/index?logid=" + details.id)}>取消订单</View>}
-                            {details.status==2 && <View className='smbtn' onTap={this.went.bind(this, "/pages/logupload/index?logid=" + details.id)}>支付</View>}
-                            {details.status==5 && <View className='smbtn' onTap={this.notify.bind(this,details.id)}>提醒运输</View>}
-                            {details.status==6 && <View className='smbtn' onTap={this.orderok.bind(this,details.id)}>确认送达</View>}
-                            {(details.status>=6 && details.status<8 )&& (details.is_appeal?<View className='smbtn' onTap={this.went.bind(this, "/pages/appealDetails/index?logid=" + details.appeal_id)}>申诉详情</View>:
-                            <View className='smbtn' onTap={this.went.bind(this,"/pages/appeal/index?order_id="+details.id)}>申诉</View>)}
-                            {details.status==8 && <View className='smbtn' onTap={this.del.bind(this,details.id)}>删除订单</View>}
+                            {details.status == 3 ? "付款信息待审核" : ''}
+                            {details.status == 4 ? "待分配供应商" : ''}
+                            {details.status <= 2 && <View className='smbtn' onTap={this.went.bind(this, "/pages/qxorder/index?logid=" + details.id)}>取消订单</View>}
+                            {(details.status == 2) && <View className='smbtn' onTap={this.went.bind(this, "/pages/logupload/index?logid=" + details.id)}>支付</View>}
+                            {details.status == 5 && <View className='smbtn' onTap={this.notify.bind(this, details.id)}>提醒运输</View>}
+                            {details.status == 6 && <View className='smbtn' onTap={this.orderok.bind(this, details.id)}>确认送达</View>}
+                            {(details.status >= 6 && details.status < 8) && (details.is_appeal ? <View className='smbtn' onTap={this.went.bind(this, "/pages/appealDetails/index?logid=" + details.appeal_id)}>申诉详情</View> :
+                                <View className='smbtn' onTap={this.went.bind(this, "/pages/appeal/index?order_id=" + details.id)}>申诉</View>)}
+                            {details.status == 8 && <View className='smbtn' onTap={this.del.bind(this, details.id)}>删除订单</View>}
                         </View>
                     </View>}
             </View>

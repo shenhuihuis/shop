@@ -33,7 +33,7 @@ export default class buyput extends Component {
         this.setState({
             specs:arr,
             key: key,
-            num:this.props.info.num,
+            num:this.props.info.num || 1,
             type:this.props.info.type,
             value:this.props.info.num,
            // current:key[0]

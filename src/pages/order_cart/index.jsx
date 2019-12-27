@@ -64,13 +64,19 @@ class Order_cart extends Component {
             address_id:address.id,
             data:data
         }).then(e=>{
-            Taro.showToast({
-                title: "已下单成功",
-                icon: 'success',
-                duration: 1000
+            data.map(ele=>{
+                $http.post("cart/del", {
+                    ids: ele.cart_ids
+                }).then(e => {
+                    Taro.showToast({
+                        title: "已下单成功",
+                        icon: 'success',
+                        duration: 1000
+                    })
+                    setGlobalData("product",null)
+                    Taro.redirectTo({url:'/pages/orderlist/index'})
+                })
             })
-            setGlobalData("product",null)
-            Taro.redirectTo({url:'/pages/orderlist/index'})
         })
     }
     render() { 
@@ -123,7 +129,7 @@ class Order_cart extends Component {
                  <View className='p'>*若订单内有不包邮的商品，则该订单需平台进行运费设置方可进行支付</View>
                 <View className='sbtn'>
                     <View className='lf'>
-                        合计： <text>¥{info.money}</text>
+                        合计： <text>¥{(info.money || 0).toFixed(2)}</text>
                        {/* <View className='b'>(不含运费)</View> */}
                     </View>
                     <View className='sub' onTap={this.sub.bind(this)}>提交订单</View>

@@ -3,6 +3,7 @@ import { View, Text, Swiper, SwiperItem } from '@tarojs/components'
 import './index.less'
 import Navs from "./../../components/nav"
 import txt from "./../../assets/img/hangpin@2x.png"
+import lazy from "./../../assets/img/lazy-index.png"
 import BUY from '../../components/buy'
 import $http from "@public/server"
 import { setGlobalData, getGlobalData } from "@public/global_data"
@@ -24,6 +25,8 @@ export default class Index extends Component {
   }
   config = {
     navigationBarTitleText: '首页',
+    enablePullDownRefresh: true, 
+    onReachBottomDistance:50
   }
   
   componentWillMount() {
@@ -39,6 +42,17 @@ export default class Index extends Component {
     // .catch(err => console.log(err))x
     this.getIndex()
   }
+  onPullDownRefresh(){
+    this.setState((preState) => {
+        preState.scrollTop=0;
+        preState.page=1;
+        preState.list=[];
+    })
+    setTimeout(e=>{
+        this.getList();
+        Taro.stopPullDownRefresh()
+    },500)
+}
   toTop=()=>{
     wx.pageScrollTo({
       scrollTop: 0
@@ -129,7 +143,7 @@ export default class Index extends Component {
       })
     })
     $http.get("app").then(e => {
-      setGlobalData("tel", e.tell)
+      setGlobalData("tel", e.tel)
     })
     this.getList();
     $http.get("account").then(user => {
@@ -137,6 +151,10 @@ export default class Index extends Component {
         status:user.status,
         isLog: true
       })
+      if(!Taro.getStorageSync("name")){
+        Taro.setStorageSync("name",user.wx_nickname)
+        Taro.setStorageSync("avatarUrl",user.wx_img)
+      }
       Taro.setStorageSync("status",user.status)
     })
     // $http.get("cart").then(e => {
@@ -162,8 +180,14 @@ export default class Index extends Component {
     }
   }
   getList=()=>{
+    Taro.showLoading({
+      title:"正在加载中"
+    })
     let list=this.state.list;
     $http.get("product", { is_flag: true, limit: 10,page:this.state.page }).then(e => {
+      for(let val of e.list){
+        val.isload=false;
+      }
       this.setState({
         count:e.count,
         list: list.concat(e.list)
@@ -182,6 +206,11 @@ export default class Index extends Component {
   handleClose=()=>{
     this.setState({
       isshow:false
+    })
+  }
+  imgs = (index) => {
+    this.setState(preState => {
+        preState.list[index].isload = true;
     })
   }
   render() {
@@ -205,7 +234,7 @@ export default class Index extends Component {
           {
             this.state.banner.length > 0 &&
             <View className='banner'>
-              <Swiper indicatorColor='#999' indicatorActiveColor='#333' circular autoplay>
+            <Swiper indicatorColor='#ccc' indicatorActiveColor='#319F5F' indicatorDots={true} circular autoplay interval={4000} >
                 {
                   banner.map(e => {
                     return (
@@ -236,10 +265,10 @@ export default class Index extends Component {
             </View>
             <View className='ul'>
               {
-                list.map(element => {
+                list.map((element,index) => {
                   return (
                     <View className='li' key={element.id}>
-                      <Image mode='aspectFill' src={element.img} onTap={this.went.bind(this, element.id)}></Image>
+                      <Image mode='aspectFill' src={element.isload ? element.img : lazy} lazy-load='true' onload={this.imgs.bind(this, index)} onTap={this.went.bind(this, element.id)} ></Image>
                       <View className='tit'>{element.title}</View>
                       <View className='bot'>
                         <View className='lf'>

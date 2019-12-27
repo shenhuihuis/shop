@@ -7,8 +7,8 @@ class Logistics extends Component {
         navigationBarTitleText: '找物流',
         navigationBarBackgroundColor: '#319F5F',
         navigationBarTextStyle: 'white',
-        // enablePullDownRefresh: true,
-        // onReachBottomDistance: 50
+        enablePullDownRefresh: true,
+        onReachBottomDistance: 50
     }
     constructor(props) {
         super(props);
@@ -102,28 +102,28 @@ class Logistics extends Component {
         return (
             <View className='logistics'>
                 {this.showTop && <View className='toTop' onTap={this.toTop.bind(this)}></View>}
-                <View className='tp'>
+                <View className='tp' onTap={this.went.bind(this, "/pages/demand/index")}>
                     <View className='tit'>
                         找物流
                        <Text>不用出门直接送到家</Text>
                     </View>
                     <View className='cbox'>
-                        <View className='btn' onTap={this.went.bind(this, "/pages/demand/index")}>填写物流需求</View>
+                        <View className='btn'>填写物流需求</View>
                     </View>
                 </View>
                 <View className='htit'>优质供应商</View>
                 {
                     this.state.loading && (this.state.count == 0 ? <View className='nobg'>暂无供应商</View> :
                        <View className='list'>
-                        <ScrollView  scrollY  style={hei} lowerThreshold={30} onScrolltolower={this.onScroll}   onScroll={this.scrolling} scrollTop={this.state.scrollTop}>
+                        <ScrollView  scrollY  style={hei} lowerThreshold={30} onScrolltolower={this.onScroll}  scrollTop={this.state.scrollTop}>
                             {this.state.list.map(e => {
                                 return (
-                                    <View className='li' key={e.id}>
+                                    <View className='li' key={e.id}  onTap={this.went.bind(this, "/pages/demand_details/index?supplier_id=" + e.id)}>
                                         <View className='lf'>
                                             <Image mode='aspectFill' src={e.img}></Image>
                                             <View className='name'>{e.uname}</View>
                                         </View>
-                                        <View className='see' onTap={this.went.bind(this, "/pages/demand_details/index?supplier_id=" + e.id)}>查看详情</View>
+                                        <View className='see'>查看详情</View>
                                     </View>
                                 )
                             })}

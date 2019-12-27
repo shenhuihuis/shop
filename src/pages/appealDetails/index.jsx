@@ -2,6 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View ,Text} from '@tarojs/components'
 import './index.less'
 import $http from '@public/server'
+import {previewImage} from "@public/utils"
 class AppealDetails extends Component {
     config = {
         navigationBarTitleText: '申诉详情',
@@ -14,7 +15,7 @@ class AppealDetails extends Component {
             details:{}
         }
     }
-    componentWillMount(){
+    componentDidMount(){
         this.init()
     }
     init = () =>{
@@ -48,19 +49,25 @@ class AppealDetails extends Component {
             })
         }
     }
+    previewImage=(current)=>{
+        Taro.previewImage({
+            current: current, // 当前显示图片的http链接
+            urls: this.state.details.imgs // 需要预览的图片http链接列表
+        })
+    }
     render() { 
         let details=this.state.details;
         return ( 
             <View className='appealDetails'>
                 <View className='tp'>
-                    <View className='type'>{details.status==4?"已取消":(details.status==1?"待处理":"已处理")}</View>
-                    <View className='say'>{details.status==3?"申诉提交成功，请等待平台处理":(details.status==1?"待处理":"已处理")}</View>
+                    <View className='type'>{details.status==4?"已取消":(details.status==1?"待处理":(details.status==3?"已处理":'已拒绝'))}</View>
+                    <View className='say'>{details.status==1 ? "申诉提交成功，请等待平台处理":""}</View>
                 </View>
                 {
                    details.status==3 && 
                    <View className='li'>
                         <View className='label'>退款金额</View>
-                        <Text>{details.price || details.money}</Text>
+                        <Text>{details.price || details.money || 0}</Text>
                     </View>
                 }
                 <View className='li'>
@@ -75,10 +82,14 @@ class AppealDetails extends Component {
                     <View className='label'>详细描述</View>
                     <View className='txt'>{details.info}</View>
                 </View>
+               {details.do_note && <View className='smli'>
+                    <View className='label'>处理反馈</View>
+                    <View className='txt'>{details.do_note}</View>
+                </View>}
                 <View className='imglist'>
                   { details.imgs.map(ele=>{
                        return (
-                        <Image src={ele} mode='aspectFill'></Image>
+                        <Image src={ele} mode='aspectFill' onTap={this.previewImage.bind(this,ele)}></Image>
                        )
                    })}
                 </View>

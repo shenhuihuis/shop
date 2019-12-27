@@ -42,10 +42,10 @@ class Add_list extends Component {
     went = (e) =>{      //去商品详情
         Taro.navigateTo({url:"/pages/details/index?id="+e})
     }
-    collected = (id) => {
+    collected = () => {
         let is_favorite = this.state.company.is_favorite,
             url = is_favorite ? "account/favorite/supplier/del" : "account/favorite/supplier";
-        $http.post(url, { supplier_id:id}).then(e => {
+        $http.post(url, { supplier_id:this.state.company.favorite_id || this.state.company.id}).then(e => {
             this.setState((preState) => {
                 preState.company.is_favorite = !is_favorite;
             })
@@ -155,7 +155,7 @@ class Add_list extends Component {
                             <View className='i' onTap={this.want.bind(this,this.state.form.supplier_id)}>详细资料</View>
                         </View>
                     </View>
-                    <View className={`btn ${this.state.company.is_favorite ? "btned" : ""}`} onTap={this.collected.bind(this, this.state.form.supplier_id)}>{this.state.company.is_favorite?"已收藏":"收藏"}</View>
+                    <View className={`btn ${this.state.company.is_favorite ? "btned" : ""}`} onTap={this.collected.bind(this)}>{this.state.company.is_favorite?"已收藏":"收藏"}</View>
                 </View>
                 <View className='navs'>
                     {

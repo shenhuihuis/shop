@@ -7,7 +7,7 @@ import {setGlobalData} from "@public/global_data"
 class Order extends Component {
     constructor(props) {
         super(props);
-        this.state = {  
+        this.state = {      
             status:0,
             uname:Taro.getStorageSync("name"),
             img:Taro.getStorageSync("avatarUrl")
@@ -16,7 +16,8 @@ class Order extends Component {
     config = {
         navigationBarTitleText: '个人中心'
     }
-    componentDidMount(){
+    componentDidShow(){
+        
         Taro.hideHomeButton()
         if(Taro.getStorageSync("status")!=3){
             $http.get("account").then(user=>{

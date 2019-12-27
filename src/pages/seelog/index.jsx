@@ -58,6 +58,10 @@ class Seelog extends Component {
                     })
                     }
                 </View> : <View className='conbox cterbox'>
+                      {track[0].track_company && <View className='li'>
+                            <View className='label'>物流公司</View>
+                            <Text>{track[0].track_company}</Text>
+                        </View>}
                         <View className='li'>
                             <View className='label'>物流单号</View>
                             <Text>{track[0].track_no}</Text>

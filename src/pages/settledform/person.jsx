@@ -12,7 +12,7 @@ class Company extends Component {
                 imgs4: '',
                 imgs2: []
             },
-            imgs2: [null], //相关许可证件
+            imgs2: [], //相关许可证件
             imgs3: [null, null], //身份证正反面
             imgs4: [null], //开户卡 
             reg: {
@@ -163,7 +163,7 @@ class Company extends Component {
             });
             return false;
         }
-        if (this.state.imgs2[0] == null) {
+        if (this.state.imgs2.length==0) {
             Taro.showToast({
                 title: "请上传相关许可证",
                 icon: 'none',
@@ -198,7 +198,7 @@ class Company extends Component {
                     </View>
                     <View className='li'>
                         <View className='label'>身份证号</View>
-                        <Input placeholder='请填写您的身份证号吗' type='text' onChange={this.bindValue.bind(this, "china_id")} value={this.state.form.china_id}></Input>
+                        <Input placeholder='请填写您的身份证号' type='text' onChange={this.bindValue.bind(this, "china_id")} value={this.state.form.china_id}></Input>
                     </View>
                     <View className='li'>
                         <View className='label'>联系电话</View>

@@ -110,7 +110,7 @@ class Order extends Component {
         $http.get("account/track/order", this.state.form).then(e => {
             this.setState({
                 count: e.count,
-                list: e.list,
+                list:this.state.list.concat(e.list),
                 load: true
             })
             Taro.hideLoading()
@@ -128,7 +128,8 @@ class Order extends Component {
         })
     }
     render() {
-        const tabList = this.state.tabList,list=this.state.list;
+        const tabList = this.state.tabList;
+        let list=this.state.list;
         let hei;
         wx.getSystemInfo({
             success: function (res) {

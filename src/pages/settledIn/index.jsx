@@ -15,7 +15,7 @@ class Settle extends Component {
     }
     went=(type,e)=>{
         e.stopPropagation()
-        Taro.navigateTo({url:"/pages/settledyz/index?type="+type})
+        Taro.redirectTo({url:"/pages/settledyz/index?type="+type})
     }
     render() { 
         return ( 

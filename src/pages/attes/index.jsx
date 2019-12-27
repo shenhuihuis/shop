@@ -16,14 +16,30 @@ class Order extends Component {
     }
     went=()=>{
         let info=this.state.info;
-        Taro.redirectTo({url:'/pages/attes_ing/index?phone='+info.tel+"&type="+info.type})
+     //   Taro.redirectTo({url:'/pages/attes_ing/index?phone='+info.tel+"&type="+info.type})
+         Taro.navigateTo({ url: '/pages/toattes/index'})
     }
     componentWillMount() {
         $http.get("account/audit").then(e => {
             e.status=Taro.getStorageSync("status")
+            e.img3=e.imgs3.map(ele=>{
+                return ele.url
+            })
+            e.img2=e.imgs2.map(ele=>{
+                return ele.url
+            })
+            e.img1=e.imgs1.map(ele=>{
+                return ele.url
+            })
             this.setState({
                 info: e
             })
+        })
+    }
+    previewImage=(current,urls)=>{
+        Taro.previewImage({
+            current: current, // 当前显示图片的http链接
+            urls:urls// 需要预览的图片http链接列表
         })
     }
     render() {
@@ -43,7 +59,7 @@ class Order extends Component {
                     </View>}
                     {info.type == 2 && <View className='li'>
                         <View className='tit'>税号</View>
-                        <View className='span'>{info.company_taxcompany_tax}</View>
+                        <View className='span'>{info.company_tax}</View>
                     </View>}
                     <View className='li'>
                         <View className='tit'>姓名</View>
@@ -57,21 +73,25 @@ class Order extends Component {
                         <View className='tit'>联系电话</View>
                         <View className='span'>{info.tel}</View>
                     </View>
+                   {info.status==2 &&  <View className='li'>
+                        <View className='tit'>审核失败原因</View>
+                        <View className='span'>{info.reason}</View>
+                    </View>}
                 </View>
                 <View className='list'>
                     {info.type == 2 && <View className='smli'>
                         <View className='tit'>营业执照</View>
-                        <View className='imgbox'>
-                            <Image mode='aspectFill' src={info.imgs1[0]}></Image>
+                        <View className='imgbox' onTap={this.previewImage.bind(this,info.img1[0],info.img1)}>
+                            <Image mode='aspectFill' src={info.img1[0]}></Image>
                         </View>
                     </View>
                     }
                     <View className='smli'>
                         <View className='tit'>身份证正、反面</View>
                         <View className='imgbox'>
-                            {info.imgs3.map(ele => {
+                            {info.img3.map((ele,index) => {
                                 return (
-                                    <Image mode='aspectFill' src={ele.url}></Image>
+                                    <Image mode='aspectFill' src={ele} onTap={this.previewImage.bind(this,ele,info.img3)}></Image>
                                 )
                             })}
                         </View>
@@ -80,7 +100,7 @@ class Order extends Component {
                         info.type == 2 && <View className='smli'>
                             <View className='tit'>相关许可证</View>
                             <View className='imgbox'>
-                            <Image mode='aspectFill' src={info.imgs2[0]}></Image>
+                            <Image mode='aspectFill' src={info.img2[0]} onTap={this.previewImage.bind(this,info.img2[0],info.img2)}></Image>
                             </View>
                         </View>
                     }

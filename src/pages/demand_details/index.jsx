@@ -22,10 +22,11 @@ class Demand_Details extends Component {
             WxParse.wxParse('article', 'html', e.intro, this.$scope, 5)
         })
     }
-    collected = (id) => {
+    collected = (favorite_id,id) => {
         let is_favorite = this.state.company.is_favorite,
             url = is_favorite ? "account/favorite/supplier/del" : "account/favorite/supplier";
-        $http.post(url, { supplier_id:id}).then(e => {
+       // let ids=favorite_id==0?id:favorite_id
+        $http.post(url, { supplier_id:favorite_id}).then(e => {
             this.setState((preState) => {
                 preState.company.is_favorite = !is_favorite;
             })
@@ -50,7 +51,7 @@ class Demand_Details extends Component {
                         <View className='tit'>{company.uname}</View>
                         <View className={`say ${company.role>=5?"i":""}`}>{company.role>=5?"物流供应":"商品供应"}</View>
                     </View>
-                    <View className={`btn ${company.is_favorite ? "btned" : ""}`} onTap={this.collected.bind(this, company.id)}>{company.is_favorite?"已收藏":"收藏"}</View>
+                    <View className={`btn ${company.is_favorite ? "btned" : ""}`} onTap={this.collected.bind(this, company.favorite_id,company.id)}>{company.is_favorite?"已收藏":"收藏"}</View>
                 </View>
                 <View className='h2'>供应商简介</View>
                 {<View className='say'>

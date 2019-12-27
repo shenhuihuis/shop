@@ -55,6 +55,14 @@ class Demand extends Component {
     }
     init =()=>{
         $http.get("track/category").then(e=>{
+            e.map(ele=>{
+                if(ele.list.length==0){
+                    ele.list.push({
+                        id:ele.id,
+                        title:ele.title
+                    })
+                }
+            })
             this.setState({
                 category:e,
                 catelist:[e,e[0].list]
@@ -301,7 +309,7 @@ class Demand extends Component {
                         <View className='label'>物品重量</View>
                         <View className='input'>
                             <Input placeholder='请填写物品质量' type='number' onChange={this.bindValue.bind(this,"weight")}></Input>
-                            <View className='span'>kg*</View>
+                            <View className='span'>kg </View>
                         </View>
                     </View>
                     <View className='li'>

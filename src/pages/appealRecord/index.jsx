@@ -22,7 +22,7 @@ class Record extends Component {
         enablePullDownRefresh: true,
         onReachBottomDistance: 50
     }
-    componentDidShow() {
+    componentDidMount() {
         let params=this.$router.params;
         this.secked(params.index*1 || 0)
     }

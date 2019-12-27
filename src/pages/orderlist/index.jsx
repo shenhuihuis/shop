@@ -90,11 +90,22 @@ class Order extends Component {
     }
     pay=(id)=>{
         $http.post("account/order/pay",{id:id}).then(e=>{
-            Taro.showToast({
-                title:"支付成功",
-                icon:"success"
+          
+            wx.requestPayment({
+                timeStamp: e.timeStamp,
+                nonceStr: e.nonceStr,
+                package: e.package,
+                signType: 'MD5',
+                paySign: e.paySign,
+                success:(res)=>{
+                    Taro.showToast({
+                        title:"支付成功",
+                        icon:"success"
+                    })
+                    this.handleClick(this.state.current)
+                }
             })
-            this.handleClick(this.state.current)
+           
         })
     }
     orderok=(id,index)=>{           //确认收货

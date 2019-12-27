@@ -105,7 +105,7 @@ class Order extends Component {
                 </View>
                 <View className='sbtn'>
                     <View className='lf'>
-                        合计： <text>¥{info.price*(info.num*1)}</text>
+                        合计： <text>¥{((info.price*(info.num*1)) || 0).toFixed(2)}</text>
                        {/* <View className='b'>(不含运费)</View>*/}
                     </View>
                     <View className='sub' onTap={this.sub.bind(this)}>提交订单</View>

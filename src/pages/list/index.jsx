@@ -2,6 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View ,ScrollView} from '@tarojs/components'
 import './index.less'
 import $http from "@public/server"
+import lazy from "./../../assets/img/lazy-index.png"
 class List extends Component {
     config = {
         navigationBarTitleText: '商品',
@@ -25,7 +26,7 @@ class List extends Component {
             count:null,        //总数量
             form:{
                 page:1,
-                limit:10,
+                limit:10,   
                 search:'',          //搜索名
                 price:1,            //价格 1降下 2生序
                 sell:false,         //销量排行
@@ -43,16 +44,20 @@ class List extends Component {
        
     }
     getCar=()=>{
-        $http.get("cart").then(e => {
+        var num=0;
+        $http.get("cart").then(e => { 
+            e.map(ele=>{
+               num +=ele.data.length
+            })
             this.setState({
-                carnum:e.length
+                carnum:num
             })
         })
     }
     componentDidMount(){
         this.getList()
     }
-    onScroll=()=>{
+    onReachBottom(e){
         if(this.state.list.length>=this.state.count) return false;
         else{
             Taro.showLoading({
@@ -125,6 +130,9 @@ class List extends Component {
             }
         }
         $http.get("product",form).then(e=>{
+           for(let val of e.list){
+                val.isload=false;
+            }
             this.setState({
                 loading:true,
                 count:e.count,
@@ -152,67 +160,73 @@ class List extends Component {
         },1000)
        
     }
-    scrolling=(e)=>{
-       let top=e.detail.scrollTop,bool;
-       if(top>400){
-            bool=true;
-       }else{
-            bool=false;
-       }
-       this.setState({
-            scrollTop:top,
-            showTop:bool
-       })
+    onPageScroll(e){
+        let top=e.scrollTop,bool;
+        if(top>400){
+             bool=true;
+        }else{
+             bool=false;
+        }
+        this.setState({
+             showTop:bool
+        })
     }
     toTop=(e)=>{
-        e.stopPropagation() 
-        this.setState({
-            scrollTop: 0
+        wx.pageScrollTo({
+        scrollTop: 0
         })
     }
     tocar = () =>{
         Taro.navigateTo({url:"/pages/carlist/index"})
     }
-    render() { 
-        let hei,list=this.state.list;
-        wx.getSystemInfo({
-            success:function (res) {
-                let height = (res.windowHeight * (750 / res.windowWidth)); //将高度乘以换算后的该设备的rpx与px的比例
-                hei={height:height-172 +'rpx'}
-            }
+    imgs = (index) => {
+        this.setState(preState => {
+            preState.list[index].isload = true;
         })
+    }
+    render() { 
+        let list=this.state.list;
+        // wx.getSystemInfo({
+        //     success:function (res) {
+        //         let height = (res.windowHeight * (750 / res.windowWidth)); //将高度乘以换算后的该设备的rpx与px的比例
+        //         hei={height:height-172 +'rpx'}
+        //     }
+        // })
         return (
             <View classsName='contair'>
                 {this.showTop && <View className='toTop' onTap={this.toTop.bind(this)}></View>}
-                <View className='tp'>
-                    <View class='find'>
-                        <Input type='text' placeholder='输入商品名称' confirm-type='search' onConfirm={this.seach.bind(this)} value={this.state.form.search}/>
-                        <View className='ico' onTap={this.tocar.bind(this)}>
-                            {this.state.carnum>0 && <View className='num'>{this.state.carnum}</View>}
+                <View className='topfix'>
+                    <View className='tp'>
+                        <View class='find'>
+                            <Input type='text' placeholder='输入商品名称' confirm-type='search' onConfirm={this.seach.bind(this)} value={this.state.form.search}/>
+                            <View className='ico' onTap={this.tocar.bind(this)}>
+                                {this.state.carnum>0 && <View className='num'>{this.state.carnum}</View>}
+                            </View>
                         </View>
                     </View>
-                </View>
-                <View className='navs'>
-                    {
-                        this.state.nav.map((e,index)=>{
-                            return <View key={index} className={`a ${e.checked?"active":""}`}  onClick={this.ck.bind(this,index)}>
-                                {e.tit}
-                                {
-                                    index==1 &&  <View className='tab'>
-                                        <View className={`up ${e.order ? "uact":""}`}></View>
-                                        <View className={`down ${!e.order? "uact":""}`}></View>
-                                    </View> 
-                                }
-                            </View>
-                        })
-                    }
-                </View>
-                {this.state.loading && (this.state.count>0 && list.length>0?<ScrollView enableBackToTop="true" className='list' scrollY  style={hei} lowerThreshold={30}  onScrolltolower={this.onScroll} onScroll={this.scrolling} scrollTop={this.state.scrollTop} ref='lists'>
+                    <View className='navs'>
                         {
-                            list.map(element=>{
+                            this.state.nav.map((e,index)=>{
+                                return <View key={index} className={`a ${e.checked?"active":""}`}  onClick={this.ck.bind(this,index)}>
+                                    {e.tit}
+                                    {
+                                        index==1 &&  <View className='tab'>
+                                            <View className={`up ${e.order ? "uact":""}`}></View>
+                                            <View className={`down ${!e.order? "uact":""}`}></View>
+                                        </View> 
+                                    }
+                                </View>
+                            })
+                        }
+                    </View>
+                </View>
+                {this.state.loading && (this.state.count>0 && list.length>0?//<View className='list' scrollY  style={hei} lowerThreshold={30}  onScrolltolower={this.onScroll} onScroll={this.scrolling} scrollTop={this.state.scrollTop} ref='lists'>
+                    <View className='list'>
+                        {
+                            list.map((element,index)=>{
                                 return(
                                     <View className='li' key={element.id}  onTap={this.went.bind(this,element.id)}>
-                                        <Image mode='aspectFill' src={element.img}></Image>
+                                        <Image mode='aspectFill' src={element.isload ? element.img : lazy} lazy-load='true' onload={this.imgs.bind(this, index)}></Image>
                                         <View className='tit'>{element.title}</View>
                                         <View className='bot'>
                                             <View className='money'> 
@@ -224,7 +238,7 @@ class List extends Component {
                                 )
                             })
                         }
-                    </ScrollView>:<View className='nobg'>暂无商品</View>)
+                    </View>:<View className='nobg'>暂无商品</View>)
                 }
             </View>
         );

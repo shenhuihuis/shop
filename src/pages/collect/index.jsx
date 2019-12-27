@@ -57,7 +57,6 @@ class Collect extends Component {
             preState.scrollTop = 0;
             preState.form.page = 1;
             preState.list = []
-            preState.load = false;
         })
         setTimeout(e => {
             this.getList(this.state.current)
@@ -81,7 +80,7 @@ class Collect extends Component {
         e.stopPropagation()
         let list = this.state.list;
         $http.post("account/favorite/supplier/del", {
-            supplier_id: ele.product_id,
+            supplier_id: ele.id,
         }).then(e => {
             list.splice(index, 1);
             this.setState({
@@ -152,7 +151,7 @@ class Collect extends Component {
                                 list.length==0?<View className='nobg'></View>:
                                 list.map((ele,index)=>{
                                     return (
-                                    <View className='li' key={ele.id} onTap={this.want.bind(this,ele.product_id)}>
+                                    <View className='li' key={ele.id} onTap={this.want.bind(this,ele.product_id)}  key={ele.id}>
                                         <Image src={ele.img}  mode='aspectFill'></Image>
                                         <View className='tit'>{ele.title}</View>
                                         <View className='bot'>
@@ -174,7 +173,7 @@ class Collect extends Component {
                                     {
                                         list.map((ele, index) => {
                                             return (
-                                                <View className='li' onTap={this.went.bind(this,ele.id)}>
+                                                <View className='li' onTap={this.went.bind(this,ele.supplier_id)} key={ele.id}>
                                                     <View className='lf'>
                                                         <Image src={ele.img} mode='aspectFill'></Image>
                                                         <View className='tit'>{ele.uname}</View>

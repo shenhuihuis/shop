@@ -14,10 +14,10 @@ class Order extends Component {
                 imgs3_0: '',
                 imgs3_1: '',
                 imgs1: '',
-                imgs2: ''
+                imgs2: []
             },
             imgs1: [null], //营业执照
-            imgs2: [null],//相关许可证件f
+            imgs2: [],//相关许可证件f
             imgs3: [null, null],//身份证正反面
             reg: {
                 real_name: { zero: '请填写您的姓名' },
@@ -42,7 +42,7 @@ class Order extends Component {
     componentWillMount() {
         let params = this.$router.params;
         this.setState({
-            type: params.type * 1,
+            type: params.type * 1 || 2,
             phone: params.phone
         })
     }
@@ -56,10 +56,18 @@ class Order extends Component {
         })
     }
     del = (key, index, path) => {
-        this.setState((preState) => {
-            preState.Imgurl[path] = '';
-            preState[key][index] = null;
-        })
+        this.setState(preState => {
+            let imgs=preState.Imgurl[path],keys=preState[key];
+            if(key=="imgs2"){
+                imgs.splice(index,1);
+                keys.splice(index,1);
+            }else{
+                imgs = '';
+                keys[index] = null
+            }
+            preState.Imgurl[path]=imgs
+            preState[key]=keys;
+        });
     }
     changeAvatar = (key, index, path) => {
         let token = Taro.getStorageSync("token"), _this = this;
@@ -87,8 +95,13 @@ class Order extends Component {
                                     duration: 1000
                                 })
                                 _this.setState((preState) => {
-                                    preState.Imgurl[path] = tempFilePaths[0];
-                                    preState[key][index] = data.data[0].id
+                                    if(key=="imgs2"){
+                                        preState.Imgurl[path] = preState.Imgurl[path].concat(tempFilePaths[0]);
+                                        preState[key]=preState[key].concat(data.data[0].id);
+                                    }else{
+                                        preState.Imgurl[path] = tempFilePaths[0];
+                                        preState[key][index] = data.data[0].id;
+                                    }
                                 })
                             } else {
                                 Taro.showToast({
@@ -145,7 +158,7 @@ class Order extends Component {
             })
             return false;
         }
-        if (type == 2 && this.state.imgs2[0] == null) {
+        if (type == 2 && this.state.imgs2.length==0) {
             Taro.showToast({
                 title: "请上传相关许可证",
                 icon: 'none',
@@ -255,20 +268,27 @@ class Order extends Component {
                         </View>
                     }
                     {
-                        type == 2 &&
-                        <View className='smli'>
+                        type == 2 && <View className='smli'>
                             <View className='tit'>相关许可证</View>
                             <View className='imgbox'>
                                 {
-                                    this.state.imgs2[0] == null ? <View className='imgs' onTap={this.changeAvatar.bind(this, "imgs2", 0, "imgs2")}>上传相关许可证</View> :
-                                        <View className='imgsbefor'>
-                                            <View class='at-icon at-icon-close-circle close' onTap={this.del.bind(this, "imgs2", 0, "imgs2")}></View>
-                                            <Image mode='aspectFill' src={this.state.Imgurl.imgs2}></Image>
-                                        </View>
+                                    this.state.Imgurl.imgs2.map((ele,index)=>{
+                                        return (
+                                            <View className="imgsbefor">
+                                                <View class='at-icon at-icon-close-circle close'  onTap={this.del.bind(this, "imgs2", index, "imgs2")}></View>
+                                                <Image mode="aspectFill" src={ele}></Image>
+                                            </View>
+                                        )
+                                    })
+                                    
+                                }
+                                {
+                                    this.state.imgs2.length<6 && <View className='imgs' onTap={this.changeAvatar.bind(this,"imgs2", 0, "imgs2")}>上传相关许可证</View>
                                 }
                             </View>
-                        </View>
+                         </View>   
                     }
+                    
                 </View>
                 <View className='bton'>
                     <View className='sub' onTap={this.sub.bind(this)}>确认提交</View>

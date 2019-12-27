@@ -17,10 +17,12 @@ class Order extends Component {
         }
     }
     config = {
-        navigationBarTitleText: '购物车'
+        navigationBarTitleText: '购物车',
+        // enablePullDownRefresh: true, 
+        // onReachBottomDistance:50
     }
 
-    componentDidMount() {
+    componentDidShow() {
         let _this = this;
         wx.getSystemInfo({
             success: function (res) {
@@ -33,6 +35,8 @@ class Order extends Component {
         })
         Taro.hideHomeButton()
         this.init();
+    }
+    componentDidMount(){
         
     }
     init = () => {
@@ -114,7 +118,7 @@ class Order extends Component {
         this.setState(preState => {
             preState.list[ind].data[index].num = e * 1
         })
-        $http.post("cart",{
+        $http.post("cart/num",{
             product_id:element.product_id,
             spec_id:element.spec_id,
             num:e * 1
@@ -124,6 +128,9 @@ class Order extends Component {
                 this.getmoney();
             }, 300)
         })
+    }
+    went = (id) =>{
+        Taro.navigateTo({url:'/pages/details/index?id='+id})
     }
     del = (ind, index) => {
         let list = this.state.list;
@@ -194,17 +201,16 @@ class Order extends Component {
                                                     <View className='cter'>
                                                         {
                                                             e.data.map((element, index) => {
-                                                                { element }
                                                                 return (
                                                                     <AtSwipeAction onClick={this.del.bind(this, ind, index)} options={[{ text: '删除', style: { backgroundColor: '#de544c', width:"124rpx;",padding:0,justifyContent:"center",marginLeft:"10rpx"} }]}>
                                                                         <View className="dd" key={element.id}>
                                                                             <View className='conlf'>
-                                                                                <View className='lf' onTap={this.ckbind.bind(this, ind, index)}>
-                                                                                    <View className={`radio ${element.checked ? "cked" : ""}`}></View>
-                                                                                    <Image src={element.img} mode='aspectFill'></Image>
+                                                                                <View className='lf'>
+                                                                                    <View className={`radio ${element.checked ? "cked" : ""}`}  onTap={this.ckbind.bind(this, ind, index)}></View>
+                                                                                    <Image src={element.img} mode='aspectFill' onTap={this.went.bind(this,element.product_id)}></Image>
                                                                                 </View>
                                                                                 <View className='cbname'>
-                                                                                    <View className='tit'>{element.title}</View>
+                                                                                    <View className='tit'  onTap={this.went.bind(this,element.product_id)}>{element.title}</View>
                                                                                     <View className='ibox'>
                                                                                         <View className='i'>{element.spec_title}</View>
                                                                                     </View>
@@ -234,7 +240,7 @@ class Order extends Component {
                                         <Text>全选</Text>
                                     </View>
                                     <View className='rt'>
-                                        <View className='txt'>合计： <Text>¥{this.state.money || 0}</Text></View>
+                                        <View className='txt'>合计： <Text>¥{(this.state.money  || 0).toFixed(2)}</Text></View>
                                         <View className='sub' onTap={this.sub.bind(this)}>提交订单</View>
                                     </View>
                                 </View>

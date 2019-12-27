@@ -10,6 +10,7 @@ import ico5 from "./../../assets/img/oico5.png"; //待收货
 import ico6 from "./../../assets/img/oico6.png"; //已完成
 import ico7 from "./../../assets/img/oico7.png"; //已取消
 import { orderStatus } from "@public/utils"
+import { getGlobalData } from "@public/global_data"
 class List extends Component {
     config = {
         navigationBarTitleText: '订单详情',
@@ -25,11 +26,20 @@ class List extends Component {
     }
     pay=(id)=>{
         $http.post("account/order/pay",{id:id}).then(e=>{
-            Taro.showToast({
-                title:"支付成功",
-                icon:"success"
+            wx.requestPayment({
+                timeStamp: e.timeStamp,
+                nonceStr: e.nonceStr,
+                package: e.package,
+                signType: 'MD5',
+                paySign: e.paySign,
+                success:(res) => {
+                    Taro.showToast({
+                        title: "支付成功",
+                        icon: "success"
+                    })
+                    this.init()
+                }
             })
-            this.init()
         })
     }
     componentDidShow() {
@@ -77,6 +87,11 @@ class List extends Component {
             })
         })
     }
+    call = () => {  //联系客服
+        Taro.makePhoneCall({
+            phoneNumber:getGlobalData("tel")
+        })
+    }
     render() {
         let details = this.state.details;
         let ico = [ico1, ico2, ico3,ico3, ico4, ico5, ico6, ico7]
@@ -112,7 +127,7 @@ class List extends Component {
                                                         ¥{ele.price} <Text>X{ele.num}</Text>
                                                     </View>
                                                 </View>
-                                               {(details.status>=5 && details.status<8) && (ele.is_appeal?<View className='appealbtn' onTap={this.went.bind(this, "/pages/appealDetails/index?id=" + ele.id+"&index="+index)}>申诉详情</View>:
+                                               {(details.status>=5 && details.status<8) && (ele.is_appeal?<View className='appealbtn' onTap={this.went.bind(this, "/pages/appealDetails/index?id=" + ele.appleal_id+"&index="+index)}>申诉详情</View>:
                                                 <View className='appealbtn' onTap={this.went.bind(this, "/pages/appeal/index?id=" + details.id+"&index="+index)}>申诉</View>)}
                                             </View>
                                         )
@@ -120,7 +135,7 @@ class List extends Component {
                                 }
                                 <View className='li'>
                                     <View className='label'>商品金额</View>
-                                    <Text>¥{details.money-details.track_fee}</Text>
+                                    <Text>¥{(details.money-details.track_fee).toFixed(2) || 0}</Text>
                                 </View>
                                 <View className='li'>
                                     <View className='label'>运费</View>
@@ -155,15 +170,15 @@ class List extends Component {
                                     </View>
                                 }
                                 {
-                                    details.status >= 5 && details.status != 8 && <View className='p'>
+                                    details.status >= 6 && details.status != 8 && <View className='p'>
                                         <View className='label'>发货时间:</View>
                                         {details.track_at}
                                     </View>
                                 }
                                 {
-                                    details.status >= 6 && details.status != 8 && <View className='p'>
+                                    details.status >= 7 && details.status != 8 && <View className='p'>
                                         <View className='label'>收货时间:</View>
-                                        {details.end_at_real}
+                                        {details.ok_at}
                                     </View>
                                 }
                                 {
@@ -172,6 +187,12 @@ class List extends Component {
                                         {details.cancel_at}
                                     </View>
                                 }
+                                <View className='callbtn'>
+                                    <View className='a'>
+                                        <Button  open-type="contact" session-from="weapp" >联系客服</Button>
+                                    </View>
+                                    <View className='a' onTap={this.call.bind(this)}>拨打电话</View>
+                                </View>
                             </View>
                         </View>
                         <View className='sbtn'>
