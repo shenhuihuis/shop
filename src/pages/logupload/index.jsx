@@ -2,6 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View ,Text} from '@tarojs/components'
 import './index.less'
 import $http from "@public/server"
+import WxParse from './../../components/wxParse/wxParse'
 class AppealDetails extends Component {
     config = {
         navigationBarTitleText: '上传支付凭证',
@@ -23,6 +24,9 @@ class AppealDetails extends Component {
             this.setState({
                 bank:e.bank
             })
+        })
+        $http.get("page/pay_intro").then(e=>{
+            WxParse.wxParse('article', 'html', e.content, this.$scope, 5)
         })
     }
     sub=()=>{
@@ -128,7 +132,7 @@ class AppealDetails extends Component {
                     </View>
                     <View className='smli'>
                         <View className='label'>支付说明</View>
-                        <Text>这里是一些支付说明</Text>
+                        <view className='p'><import src='../../components/wxParse/wxParse.wxml' /><template is='wxParse' data='{{wxParseData:article.nodes}}' /></view>
                     </View>
                 </View>
                 <View className='bton'>

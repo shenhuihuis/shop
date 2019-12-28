@@ -100,9 +100,12 @@ export default class Index extends Component {
     })
   }
   went = (e) => {      //去商品详情
+    if(e<0) return false;
+    else{
     this.toLink(()=>{
       Taro.navigateTo({ url: "/pages/details/index?id=" + e })
     })
+  }
   }
   seach = (e) => {   //搜索
     this.toLink(()=>{

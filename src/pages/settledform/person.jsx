@@ -2,10 +2,12 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import "./index.less"
 import $http from "@public/server"
+import { AtActionSheet, AtActionSheetItem } from "taro-ui"
 class Company extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isOpened:false,
             Imgurl: {
                 imgs3_0: '',
                 imgs3_1: '',
@@ -54,6 +56,7 @@ class Company extends Component {
                 imgs = '';
                 keys[index] = null
             }
+            preState.isOpened=false;
             preState.Imgurl[path] = imgs
             preState[key] = keys;
         });
@@ -105,24 +108,35 @@ class Company extends Component {
             }
         });
     }
-    changeAvatar = (key, index, path) => {
+    changeAvatar = (key, index, path,type) => {
         let _this = this;
         if (key == "imgs2") {
-            wx.chooseMessageFile({
-                type: "file",
-                count: 1,
-                success: (res) => {
-                    _this.success(key, index, path, res)
+                if(type==0){
+                    wx.chooseMessageFile({
+                        type: "file",
+                        count: 1,
+                        success: (res) => {
+                            _this.success(key, index, path, res)
+                        }
+                    })
+                }else{
+                    wx.chooseImage({
+                        count: 1,// 默认9
+
+                        sizeType: ['compressed'],// 可以指定是原图还是压缩图，默认二者都有
+                        success: (res) => {
+                            _this.success(key, index, path, res)
+                        }
+                    })
                 }
-            })
-        }else{
-            wx.chooseImage({
-                count: 1,// 默认9
-                sizeType: ['compressed'],// 可以指定是原图还是压缩图，默认二者都有
-                success: (res) => {
-                    _this.success(key, index, path, res)
-                }
-            })
+            }else{
+                wx.chooseImage({
+                    count: 1,// 默认9
+                    sizeType: ['compressed'],// 可以指定是原图还是压缩图，默认二者都有
+                    success: (res) => {
+                        _this.success(key, index, path, res)
+                    }
+                })
         }
     }
     onSubmit = (e) => {
@@ -178,7 +192,7 @@ class Company extends Component {
         form.type = this.state.type;
         Taro.showLoading({
             mask: true,
-            title: "供应商入驻信息正在提交"
+            title: "信息正在提交"
         })
         $http.post("account/supplier", form).then(e => {
             Taro.redirectTo({
@@ -187,10 +201,18 @@ class Company extends Component {
             Taro.hideLoading()
         })
     }
-
+    isshow=()=>{
+        this.setState({
+            isOpened:true
+        })
+    }
     render() {
         return (
             <View className='form'>
+                <AtActionSheet isOpened={this.state.isOpened && this.state.imgs2.length<6}>
+                    <AtActionSheetItem onClick={this.changeAvatar.bind(this,"imgs2",0,"imgs2",1)}> 上传图片</AtActionSheetItem>
+                    <AtActionSheetItem onClick={this.changeAvatar.bind(this,"imgs2",0,"imgs2",0)}>上传pdf</AtActionSheetItem>
+                </AtActionSheet>
                 <View className='formson'>
                     <View className='li'>
                         <View className='label'>姓名</View>
@@ -259,7 +281,7 @@ class Company extends Component {
                                     )
                                 })
                             }
-                            {this.state.imgs2.length < 6 && <View className='imgs' onTap={this.changeAvatar.bind(this, "imgs2", 0, "imgs2")}>上传相关许可证</View>}
+                            {this.state.imgs2.length < 6 && <View className='imgs' onClick={this.isshow.bind(this)}>上传相关许可证</View>}
 
                         </View>
                     </View>

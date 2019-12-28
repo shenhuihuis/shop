@@ -2,6 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import "./index.less"
 import $http from '@public/server'
+import hand from "./../../assets/img/hand.png"
 class Add_list extends Component {
     config = {
         navigationBarTitleText: '评价列表',
@@ -23,6 +24,12 @@ class Add_list extends Component {
     }
     componentWillMount(){
         this.getList()
+    }
+    previewImage=(current,urls)=>{
+        Taro.previewImage({
+            current: current, // 当前显示图片的http链接
+            urls:urls// 需要预览的图片http链接列表
+        })
     }
     onReachBottom(){
         if(this.state.list.length>=this.state.count) return false;
@@ -76,7 +83,7 @@ class Add_list extends Component {
                        return(
                             <View className='li' key={ele.id}>
                                 <View className='had'>
-                                    <Image mode='aspectFill' src={ele.account.img}></Image>
+                                    <Image mode='aspectFill' src={ele.account.img  || hand}></Image>
                                 </View>
                                 <View className='rt'>
                                     <View className='tp'>
@@ -98,7 +105,7 @@ class Add_list extends Component {
                                     <View className='pic'>
                                        {ele.imgs.map(element=>{
                                            return(
-                                                <Image mode='aspectFill' src={element} key={element}></Image>
+                                                <Image mode='aspectFill' src={element} key={element} onTap={this.previewImage.bind(this,element,ele.imgs)}></Image>
                                            )
                                        })}
                                     </View>

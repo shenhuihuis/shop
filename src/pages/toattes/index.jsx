@@ -57,7 +57,7 @@ class Order extends Component {
     //         return false;
     //     }
        const status=this.state.status;
-       if(status==0){
+       if(status==0 || status==2){
            $http.post('account/audit_tel',{
                 tel:this.state.phone
            }).then(e=>{
@@ -74,9 +74,8 @@ class Order extends Component {
               //  
            })   
        }
-       else if(status==2){
-           Taro.redirectTo({url:"/pages/attes_ing/index?type="+this.state.current+"&phone="+this.state.phone})     //1 是个人认证  2是企业认证
-       }else{
+         //  Taro.redirectTo({url:"/pages/attes_ing/index?type="+this.state.current+"&phone="+this.state.phone})     //1 是个人认证  2是企业认证
+       else{
            Taro.showToast({
             title: status==1?"认证信息审核中":"已认证成功",
             icon: 'none',
