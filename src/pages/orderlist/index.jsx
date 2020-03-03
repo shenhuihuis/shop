@@ -34,17 +34,7 @@ class Order extends Component {
         onReachBottomDistance:50
     }
     onPullDownRefresh(){
-        this.setState((preState) => {
-            preState.load=false;
-            preState.scrollTop=0;
-            preState.count=null;
-            preState.form.page=1;
-            preState.list=[]    
-        })
-       setTimeout(e=>{
-            this.getList()
-            Taro.stopPullDownRefresh()
-       },500)
+       this.rest()
     }
     onScroll=()=>{
         if(this.state.list.length>=this.state.count) return false;
@@ -64,6 +54,7 @@ class Order extends Component {
         }
     }
     handleClick = (value) => {
+        if(value==this.state.current) return false;
         this.setState(preState=>{
             preState.current=value;
             preState.list=[];
@@ -76,6 +67,19 @@ class Order extends Component {
         setTimeout(e=>{
             this.getList()
         },500)        
+    }
+    rest = () => {
+        this.setState((preState) => {
+            preState.load=false;
+            preState.scrollTop=0;
+            preState.count=null;
+            preState.form.page=1;
+            preState.list=[]    
+        })
+       setTimeout(e=>{
+            this.getList()
+            Taro.stopPullDownRefresh()
+       },500)
     }
     componentWillMount=()=>{
         this.getList();
@@ -102,7 +106,8 @@ class Order extends Component {
                         title:"支付成功",
                         icon:"success"
                     })
-                    this.handleClick(this.state.current)
+                    this.rest()
+                   // this.handleClick(this.state.current)
                 }
             })
            
@@ -114,7 +119,7 @@ class Order extends Component {
                 title:"收货成功",
                 icon:"success"
             })
-            this.handleClick(this.state.current)
+            this.rest()
         })
     }
 
@@ -124,7 +129,7 @@ class Order extends Component {
                 title:"已删除订单",
                 icon:"success"
             })
-            this.handleClick(this.state.current)
+            this.rest()
         })
     }
     getList=()=>{

@@ -75,7 +75,7 @@ class Order extends Component {
         let _this = this;
         Taro.showLoading({ title: '正在上传中' });
         wx.uploadFile({
-            url: process.env.HOST + 'uploads', //里面填写你的上传图片服务器API接口的路径 
+            url: process.env.upLoad + 'uploads', //里面填写你的上传图片服务器API接口的路径 
             filePath: file[0].path, //要上传文件资源的路径 String类型 
             name: 'file', //按个人情况修改，文件对应的 key,开发者在服务器端通过这个 key 可以获取到文件二进制内容，(后台接口规定的关于图片的请求参数)
             header: {

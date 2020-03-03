@@ -33,6 +33,9 @@ class Add_list extends Component {
     }
     componentWillMount() {
         this.getList()
+        this.init()
+    }
+    init=()=>{
         $http.get("supplier/info",{id:this.state.form.supplier_id}).then(e=>{
             this.setState({
                 company:e
@@ -45,7 +48,7 @@ class Add_list extends Component {
     collected = () => {
         let is_favorite = this.state.company.is_favorite,
             url = is_favorite ? "account/favorite/supplier/del" : "account/favorite/supplier";
-        $http.post(url, { supplier_id:this.state.company.favorite_id || this.state.company.id}).then(e => {
+        $http.post(url, {supplier_id:this.state.company.favorite_id || this.state.company.id}).then(e => {
             this.setState((preState) => {
                 preState.company.is_favorite = !is_favorite;
             })
@@ -53,6 +56,7 @@ class Add_list extends Component {
                 title: is_favorite ? "已取消收藏" : "加入收藏",
                 icon: 'none'
             })
+            this.init()
         })
     }
     want = (id) =>{

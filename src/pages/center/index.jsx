@@ -81,9 +81,9 @@ class Order extends Component {
                     <View className='li'>
                         <View className='tit'  onTap={this.went.bind(this,'/pages/add_list/index')}>收货地址</View>
                     </View>
-                    <View className='li'>
+                  {/*  <View className='li'>
                         <View className='tit' onTap={this.went.bind(this,'/pages/settledIn/index')}>供应商入驻</View>
-                    </View>
+        </View>*/}
                     <View className='li' onTap={this.went.bind(this,"/pages/appealRecord/index")}>
                         <View className='tit'>申诉记录</View>
                     </View>

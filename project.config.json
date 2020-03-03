@@ -1,14 +1,16 @@
 {
-  "miniprogramRoot": "./dist",
-  "projectname": "yj",
-  "description": "溢澋",
-  "appid": "wxe41b1e343674156c",
-  "setting": {
-    "urlCheck": true,
-    "es6": false,
-    "postcss": false,
-    "minified": false
-  },
-  "compileType": "miniprogram"
+	"miniprogramRoot": "dist/",
+	"projectname": "yj",
+	"description": "溢澋",
+	"appid": "wxfc5af27c72d9afee",
+	"setting": {
+		"urlCheck": true,
+		"es6": false,
+		"postcss": false,
+		"minified": false
+	},
+	"compileType": "miniprogram",
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
+	"condition": {}
 }
-  

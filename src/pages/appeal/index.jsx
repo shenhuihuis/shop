@@ -39,7 +39,8 @@ class Appeal extends Component {
             })
             return false;
         }
-        if(!/^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/.test(form.tel)){
+        //(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/
+        if(!/^1[3456789]\d{9}$/.test(form.tel)){
             Taro.showToast({
                 title:"请填写正确的手机号",
                 icon:"none"
@@ -124,7 +125,7 @@ class Appeal extends Component {
                 Taro.showLoading({ title: '正在上传中', })
                 var tempFilePaths = res.tempFilePaths;
                 wx.uploadFile({
-                    url: process.env.HOST + 'uploads', //里面填写你的上传图片服务器API接口的路径 
+                    url: process.env.upLoad + 'uploads', //里面填写你的上传图片服务器API接口的路径 
                     filePath: tempFilePaths[0],//要上传文件资源的路径 String类型 
                     name: 'file',//按个人情况修改，文件对应的 key,开发者在服务器端通过这个 key 可以获取到文件二进制内容，(后台接口规定的关于图片的请求参数)
                     header: {

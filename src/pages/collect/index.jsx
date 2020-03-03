@@ -4,6 +4,7 @@ import './index.less'
 import ColList from "./col_list"
 // import DList from "./delist"
 import $http from "@public/server"
+import hand from "./../../assets/img/hand.png"
 class Collect extends Component {
     constructor(props) {
         super(props);
@@ -152,7 +153,7 @@ class Collect extends Component {
                                 list.map((ele,index)=>{
                                     return (
                                     <View className='li' key={ele.id} onTap={this.want.bind(this,ele.product_id)}  key={ele.id}>
-                                        <Image src={ele.img}  mode='aspectFill'></Image>
+                                        <Image src={ele.img || hand}  mode='aspectFill'></Image>
                                         <View className='tit'>{ele.title}</View>
                                         <View className='bot'>
                                             <View className='lf'>
@@ -175,7 +176,7 @@ class Collect extends Component {
                                             return (
                                                 <View className='li' onTap={this.went.bind(this,ele.supplier_id)} key={ele.id}>
                                                     <View className='lf'>
-                                                        <Image src={ele.img} mode='aspectFill'></Image>
+                                                        <Image src={ele.img || hand} mode='aspectFill'></Image>
                                                         <View className='tit'>{ele.uname}</View>
                                                     </View>
                                                     <View className='cancel' onTap={this.hate.bind(this, ele, index)}>取消收藏</View>

@@ -46,7 +46,7 @@ class Seelog extends Component {
                                                     <View className='tit'>{element.title}</View>
                                                     <View className='ico'>{element.spec_title}</View>
                                                     <View className='num'>
-                                                        ¥{element.money} <Text>X{element.num}</Text>
+                                                        ¥{element.price} <Text>X{element.num}</Text>
                                                     </View>
                                                 </View>
                                             </View>

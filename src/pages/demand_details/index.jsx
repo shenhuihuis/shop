@@ -14,6 +14,9 @@ class Demand_Details extends Component {
         navigationBarTitleText: '供应商详情'
     }
     componentWillMount(){
+        this.init()
+    }
+    init=()=>{
         let id=this.$router.params.supplier_id
         $http.get("supplier/info",{id:id}).then(e=>{
             this.setState({
@@ -26,7 +29,7 @@ class Demand_Details extends Component {
         let is_favorite = this.state.company.is_favorite,
             url = is_favorite ? "account/favorite/supplier/del" : "account/favorite/supplier";
        // let ids=favorite_id==0?id:favorite_id
-        $http.post(url, { supplier_id:favorite_id}).then(e => {
+        $http.post(url, { supplier_id:favorite_id || id}).then(e => {
             this.setState((preState) => {
                 preState.company.is_favorite = !is_favorite;
             })
@@ -34,6 +37,7 @@ class Demand_Details extends Component {
                 title: is_favorite ? "已取消收藏" : "加入收藏",
                 icon: 'none'
             })
+            this.init()
         })
     }
     went=(id)=>{

@@ -27,6 +27,9 @@ class Order extends Component {
         onReachBottomDistance: 50
     }
     onPullDownRefresh() {
+       this.rest()
+    }
+    rest=()=>{
         this.setState((preState) => {
             preState.load = false;
             preState.scrollTop = 0;
@@ -57,6 +60,7 @@ class Order extends Component {
         }
     }
     handleClick = (value) => {
+        if(value==this.state.current) return false;
         this.setState(preState => {
             preState.current = value;
             preState.list = [];
@@ -79,7 +83,8 @@ class Order extends Component {
                 title: "已删除订单",
                 icon: "success"
             })
-            this.handleClick(this.state.current)
+           // this.handleClick(this.state.current)
+           this.rest()
         })
     }
     notify = (id,e) => {      //提醒发货
@@ -99,7 +104,8 @@ class Order extends Component {
                 title: "收货成功",
                 icon: "success"
             })
-            this.handleClick(this.state.current)
+           // this.handleClick(this.state.current)
+           this.rest()
         })
     }
     getList = () => {

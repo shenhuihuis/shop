@@ -1,7 +1,8 @@
 module.exports = {
   env: {
     NODE_ENV: '"production"',
-    HOST:'https://yijing.demo.dyuit.cn/api/'
+    HOST:'https://api.yuanhuscm.com/api/',
+    upLoad:'https://api.yuanhuscm.com/api/'
   },
   defineConstants: {
   },

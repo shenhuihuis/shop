@@ -33,9 +33,9 @@ export default {
     }
     return new Promise(function (resolve, reject) {
       Taro.request(option).then(e=>{
-        console.log(e.data)
-        console.log(data)
-        console.log(url)
+        // console.log(e.data)
+        // console.log(data)
+        // console.log(url)
         if(e.data.code==1000){
           resolve(e.data.data)
         }

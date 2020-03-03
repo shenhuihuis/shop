@@ -7,6 +7,7 @@ import WxParse from './../../components/wxParse/wxParse'
 import lazy from "./../../assets/img/xlazy.png"
 import BUY from '../../components/buy'
 import { getGlobalData, setStorageSync } from '@public/global_data'
+import hand from "./../../assets/img/hand.png"
 class Demand_Details extends Component {
     constructor(props) {
         super(props);
@@ -195,7 +196,7 @@ class Demand_Details extends Component {
                                     <View className='answer' key={e.created_at}>
                                         <View className='top'>
                                             <View className='lf'>
-                                                <Image mode='aspectFill' src={e.account.img}></Image>
+                                                {<Image mode='aspectFill' src={e.account.img || hand}></Image>}
                                                 <View className='bname'>
                                                     <View className='name'>{e.account.name}</View>
                                                     <View className='time'>{e.created_at}</View>
@@ -217,7 +218,7 @@ class Demand_Details extends Component {
                             })
                         }
                         <View class='gys' onTap={this.want.bind(this, details.supplier.id)}>
-                            <Image mode='aspectFill' src={details.supplier.img}></Image>
+                            <Image mode='aspectFill' src={details.supplier.img  || hand}></Image>
                             <View className='gystit'>{details.supplier.uname}</View>
                         </View>
                         <View className='h2'>宝贝详情</View>

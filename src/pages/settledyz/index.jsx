@@ -39,7 +39,7 @@ class Settleyz extends Component {
              })
              return false;
          }
-         if (!/^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/.test(this.state.phone)) {
+         if (!/^1[3456789]\d{9}$/.test(this.state.phone)) {
              Taro.showToast({
                  title: "请输入正确的手机号",
                  icon: 'none',

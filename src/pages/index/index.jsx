@@ -64,6 +64,7 @@ export default class Index extends Component {
     } else {
       this.init()
     }
+   
   }
   login = () => {
     let _this = this;

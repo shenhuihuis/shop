@@ -25,7 +25,7 @@ class Order extends Component {
             e.img3=e.imgs3.map(ele=>{
                 return ele.url
             })
-            e.img2=e.imgs2.map(ele=>{
+            e.img4=e.imgs2.map(ele=>{
                 return ele.url
             })
             e.img1=e.imgs1.map(ele=>{
@@ -50,7 +50,7 @@ class Order extends Component {
                     {info.status==3 && <View  className='ico okyico'>认证资料成功</View>}
                     {info.status==1 && <View  className="ico ingico">认证资料审核中</View>}
                     {info.status==2 && <View  className='ico'>认证资料失败</View>}
-                    <View className='say'>{info.note}</View>
+                    {info.status==2 && <View className='say'>{info.note}</View>}
                 </View>
                 <View className='list'>
                     {info.type == 2 && <View className='li'>
@@ -100,7 +100,14 @@ class Order extends Component {
                         info.type == 2 && <View className='smli'>
                             <View className='tit'>相关许可证</View>
                             <View className='imgbox'>
-                            <Image mode='aspectFill' src={info.img2[0]} onTap={this.previewImage.bind(this,info.img2[0],info.img2)}></Image>
+                                {
+                                    info.imgs2.map(ele=>{
+                                        return (
+                                           ele.type=="application/pdf"?<View className='pdf'></View>:<Image mode='aspectFill' key={ele.id} src={ele.url} onTap={this.previewImage.bind(this,ele.url,info.img4)}></Image>
+                                        )
+                                    })
+                                }
+                               
                             </View>
                         </View>
                     }
